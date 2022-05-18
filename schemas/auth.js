@@ -5,7 +5,18 @@ const authSchema = gql`
         login(ID: String!, hashedPW: String!): String
     }
     type Mutation {
-        signup(ID: String!, hashedPW: String!, name: String!): Boolean
+        signup(ID: String!, hashedPW: String!, name: String!): NormalResponse
+    }
+    
+    interface Response {
+        code: Int!
+        success: Boolean!
+        message: String!
+    }
+    type NormalResponse {
+        code: Int!
+        success: Boolean!
+        message: String!
     }
 `;
 

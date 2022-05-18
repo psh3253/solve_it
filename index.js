@@ -13,7 +13,7 @@ const server = new ApolloServer({
     context: async({req}) => {
         try {
             const op = req.body.query.split('\n')[1].trim();
-            if(op.startsWith('register') || op.startsWith('login'))
+            if(op.startsWith('signup') || op.startsWith('login'))
                 return {};
 
             const token = req.headers.authorization || '';

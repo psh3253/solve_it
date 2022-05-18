@@ -8,7 +8,11 @@ const authResolver = {
     },
     Mutation: {
         signup(parent, args, context, info) {
-            return AuthService.signup(args.ID, args.hashedPW, args.name);
+            return{
+                code: 200,
+                message: 'hello',
+                success: AuthService.signup(args.ID, args.hashedPW, args.name)
+            } ;
         }
     }
 };
