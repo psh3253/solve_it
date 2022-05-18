@@ -1,21 +1,28 @@
+const jsonwebtoken = require('jsonwebtoken');
 const authService = {};
 const User = require("../models/user");
+require('dotenv').config();
 
 authService.login = async function login(id, password) {
     try{
-        return await User.findOne({
+        const user = await User.findOne({
             attributes: ['id', 'nickname'],
             where: {
                 id: id,
                 password: password
             }
         });
+        if(user != null)
+        {
+            return jsonwebtoken.sign({id}, process.env.JWT_SECRET_KEY, {expiresIn: '1800s'});
+        }
+        return null;
     }catch (e) {
         console.error(e);
     }
 }
 
-authService.register = async function register(id, password, nickname) {
+authService.signup = async function signup(id, password, nickname) {
     try {
         await User.create({
             id: id,
