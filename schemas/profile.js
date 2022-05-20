@@ -1,14 +1,25 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
+    interface Response {
+        code: Int!
+        message: String!
+        success: Boolean!
+    }
+    type NormalResponse {
+        code: Int!
+        message: String!
+        success: Boolean!  
+    }
+    
     type Query {
         profile: Profile
         myCoupones: [CouponWithCnt!]!
         coupons: [Coupon!]!
+        getUserProfile(ID: String!): NormalResponse
     }
     type Mutation {
         updateProfile(name: String, favorite: [String!]!): NormalResponse
-        "graphql-upload 패키지 찾아서 적용해봐"
         updateProfileImg(file: Upload!): File!
         updateMyCoupon(couponId: ID!): NormalResponse
     }

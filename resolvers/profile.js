@@ -3,18 +3,18 @@ const ProfileService = require('../services/profile');
 const profileResolver = {
     Query: {
         getUserProfile(parent, args, context, info) {
-            return ProfileService()
+            return ProfileService.getUserProfile(args.ID)
         }
     },
     Mutation: {
         updateMyCoupon(parent, args, context, info) {
-            
+            return ProfileService.updateMyCoupon(args.couponID)
         },
-        updateInterests(user_id, category) {
-
+        updateProfile(parent, args, context, info) {
+            return ProfileService.updateProfile(args.name, args.favorite)
         },
-        updateUsername(user_id, category) {
-
+        updateProfileImg(parent, args, context, info) {
+            //graphql-upload 패키지 적용
         }
     }
 };
