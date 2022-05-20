@@ -32,5 +32,7 @@ module.exports = class Coupon extends Sequelize.Model {
         });
     }
 
-    static associate(db) {}
+    static associate(db) {
+        db.Coupon.hasMany(db.IssuedCoupon, {foreginKey: 'coupon_id', sourceKey: 'id'})
+    }
 };
