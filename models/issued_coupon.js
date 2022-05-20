@@ -4,7 +4,7 @@ module.exports = class IssuedCoupon extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             id: {
-                type: Sequelize.STRING(50),
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true
@@ -16,21 +16,21 @@ module.exports = class IssuedCoupon extends Sequelize.Model {
             created_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
-                defaultValue: Sequelize.NOW,
+                defaultValue: Sequelize.NOW
             },
         }, {
             sequelize,
             timestamps: false,
             underscored: true,
-            modelName: 'AnswerRecord',
-            tableName: 'answer_record',
+            modelName: 'IssuedCoupon',
+            tableName: 'issued_coupon',
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
 
     static associate(db) {
-        db.IssuedCoupon.belongsTo(db.User, {foreginKey: 'user_id', targetKey: 'id'})
-        db.IssuedCoupon.belongsTo(db.Coupon, {foreginKey: 'coupon_id', targetKey: 'id'})
+        db.IssuedCoupon.belongsTo(db.User, {foreignKey: 'user_id', targetKey: 'id'})
+        db.IssuedCoupon.belongsTo(db.Coupon, {foreignKey: 'coupon_id', targetKey: 'id'})
     }
 };
