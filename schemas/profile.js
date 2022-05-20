@@ -14,7 +14,7 @@ module.exports = gql`
     
     type Query {
         profile: Profile
-        myCoupones: [CouponWithCnt!]!
+        myCoupons: [CouponWithCnt!]!
         coupons: [Coupon!]!
         getUserProfile(ID: String!): NormalResponse
     }
@@ -54,13 +54,5 @@ module.exports = gql`
         name: String!
         explanation: String!
         price: Int!
-    }
-
-    type ReviewNote {
-        ownerId: String!
-        testId: Int!
-        questionID: Int!
-        explanation: String
-        reason: String
     }
 `;
