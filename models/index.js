@@ -11,7 +11,7 @@ const Reply = require('./reply');
 const Report = require('./report');
 const ReviewNote = require('./review_note');
 const Test = require('./test');
-const TestQuestion = require('./test_question');
+//const TestQuestion = require('./test_question');
 const Tier = require('./tier');
 const User = require('./user');
 const env = process.env.NODE_ENV || 'development';
@@ -33,7 +33,7 @@ db.Reply = Reply;
 db.Report = Report;
 db.ReviewNote = ReviewNote;
 db.Test = Test;
-db.TestQuestion = TestQuestion;
+//db.TestQuestion = TestQuestion;
 db.Tier = Tier;
 db.User = User;
 
@@ -49,7 +49,7 @@ Reply.init(sequelize);
 Report.init(sequelize);
 ReviewNote.init(sequelize);
 Test.init(sequelize);
-TestQuestion.init(sequelize);
+//TestQuestion.init(sequelize);
 Tier.init(sequelize);
 User.init(sequelize);
 
@@ -65,7 +65,7 @@ Reply.associate(db);
 Report.associate(db);
 ReviewNote.associate(db);
 Test.associate(db);
-TestQuestion.associate(db);
+//TestQuestion.associate(db);
 Tier.associate(db);
 User.associate(db);
 

@@ -27,10 +27,10 @@ const server = new ApolloServer({
 
 sequelize.sync({force: false})
     .then(() => {
-        console.log("데이터베이스 연결 성공");
+        console.log("MySQL Connect Success");
     })
     .catch(() => {
-        console.error("데이터베이스 연결 실패");
+        console.error("MySQL Connect Fail");
     });
 
 server.listen().then(({url}) => {

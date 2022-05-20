@@ -12,7 +12,7 @@ const authResolver = {
                 code: 200,
                 message: 'hello',
                 success: AuthService.signup(args.ID, args.hashedPW, args.name)
-            } ;
+            };
         }
     }
 };
