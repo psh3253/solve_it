@@ -33,6 +33,6 @@ module.exports = class Coupon extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Coupon.hasMany(db.IssuedCoupon, {foreginKey: 'coupon_id', sourceKey: 'id'})
+        db.Coupon.hasMany(db.IssuedCoupon, {foreignKey: 'coupon_id', sourceKey: 'id'})
     }
 };
