@@ -25,7 +25,6 @@ type Query {
 }
 type Mutation {
     signup(ID: String!, hashedPW: String!, name: String!): Boolean
-    test: Question
 }
 
 "---------------Test--------------"
