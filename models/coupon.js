@@ -4,7 +4,7 @@ module.exports = class Coupon extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             id: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true,
@@ -18,7 +18,7 @@ module.exports = class Coupon extends Sequelize.Model {
                 allowNull: false,
             },
             price: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
             },
         }, {

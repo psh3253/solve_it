@@ -4,7 +4,7 @@ module.exports = class Test extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             id: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true,
@@ -18,13 +18,9 @@ module.exports = class Test extends Sequelize.Model {
                 allowNull: false,
             },
             try_count: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 defaultValue: 0,
-            },
-            category: {
-                type: Sequelize.STRING(50),
-                allowNull: true,
             },
             created_at: {
                 type: Sequelize.DATE,
@@ -47,6 +43,11 @@ module.exports = class Test extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Test.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' })
+        db.Test.hasMany(db.Question, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.hasMany(db.Report, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
+        db.Test.belongsToMany(db.User, {through: 'Like', foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
     }
 };

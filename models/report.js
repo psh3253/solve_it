@@ -4,7 +4,7 @@ module.exports = class Report extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             id: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true,
@@ -30,7 +30,7 @@ module.exports = class Report extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Report.belongsTo(db.Test, { foreignKey: 'test_id', targetKey: 'id' }),
-        db.Report.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' })
+        db.Report.belongsTo(db.Test, { foreignKey: 'test_id', targetKey: 'id' });
+        db.Report.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
     }
 };

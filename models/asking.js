@@ -4,7 +4,7 @@ module.exports = class Asking extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
             id: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 primaryKey: true,
                 autoIncrement: true,
@@ -34,7 +34,8 @@ module.exports = class Asking extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Asking.belongsTo(db.Question, { foreignKey: 'question_id', targetKey: 'id' }),
-        db.Asking.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' })
+        db.Asking.hasMany(db.Reply, {foreignKey: 'asking_id', sourceKey: 'id'});
+        db.Asking.belongsTo(db.Question, { foreignKey: 'question_id', targetKey: 'id' });
+        db.Asking.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
     }
 };
