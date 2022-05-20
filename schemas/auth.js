@@ -1,23 +1,11 @@
 const {gql} = require('apollo-server');
 
-const authSchema = gql`
+export const typeDef = gql`
     type Query {
         login(ID: String!, hashedPW: String!): String
     }
     type Mutation {
-        signup(ID: String!, hashedPW: String!, name: String!): NormalResponse
-    }
-    
-    interface Response {
-        code: Int!
-        success: Boolean!
-        message: String!
-    }
-    type NormalResponse {
-        code: Int!
-        success: Boolean!
-        message: String!
+        signup(ID: String!, hashedPW: String!, name: String!): Boolean
+        test: Question
     }
 `;
-
-module.exports = authSchema;

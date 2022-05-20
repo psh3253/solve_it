@@ -1,0 +1,217 @@
+"--------------공통---------------------"
+enum Path {
+    testId: ID!
+    questionID: ID!
+}
+interface Response {
+    code: Int!
+    message: String!
+    success: Boolean!
+}
+type NormalResponse {
+    code: Int!
+    message: String!
+    success: Boolean!  
+}
+scalar Upload
+type File {
+    url: String!
+}
+
+
+"---------------Auth--------------------"
+type Query {
+    login(ID: String!, hashedPW: String!): String
+}
+type Mutation {
+    signup(ID: String!, hashedPW: String!, name: String!): Boolean
+    test: Question
+}
+
+"---------------Test--------------"
+type Test {
+    id: ID!
+    questionIds: [ID!]!
+    name: String!
+    ownerId: String!
+    tag: String!
+    craetionDate: Int!
+    private: Boolean!
+    tryCnt: Int!
+}
+type Report {
+    id: ID!
+    reported: String!
+    craetionDate: Int!
+    reason: String!
+}
+type Asking {
+    id: ID!
+    title: String!
+    content: String!
+    owernId: String!
+    craetionDate: Int!
+    testId: ID!
+}
+
+type Record {
+    id: ID!
+    ownerID: String!
+    startDate: Int!
+    endDate: Int
+    answers: [String!]!
+    checks: [Boolean]!
+    testId: Int!
+}
+
+"---------------Question--------------"
+interface Question {
+    id: ID!
+    name: String!
+    paragraph: String!
+    answers: [String!]!
+    explanation: String
+    type: QuestionType
+    difficulty: Int!
+    answerCnt: Int!
+    wrongCnt: Int
+    questionCategory: QuestionCategory 
+}
+
+enum QuestionType {
+    MULTILE_CHOICE
+    FILL_BLANK
+    SHORT_ANSWER
+    CODING_TEST
+}
+
+enum QuestionCategory {
+    ENGLISH
+    TOEIC
+    TOEFL
+    MATH
+    SCIENCE
+    HANGUL
+}
+
+type Other implements Question {
+    id: ID!
+    name: String!
+    paragraph: String!
+    answers: [String!]!
+    explanation: String
+    type: QuestionType
+    difficulty: Int!
+    answerCnt: Int!
+    wrongCnt: Int
+    questionCategory: QuestionCategory 
+}
+
+type MultipleChoice {
+    id: ID!
+    name: String!
+    paragraph: String!
+    answers: [String!]!
+    explanation: String
+    type: QuestionType
+    difficulty: Int!
+    answerCnt: Int!
+    wrongCnt: Int
+    questionCategory: QuestionCategory 
+    candidates: [String!]!
+}
+
+type OnlineJudge {
+    id: ID!
+    name: String!
+    paragraph: String!
+    answers: [String!]!
+    explanation: String
+    type: QuestionType
+    difficulty: Int!
+    answerCnt: Int!
+    wrongCnt: Int
+    questionCategory: QuestionCategory 
+    testcases: [CodingTestCase!]!
+}
+
+type CodingTestCase {
+    id: ID!
+    input: [String!]!
+    output: [String!]!
+}
+
+type Extension {
+    id: ID!
+    name: String!
+    description: String!
+    codes: [String!]!
+    craetionDate: Int!
+    creatorId: String!
+}
+enum FileType {
+    HWP
+    DOC
+    TXT
+    PDF
+}
+enum OrderBy {
+    DATE
+    DATE_DESC
+    LIKE
+    LIKE_DESC
+    SOLVING_COUNT
+    SOLVING_COUNT_DESC
+}
+
+"---------------Profile--------------"
+type Query {
+    profile: Profile
+    myCoupones: [CouponWithCnt!]!
+    coupons: [Coupon!]!
+}
+type Mutation {
+    updateProfile(name: String, favorite: [String!]!): NormalResponse
+    "graphql-upload 패키지 찾아서 적용해봐"
+    updateProfileImg(file: Upload!): File!
+    updateMyCoupon(couponId: ID!): NormalResponse
+}
+
+type Profile {
+    ownerId: String!
+    tier: Int
+    point: Int
+    image: String
+    logs: [Log!]!
+    favorites: [String!]!
+    coupons: [CouponWithCnt!]!
+    password: String!
+    creationDate: Int
+}
+type Log {
+    category: String
+    correct: Int
+    wrong: Int
+}
+
+type CouponWithCnt {
+    id: ID!
+    couponId: ID!
+    count: Int!
+    code: String!
+}
+
+type Coupon {
+    id: ID!
+    name: String!
+    explanation: String!
+    price: Int!
+}
+
+type ReviewNote {
+    ownerId: String!
+    testId: Int!
+    questionID: Int!
+    explanation: String
+    reason: String
+}
