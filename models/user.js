@@ -21,7 +21,7 @@ module.exports = class User extends Sequelize.Model {
                 allowNull: false,
             },
             point: {
-                type: Sequelize.INTEGER.UNSIGNED,
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 defaultValue: 0,
             },
@@ -29,10 +29,6 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.NOW,
-            },
-            categories: {
-                type: Sequelize.STRING(30),
-                allowNull: true,
             }
         }, {
             sequelize,
@@ -46,6 +42,14 @@ module.exports = class User extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.User.belongsTo(db.Tier, { foreignKey: 'tier_id', targetKey: 'id' })
+        db.User.hasMany(db.Report, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.hasMany(db.Test, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.belongsTo(db.Tier, {foreignKey: 'tier_id', targetKey: 'id'});
+        db.User.belongsToMany(db.Test, {through: 'Like', foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.hasMany(db.Question, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.hasMany(db.ReviewNote, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.hasMany(db.Asking, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.hasMany(db.Reply, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.User.belongsToMany(db.Category, {through: 'user_category', foreignKey: 'user_id', sourceKey: 'id'});
     }
 };
