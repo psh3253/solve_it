@@ -5,9 +5,25 @@ export const typeDef = gql`
         questionMetaData: QuestionMetaData
     }
 
-    type QuestionMetaData {
-        typeList: [String!]!
-        categoryList: [String!]!
+    type Test {
+        id: ID!
+        questionIds: [ID!]!
+        name: String!
+        ownerId: String!
+        tag: String!
+        creationDate: Int!
+        private: Boolean!
+        tryCnt: Int!
+    }
+
+    type Record {
+        id: ID!
+        ownerID: String!
+        startDate: Int!
+        endDate: Int
+        answers: [String!]!
+        checks: [Boolean]!
+        testId: Int!
     }
 
     interface Question {
@@ -15,12 +31,54 @@ export const typeDef = gql`
         name: String!
         paragraph: String!
         answers: [String!]!
-        explanation: String!
+        explanation: String
+        type: QuestionType
         difficulty: Int!
         answerCnt: Int!
-        wrongCnt: Int!
-
+        wrongCnt: Int
+        questionCategory: QuestionCategory
     }
 
+    enum QuestionType {
+        MULTIPLE_CHOICE
+        FILL_BLANK
+        SHORT_ANSWER
+        CODING_TEST
+    }
 
+    enum QuestionCategory {
+        ENGLISH
+        TOEIC
+        TOEFL
+        MATH
+        SCIENCE
+        HANGUL
+    }
+
+    type Other implements Question {
+        id: ID!
+        name: String!
+        paragraph: String!
+        answers: [String!]!
+        explanation: String
+        type: QuestionType
+        difficulty: Int!
+        answerCnt: Int!
+        wrongCnt: Int
+        questionCategory: QuestionCategory
+    }
+
+    type MultipleChoice {
+        id: ID!
+        name: String!
+        paragraph: String!
+        answers: [String!]!
+        explanation: String
+        type: QuestionType
+        difficulty: Int!
+        answerCnt: Int!
+        wrongCnt: Int
+        questionCategory: QuestionCategory
+        candidates: [String!]!
+    }
 `
