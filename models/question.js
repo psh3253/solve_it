@@ -56,7 +56,7 @@ module.exports = class Question extends Sequelize.Model {
         db.Question.belongsTo(db.Difficulty, {foreignKey: 'difficulty_id', targetKey: 'id'});
         db.Question.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
         db.Question.belongsTo(db.User, {foreignKey: 'creator_id', targetKey: 'id'});
-        //db.Question.hasMany(db.TestQuestion, {foreignKey: 'question_id', sourceKey: 'id'});
+        db.Question.hasMany(db.TestQuestion, {foreignKey: 'question_id', sourceKey: 'id'});
         db.Question.belongsTo(db.Test, {foreignKey: 'test_id', targetKey: 'id'});
     }
 };

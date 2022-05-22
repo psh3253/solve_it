@@ -1,10 +1,11 @@
 const {gql} = require('apollo-server');
 
-export const typeDef = gql`
-    extend type Query {
-        questionMetaData: QuestionMetaData
+module.exports = gql`
+    enum Path {
+        testId: ID!
+        questionID: ID!
     }
-
+    
     type Test {
         id: ID!
         questionIds: [ID!]!

@@ -1,29 +1,40 @@
 const profileService = {};
-const User = require("../models/user");
-require('dotenv').config();
+const User = require('../models/user');
+const Category = require('../models/category');
 
 profileService.getUserProfile = async function getUserProfile(user_id) {
     try {
-        const profile = await User.findOne({
-            attributes: ['nickname'],
+        return await User.findOne({
+            attributes: ['id', 'nickname', 'experience', 'point', 'created_at', 'tier_id'],
             where: {
                 id: user_id
             }
-        })
-
-        if (profile != null) {
-            return profile
-        }
-        return null
+        });
     } catch (e) {
         console.error(e);
     }
 }
 
-profileService.updateMyCoupon = async function updateMyCoupon(user_id, coupon_id, coupon_price) {
+profileService.getUserCategories = async function getUserCategory(user_id) {
     try {
-        profile = this.getUserProfile(user_id)
-        
+        return await User.findOne({
+            attributes: [],
+            where: {
+                id: user_id
+            },
+            include: {
+                model: Category,
+                attributes: ['name']
+            }
+        });
+    } catch (e) {
+        console.error(e);
     }
 }
+
+
+profileService.updateMyCoupon = async function updateMyCoupon(user_id, coupon_id, coupon_price) {
+
+}
+
 module.exports = profileService;

@@ -27,10 +27,6 @@ module.exports = class Test extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: Sequelize.NOW,
             },
-            tags: {
-                type: Sequelize.STRING(50),
-                allowNull: false,
-            },
         }, {
             sequelize,
             timestamps: false,
@@ -47,7 +43,7 @@ module.exports = class Test extends Sequelize.Model {
         db.Test.hasMany(db.Report, {foreignKey: 'test_id', sourceKey: 'id'});
         db.Test.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
         db.Test.belongsToMany(db.User, {through: 'Like', foreignKey: 'test_id', sourceKey: 'id'});
-        //db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id'});
         db.Test.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
         db.Test.hasMany(db.TestTag, {foreignKey: 'test_id', sourceKey: 'id'});
     }
