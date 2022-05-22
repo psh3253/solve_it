@@ -16,9 +16,14 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.STRING(30),
                 allowNull: false,
             },
+            image_path: {
+                type: Sequelize.STRING(50),
+                allowNull: true,
+            },
             experience: { // 경험치
-                type: Sequelize.STRING(30),
+                type: Sequelize.INTEGER,
                 allowNull: false,
+                defaultValue: 0,
             },
             point: {
                 type: Sequelize.INTEGER,

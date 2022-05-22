@@ -16,6 +16,6 @@ module.exports = gql`
         login(ID: String!, hashedPW: String!): String
     }
     type Mutation {
-        signup(ID: String!, hashedPW: String!, name: String!): Boolean
+        signup(ID: String!, hashedPW: String!, name: String!): NormalResponse
     }
 `;
