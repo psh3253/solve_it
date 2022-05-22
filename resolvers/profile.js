@@ -1,6 +1,9 @@
+const {GraphQLUpload} = require('graphql-upload')
+const {finished} = require('stream/promises')
 const ProfileService = require('../services/profile');
 
 const profileResolver = {
+    Upload: GraphQLUpload,
     Query: {
         getUserProfile(parent, args, context, info) {
             return ProfileService.getUserProfile(args.ID)
@@ -13,8 +16,15 @@ const profileResolver = {
         updateProfile(parent, args, context, info) {
             return ProfileService.updateProfile(args.name, args.favorite)
         },
-        updateProfileImg(parent, args, context, info) {
-            //graphql-upload 패키지 적용
+        updateProfileImg(parent, { file }) {
+            const { createReadStream, filename, mimetype, encoding } = await file;
+            const stream = createReadStream();
+      
+            const out = require('fs').createWriteStream(filename);
+            stream.pipe(out);
+            await finished(out);
+      
+            return { filename, mimetype, encoding };
         }
     }
 };

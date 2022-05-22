@@ -4,10 +4,6 @@ const AuthResolver = require('../resolvers/auth');
 const { gql } = require('apollo-server');
 
 const Query = gql`
-    enum Path {
-        testId: ID!
-        questionID: ID!
-    }
     interface Response {
         code: Int!
         message: String!

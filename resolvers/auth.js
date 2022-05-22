@@ -2,16 +2,17 @@ const AuthService = require('../services/auth');
 
 const authResolver = {
     Query: {
-        login(parent, args, context, info) {
-            return AuthService.login(args.ID, args.hashedPW);
+        login(parent, {ID, hashedPW}, context, info) {
+            return AuthService.login(ID, hashedPW);
         }
     },
     Mutation: {
-        signup(parent, args, context, info) {
-            return{
+        signup(parent, {ID, hashedPW, name}, context, info) {
+            console.log(ID)
+            return {
                 code: 200,
                 message: 'hello',
-                success: AuthService.signup(args.ID, args.hashedPW, args.name)
+                success: AuthService.signup(ID, hashedPW, name)
             };
         }
     }
