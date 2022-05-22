@@ -1,7 +1,9 @@
 const {makeExecutableSchema} = require('@graphql-tools/schema')
 const AuthSchema = require('./auth');
 const AuthResolver = require('../resolvers/auth');
-const { gql } = require('apollo-server');
+const ProfileSchema = require('./profile');
+const ProfileResolver = require('../resolvers/profile');
+const {gql} = require('apollo-server');
 
 const Query = gql`
     interface Response {
@@ -18,11 +20,11 @@ const Query = gql`
     type File {
         url: String!
     }
-`
+`;
 
 const schema = makeExecutableSchema({
-    typeDefs: [AuthSchema, Query],
-    resolvers: [AuthResolver]
+    typeDefs: [Query, AuthSchema, ProfileSchema],
+    resolvers: [AuthResolver, ProfileResolver]
 });
 
 module.exports = schema;

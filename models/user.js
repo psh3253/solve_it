@@ -14,7 +14,7 @@ module.exports = class User extends Sequelize.Model {
             },
             nickname: {
                 type: Sequelize.STRING(30),
-                allowNull: false,
+                allowNull: false
             },
             image_path: {
                 type: Sequelize.STRING(50),
@@ -55,7 +55,7 @@ module.exports = class User extends Sequelize.Model {
         db.User.hasMany(db.ReviewNote, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.Asking, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.Reply, {foreignKey: 'creator_id', sourceKey: 'id'});
-        db.User.belongsToMany(db.Category, {through: 'user_category', foreignKey: 'user_id', sourceKey: 'id'});
+        db.User.belongsToMany(db.Category, {through: 'user_category', foreignKey: 'user_id', sourceKey: 'id', timestamps: false});
         db.User.hasMany(db.IssuedCoupon, {foreignKey: 'user_id', sourceKey: 'id'});
     }
 };

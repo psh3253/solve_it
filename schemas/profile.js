@@ -1,23 +1,12 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
-    interface Response {
-        code: Int!
-        message: String!
-        success: Boolean!
-    }
-    type NormalResponse {
-        code: Int!
-        message: String!
-        success: Boolean!  
-    }
-    
     type Query {
-        profile: Profile
+        profile(ID: String): Profile
         myCoupons: [CouponWithCnt!]!
         coupons: [Coupon!]!
-        getUserProfile(ID: String!): NormalResponse
     }
+    
     type Mutation {
         updateProfile(name: String, favorite: [String!]!): NormalResponse
         updateProfileImg(file: Upload!): File!
@@ -26,14 +15,14 @@ module.exports = gql`
 
     type Profile {
         ownerId: String!
-        tier: Int
-        point: Int
+        nickname: String!
         image: String
-        logs: [Log!]!
-        favorites: [String!]!
+        experience: Int!
+        point: Int!
+        tier: Int!
+        favorites: [String!]
         coupons: [CouponWithCnt!]!
-        password: String!
-        creationDate: Int
+        creationDate: String!
     }
 
     type Log {
