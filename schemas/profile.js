@@ -21,7 +21,6 @@ module.exports = gql`
         point: Int!
         tier: Int!
         favorites: [String!]
-        coupons: [CouponWithCnt!]!
         creationDate: String!
     }
 
@@ -32,10 +31,8 @@ module.exports = gql`
     }
 
     type CouponWithCnt {
-        id: ID!
-        couponId: ID!
+        coupon: Coupon!
         count: Int!
-        code: String!
     }
 
     type Coupon {

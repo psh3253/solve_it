@@ -22,11 +22,26 @@ const profileResolver = {
                 point: userProfile.point,
                 tier: userProfile.tier_id,
                 favorites: categories,
-                coupons: {
-
-                },
                 creationDate: Util.getDateString(userProfile.created_at)
             };
+        },
+
+        async myCoupons(parent, args, context, info) {
+            const userCoupons = await ProfileService.getUserCoupons(context.user);
+            let coupons = [];
+            for(let i of userCoupons)
+            {
+                coupons.push({
+                    count: i.count,
+                    coupon: {
+                        id: i.Coupon.id,
+                        name: i.Coupon.name,
+                        explanation: i.Coupon.explanation,
+                        price: i.Coupon.price
+                    }
+                })
+            }
+            return coupons;
         }
     },
     Mutation: {

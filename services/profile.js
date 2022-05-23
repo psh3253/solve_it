@@ -1,6 +1,8 @@
 const profileService = {};
 const User = require('../models/user');
 const Category = require('../models/category');
+const IssuedCoupon = require('../models/issued_coupon');
+const Coupon = require('../models/coupon');
 
 profileService.getUserProfile = async function getUserProfile(user_id) {
     try {
@@ -28,6 +30,20 @@ profileService.getUserCategories = async function getUserCategory(user_id) {
             }
         });
     } catch (e) {
+        console.error(e);
+    }
+}
+
+profileService.getUserCoupons = async function getUserCoupons(user_id) {
+    try {
+        return await IssuedCoupon.findAll({
+            attributes: ['count', 'created_at', 'last_used_at', 'coupon_id'],
+            include: {
+                model: Coupon,
+                attributes: ['id', 'name', 'explanation', 'price']
+            }
+        })
+    } catch(e) {
         console.error(e);
     }
 }

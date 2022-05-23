@@ -9,8 +9,8 @@ module.exports = class IssuedCoupon extends Sequelize.Model {
                 primaryKey: true,
                 autoIncrement: true
             },
-            code: {
-                type: Sequelize.STRING(10),
+            count: {
+                type: Sequelize.INTEGER,
                 allowNull: false
             },
             created_at: {
@@ -18,6 +18,11 @@ module.exports = class IssuedCoupon extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: Sequelize.NOW
             },
+            last_used_at: {
+                type: Sequelize.DATE,
+                allowNull: true,
+                defaultValue: Sequelize.NOW
+            }
         }, {
             sequelize,
             timestamps: false,
