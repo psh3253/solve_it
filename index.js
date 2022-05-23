@@ -17,8 +17,8 @@ const server = new ApolloServer({
                 return {};
 
             const token = req.headers.authorization || '';
-            const result = jsonwebtoken.verify(token.slice(7), process.env.JWT_SECRET_KEY);
-            return result.id;
+            const user = jsonwebtoken.verify(token.slice(7), process.env.JWT_SECRET_KEY);
+            return {user};
         } catch (e) {
             console.error(e);
         }
