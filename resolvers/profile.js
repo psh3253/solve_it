@@ -9,11 +9,8 @@ const profileResolver = {
         async profile(parent, {ID}, context, info) {
             let targetID = ID;
             if (targetID === null) {
-                console.log("targetID undefined")
                 targetID = context.user.id;
             }
-            console.log(targetID)
-            console.log(context.user)
             const userProfile = await ProfileService.getUserProfile(targetID);
             const userCategories = await ProfileService.getUserCategories(targetID);
             let categories = [];
