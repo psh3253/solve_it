@@ -2,6 +2,7 @@ const {GraphQLUpload} = require('graphql-upload')
 // const {finished} = require('stream/promises')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
+const AuthService = require("../services/auth");
 
 const profileResolver = {
     Upload: GraphQLUpload,
@@ -46,14 +47,35 @@ const profileResolver = {
                 })
             }
             return coupons;
+        },
+
+        async coupons(parent, args, context, info) {
+            const allCoupons = await ProfileService.getAllCoupons();
+            let coupons = [];
+            for(let i of allCoupons)
+            {
+                coupons.push({
+                    id: i.id,
+                    name: i.name,
+                    explanation: i.explanation,
+                    price: i.price
+                });
+            }
+            return coupons;
         }
     },
     Mutation: {
-        updateMyCoupon(parent, args, context, info) {
+        async updateMyCoupon(parent, args, context, info) {
             return ProfileService.updateMyCoupon(args.couponID)
         },
-        updateProfile(parent, args, context, info) {
-            return ProfileService.updateProfile(args.name, args.favorite)
+        async updateProfile(parent, args, context, info) {
+            const result1 = await ProfileService.updateNickname(context.user, args.name);
+            const result2 = await ProfileService.updateCategory(context.user, args.favorite);
+            return {
+                code: 200,
+                message: 'complete',
+                success: result1 && result2
+            };
         },
         updateProfileImg(parent, { file }) {
             /*
