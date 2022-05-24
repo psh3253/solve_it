@@ -1,17 +1,21 @@
 const {GraphQLUpload} = require('graphql-upload')
-const {finished} = require('stream/promises')
+// const {finished} = require('stream/promises')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
 
 const profileResolver = {
     Upload: GraphQLUpload,
     Query: {
-        async profile(parent, args, context, info) {
-            const userProfile = await ProfileService.getUserProfile(args.ID);
-            const userCategories = await ProfileService.getUserCategories(args.ID);
+        async profile(parent, {ID}, context, info) {
+            let targetID = ID;
+            if (targetID === null) {
+                targetID = context.user.id;
+            }
+            const userProfile = await ProfileService.getUserProfile(targetID);
+            const userCategories = await ProfileService.getUserCategories(targetID);
             let categories = [];
-            for(let i of userCategories.Categories)
-            {
+
+            for (let i of userCategories.Categories) {
                 categories.push(i.name);
             }
             return {
@@ -29,8 +33,8 @@ const profileResolver = {
         async myCoupons(parent, args, context, info) {
             const userCoupons = await ProfileService.getUserCoupons(context.user);
             let coupons = [];
-            for(let i of userCoupons)
-            {
+            
+            for(let i of userCoupons) {
                 coupons.push({
                     count: i.count,
                     coupon: {
