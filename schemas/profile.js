@@ -4,6 +4,7 @@ module.exports = gql`
     type Query {
         profile(ID: String): Profile
         myCoupons: [CouponWithCnt!]!
+        statistics(ID: String): Statistics
         coupons: [Coupon!]!
     }
     
@@ -24,10 +25,16 @@ module.exports = gql`
         creationDate: String!
     }
 
+    type Statistics {
+        try_count: Int!
+        correct_count: Int!
+        category_log: [Log!]!
+    }
+    
     type Log {
         category: String
-        correct: Int
-        wrong: Int
+        try_count: Int
+        correct_count: Int
     }
 
     type CouponWithCnt {
