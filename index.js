@@ -20,7 +20,7 @@ const server = new ApolloServer({
             const user = jsonwebtoken.verify(token.slice(7), process.env.JWT_SECRET_KEY);
             return {user};
         } catch (e) {
-            console.error(e);
+            // console.error(e);
         }
     }
 });
