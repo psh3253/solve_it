@@ -29,10 +29,26 @@ questionService.createQuestion = async (name, paragraph, answers, explanation, t
             content: paragraph,
             answer: answers,
             type: type,
-            question_id: questionCategory
+            category_id: questionCategory
         });
     } catch (e) {
         console.error(e);
+    }
+}
+
+questionService.updateQuestion = async (id, name, paragraph, answers, explanation) => {
+    try {
+	return await Question.update({
+	    title: name,
+	    content: paragraph,
+	    answer: answers
+	    },
+	    where: {
+		id: question_id
+	    }
+	});
+    } catch (e) {
+	console.error(e);
     }
 }
 
