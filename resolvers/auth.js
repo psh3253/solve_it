@@ -8,7 +8,6 @@ const authResolver = {
     },
     Mutation: {
         signup(parent, {ID, hashedPW, name}, context, info) {
-            console.log(ID)
             return {
                 code: 200,
                 message: 'hello',
