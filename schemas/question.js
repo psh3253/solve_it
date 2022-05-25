@@ -1,7 +1,7 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
-    enum Path {
+    type Path {
         testId: ID!
         questionID: ID!
     }
@@ -35,7 +35,7 @@ module.exports = gql`
         answers: [String!]!
         explanation: String
         type: QuestionType
-        difficulty: Int!
+        difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
@@ -55,7 +55,7 @@ module.exports = gql`
         answers: [String!]!
         explanation: String
         type: QuestionType
-        difficulty: Int!
+        difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
@@ -68,10 +68,20 @@ module.exports = gql`
         answers: [String!]!
         explanation: String
         type: QuestionType
-        difficulty: Int!
+        difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
-        candidates: [String!]!
+        candidates: [Candidate!]!
+    }
+    
+    type Candidate {
+        number: Int!
+        content: String!
+    }
+    
+    type Difficulty {
+        id: ID!
+        name: String!
     }
 `
