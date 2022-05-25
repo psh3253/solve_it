@@ -2,6 +2,11 @@ const QuestionService = require('../services/question');
 const Util = require('../util');
 
 const QuestionResolver = {
+    Question: {
+        __resolveType: (question, context, info) => {
+            
+        }
+    },
     Query: {
         async question(parent, {ID}, context, info) {
             const question = await QuestionService.getQuestion(ID);

@@ -2,18 +2,18 @@ const {gql} = require('apollo-server');
 
 module.exports = gql`
     type Query {
-        question(id: ID!): MultipleChoice
+        question(id: ID!): Question
     }
 
     type Mutation {
-        createQuestion(name: String!, paragraph: String!, answers: String!, explanation: String, type: QuestionType, questionCategory: QuestionCategory): ID
+        createQuestion(name: String!, paragraph: String!, answers: String!, explanation: String, type: QuestionType, questionCategory: String): ID
     }
 
     type Path {
         testId: ID!
         questionID: ID!
     }
-
+    
     type Test {
         id: ID!
         questionIds: [ID!]!
@@ -23,6 +23,7 @@ module.exports = gql`
         creationDate: Int!
         private: Boolean!
         tryCnt: Int!
+        testCategory: Category!
     }
 
     type Record {
@@ -39,13 +40,13 @@ module.exports = gql`
         id: ID!
         name: String!
         paragraph: String!
-        answers: String!
+        answers: [String!]!
         explanation: String
         type: QuestionType
-        difficulty: Int
+        difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: QuestionCategory
+        questionCategory: Category
     }
 
     enum QuestionType {
@@ -55,39 +56,40 @@ module.exports = gql`
         CODING_TEST
     }
 
-    enum QuestionCategory {
-        ENGLISH
-        TOEIC
-        TOEFL
-        MATH
-        SCIENCE
-        HANGUL
-    }
-
     type Other implements Question {
         id: ID!
         name: String!
         paragraph: String!
-        answers: String!
+        answers: [String!]!
         explanation: String
         type: QuestionType
-        difficulty: Int
+        difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: QuestionCategory
+        questionCategory: Category
     }
 
     type MultipleChoice implements Question {
         id: ID!
         name: String!
         paragraph: String!
-        answers: String!
+        answers: [String!]!
         explanation: String
         type: QuestionType
-        difficulty: Int
+        difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: QuestionCategory
-        candidates: [String!]!
+        questionCategory: Category
+        candidates: [Candidate!]!
     }
-`;
+    
+    type Candidate {
+        number: Int!
+        content: String!
+    }
+    
+    type Difficulty {
+        id: ID!
+        name: String!
+    }
+`

@@ -23,7 +23,7 @@ module.exports = gql`
         favorites: [String!]
         creationDate: String!
     }
-
+    
     type Log {
         category: String
         correct: Int
@@ -40,5 +40,10 @@ module.exports = gql`
         name: String!
         explanation: String!
         price: Int!
+    }
+
+    type Category {
+        id: ID!
+        name: String!
     }
 `;

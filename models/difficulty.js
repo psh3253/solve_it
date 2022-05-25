@@ -13,7 +13,7 @@ module.exports = class Difficulty extends Sequelize.Model {
                 type: Sequelize.STRING(30),
                 allowNull: false,
             },
-            experience: {
+            experience: { // 경험치 보상
                 type: Sequelize.INTEGER,
                 allowNull: false
             }

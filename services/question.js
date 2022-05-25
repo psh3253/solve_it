@@ -38,17 +38,16 @@ questionService.createQuestion = async (name, paragraph, answers, explanation, t
 
 questionService.updateQuestion = async (id, name, paragraph, answers, explanation) => {
     try {
-	return await Question.update({
-	    title: name,
-	    content: paragraph,
-	    answer: answers
-	    },
-	    where: {
-		id: question_id
-	    }
-	});
-    } catch (e) {
-	console.error(e);
+        return await Question.update({
+            title: name,
+            content: paragraph,
+            answer: answers,
+            where: {
+                id: question_id
+            }
+        });
+	} catch (e) {
+	    console.error(e);
     }
 }
 
