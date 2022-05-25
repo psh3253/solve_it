@@ -7,6 +7,7 @@ module.exports = gql`
 
     type Mutation {
         createQuestion(input: createQuestionInput): NormalResponse
+        createTest(input: createTestInput): NormalResponse
     }
 
     input createQuestionInput {
@@ -18,6 +19,13 @@ module.exports = gql`
         questionCategory: Int!,
         questionDifficulty: Int!,
         candidates: [String!]
+    }
+    
+    input createTestInput {
+        name: String!
+        content: String!
+        questionIds: [Int!]!
+        categoryId: Int!
     }
 
     type Path {
