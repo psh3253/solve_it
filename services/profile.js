@@ -1,5 +1,5 @@
 const profileService = {};
-const { Op } = require("sequelize");
+const {Op} = require("sequelize");
 const User = require('../models/user');
 const Category = require('../models/category');
 const IssuedCoupon = require('../models/issued_coupon');
@@ -53,6 +53,16 @@ profileService.getAllCoupons = async function getAllCoupons() {
     try {
         return await Coupon.findAll({
             attributes: ['id', 'name', 'explanation', 'price']
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+profileService.getAllCategories = async function getAllCategories() {
+    try {
+        return await Category.findAll({
+            attributes: ['id', 'name']
         });
     } catch (e) {
         console.error(e);

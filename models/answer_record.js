@@ -25,5 +25,6 @@ module.exports = class AnswerRecord extends Sequelize.Model {
     static associate(db) {
         db.AnswerRecord.belongsTo(db.AnswerSheet, {foreignKey: 'answer_sheet_id', targetKey: 'id'});
         db.AnswerRecord.belongsTo(db.TestQuestion, {foreignKey: 'test_question_id', targetKey: 'id'});
+        db.AnswerRecord.belongsTo(db.Question, {foreignKey: 'question_id', targetKey: 'id'});
     }
 };

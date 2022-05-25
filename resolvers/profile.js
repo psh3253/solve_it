@@ -62,6 +62,19 @@ const profileResolver = {
                 });
             }
             return coupons;
+        },
+
+        async categories(parent, args, context, info) {
+            const allCategories = await ProfileService.getAllCategories();
+            let categories = [];
+            for(let i of allCategories)
+            {
+                categories.push({
+                    id: i.id,
+                    name: i.name
+                });
+            }
+            return categories;
         }
     },
     Mutation: {

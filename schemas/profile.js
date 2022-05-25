@@ -6,6 +6,7 @@ module.exports = gql`
         myCoupons: [CouponWithCnt!]!
         statistics(ID: String): Statistics
         coupons: [Coupon!]!
+        categories: [Category!]!
     }
     
     type Mutation {
@@ -47,5 +48,10 @@ module.exports = gql`
         name: String!
         explanation: String!
         price: Int!
+    }
+
+    type Category {
+        id: ID!
+        name: String!
     }
 `;
