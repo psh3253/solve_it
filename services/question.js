@@ -1,7 +1,9 @@
 const questionService = {};
 const Question = require('../models/question');
 const QuestionAnswer = require('../models/question_answer');
-const QuestionCandidate = require('../models/question_candidate')
+const QuestionCandidate = require('../models/question_candidate');
+const Test = require('../models/test');
+const TestQuestion = require('../models/test_question');
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category')
 
@@ -55,9 +57,9 @@ questionService.getCandidate = async (question_id) => {
     }
 }
 
-questionService.createQuestion = async (title, content, answers, explanation, type, category_id, creator_id, difficulty_id) => {
+questionService.createQuestion = async (title, content, answers, explanation, type, category_id, creator_id, difficulty_id, candidates) => {
     try {
-        const question_id = await Question.create({
+        const question = await Question.create({
             title: title,
             content: content,
             type: type,
@@ -70,8 +72,45 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
         {
             await QuestionAnswer.create({
                 answer: i,
-                question_id: question_id
+                question_id: question.id
             });
+        }
+        if(type === 'MULTIPLE_CHOICE')
+        {
+            let number = 0;
+            for(let i of candidates)
+            {
+                await QuestionCandidate.create({
+                    number: number,
+                    content: i,
+                    question_id: question.id
+                })
+                number++;
+            }
+        }
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionService.createTest = async (title, content, question_ids, category_id, creator_id) => {
+    try {
+        const test = await Test.create({
+            title: title,
+            content: content,
+            creator_id: creator_id,
+            category_id: category_id
+        });
+        let number = 1;
+        for(let i of question_ids) {
+            await TestQuestion.create({
+                question_id: i,
+                test_id: test.id,
+                number: number
+            });
+            number++;
         }
         return true;
     } catch (e) {

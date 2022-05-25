@@ -48,12 +48,21 @@ const QuestionResolver = {
         }
     },
     Mutation: {
-        async createQuestion(parent, {name, paragraph, answers, explanation, type, category, difficulty}, context, info) {
+        async createQuestion(parent, {input}, context, info) {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.createQuestion(name, paragraph, answers, explanation, type, category, difficulty)
-            };
+                success: await QuestionService.createQuestion(input.name, input.paragraph, input.answers, input.explanation, input.type, input.questionCategory, context.user, input.questionDifficulty, input.candidates)
+            }
+        },
+
+        async createTest(parent, {input}, context, info) {
+            context.user = "psh3253";
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, context.user)
+            }
         }
     }
 };

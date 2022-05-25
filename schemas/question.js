@@ -6,18 +6,38 @@ module.exports = gql`
     }
 
     type Mutation {
-        createQuestion(name: String!, paragraph: String!, answers: [String!]!, explanation: String, type: QuestionType!, questionCategory: Int!, questionDifficulty: Int!): NormalResponse
+        createQuestion(input: createQuestionInput): NormalResponse
+        createTest(input: createTestInput): NormalResponse
+    }
+
+    input createQuestionInput {
+        name: String!,
+        paragraph: String!,
+        answers: [String!]!,
+        explanation: String,
+        type: QuestionType!,
+        questionCategory: Int!,
+        questionDifficulty: Int!,
+        candidates: [String!]
     }
     
+    input createTestInput {
+        name: String!
+        content: String!
+        questionIds: [Int!]!
+        categoryId: Int!
+    }
+
     type Path {
         testId: ID!
         questionID: ID!
     }
-    
+
     type Test {
         id: ID!
         questionIds: [ID!]!
         name: String!
+        content: String!
         ownerId: String!
         tag: String!
         creationDate: Int!
@@ -82,12 +102,12 @@ module.exports = gql`
         questionCategory: Category
         candidates: [Candidate!]!
     }
-    
+
     type Candidate {
         number: Int!
         content: String!
     }
-    
+
     type Difficulty {
         id: ID!
         name: String!
