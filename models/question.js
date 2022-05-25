@@ -11,7 +11,7 @@ module.exports = class Question extends Sequelize.Model {
             },
             title: {
                 type: Sequelize.STRING(50),
-                allowNull: false
+                allowNull: true
             },
             content: {
                 type: Sequelize.TEXT,
