@@ -21,9 +21,7 @@ const QuestionResolver = {
             let candidate_list = [];
             
             for (let i of answers) {
-                answer_list.push({
-                    answer: i.answer
-                })
+                answer_list.push(i.answer)
             }
             for (let i of candidates) {
                 candidate_list.push({

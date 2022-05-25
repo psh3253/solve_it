@@ -47,7 +47,6 @@ questionService.getCandidate = async (question_id) => {
             attribute: ['number', 'content'],
             where: {
                 question_id: question_id,
-                order: ['number', 'ASC']
             }
         });
     } catch (e) {
