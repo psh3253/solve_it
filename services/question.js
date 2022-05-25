@@ -12,7 +12,7 @@ questionService.getAllCategoryId = async function getAllCategoryId() {
 questionService.getQuestion = async (question_id) => {
     try {
         return await Question.findOne({
-            attributes: ['id', 'title', 'content', 'type', 'answer', 'try_count', 'difficulty_id', 'category_id'],
+            attributes: ['id', 'title', 'content', 'type', 'try_count', 'difficulty_id', 'category_id'],
             where: {
                 id: question_id
             }

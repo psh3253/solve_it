@@ -3,13 +3,16 @@ const Util = require('../util');
 
 const QuestionResolver = {
     Question: {
-        __resolveType: (question, context, info) => {
-            
+        __resolveType: (question) => {
+            if (question.type == "MULTIPLE_CHOICE")
+                return "MultipleChoice"
+            else
+                return "Other"
         }
     },
     Query: {
-        async question(parent, {ID}, context, info) {
-            const question = await QuestionService.getQuestion(ID);
+        async question(parent, {id}, context, info) {
+            const question = await QuestionService.getQuestion(id);
 
             return {
                 id: question.id,
