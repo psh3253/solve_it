@@ -6,7 +6,7 @@ module.exports = gql`
     }
 
     type Mutation {
-        createQuestion(name: String!, paragraph: String!, answers: String!, explanation: String, type: QuestionType, questionCategory: String): ID
+        createQuestion(name: String!, paragraph: String!, answers: [String!]!, explanation: String, type: QuestionType!, questionCategory: Int!, questionDifficulty: Int!): NormalResponse
     }
     
     type Path {

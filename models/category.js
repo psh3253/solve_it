@@ -10,7 +10,7 @@ module.exports = class Category extends Sequelize.Model {
                 autoIncrement: true
             },
             name: {
-                type: Sequelize.ENUM("ENGLISH", "TOEIC", "ONLINEJUDGE", "KOREAN", "MATH", "SCIENCE"),
+                type: Sequelize.STRING(30),
                 allowNull: false,
             }
         }, {

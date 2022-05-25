@@ -26,8 +26,13 @@ const QuestionResolver = {
         }
     },
     Mutation: {
-        async createQuestion(parent, {name, paragraph, answers, explanation, type, questionCategory}, context, info) {
-            await QuestionService.createQuestion(name, paragraph, answers, explanation, type, questionCategory);
+        async createQuestion(parent, {name, paragraph, answers, explanation, type, category, difficulty}, context, info) {
+            console.log(type);
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionService.createQuestion(name, paragraph, answers, explanation, type, category, difficulty)
+            };
         }
     }
 };
