@@ -66,7 +66,7 @@ module.exports = gql`
         difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: Category
+        questionCategory: Category!
     }
 
     type MultipleChoice implements Question {
