@@ -14,12 +14,21 @@ const QuestionResolver = {
         async question(parent, {id}, context, info) {
             const question = await QuestionService.getQuestion(id);
             const answers = await QuestionService.getAnswer(id);
+            const candidates = await QuestionService.getCandidate(id);
 
             const wrong_count = question.try_count - question.correct_count
             let answer_list = [];
+            let candidate_list = [];
+            
             for (let i of answers) {
                 answer_list.push({
                     answer: i.answer
+                })
+            }
+            for (let i of candidates) {
+                candidate_list.push({
+                    number: i.number,
+                    content: i.content
                 })
             }
             
@@ -33,7 +42,8 @@ const QuestionResolver = {
                 difficulty: question.Difficulty,
                 answerCnt: question.try_count,
                 wrongCnt: wrong_count,
-                questionCategory: question.Category
+                questionCategory: question.Category,
+                candidates: candidate_list
             };
         }
     },

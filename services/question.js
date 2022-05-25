@@ -1,6 +1,7 @@
 const questionService = {};
 const Question = require('../models/question');
 const QuestionAnswer = require('../models/question_answer');
+const QuestionCandidate = require('../models/question_candidate')
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category')
 
@@ -33,6 +34,20 @@ questionService.getAnswer = async (question_id) => {
             attribute: ['answer'],
             where: {
                 question_id: question_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+questionService.getCandidate = async (question_id) => {
+    try {
+        return await QuestionCandidate.findAll({
+            attribute: ['number', 'content'],
+            where: {
+                question_id: question_id,
+                order: ['number', 'ASC']
             }
         });
     } catch (e) {
