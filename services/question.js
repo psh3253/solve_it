@@ -88,10 +88,10 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
                 number++;
             }
         }
-        return true;
+        return question.id;
     } catch (e) {
         console.error(e);
-        return false;
+        return 0;
     }
 }
 

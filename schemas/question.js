@@ -6,7 +6,7 @@ module.exports = gql`
     }
 
     type Mutation {
-        createQuestion(input: createQuestionInput): NormalResponse
+        createQuestion(input: createQuestionInput): CreationQuestionResponse
         createTest(input: createTestInput): NormalResponse
     }
 
