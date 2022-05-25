@@ -1,6 +1,14 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
+    type Query {
+        question(id: ID!): Question
+    }
+
+    type Mutation {
+        createQuestion(name: String!, paragraph: String!, answers: String!, explanation: String, type: QuestionType, questionCategory: String): ID
+    }
+    
     type Path {
         testId: ID!
         questionID: ID!
@@ -61,7 +69,7 @@ module.exports = gql`
         questionCategory: Category
     }
 
-    type MultipleChoice {
+    type MultipleChoice implements Question {
         id: ID!
         name: String!
         paragraph: String!
