@@ -1,6 +1,7 @@
 const questionService = {};
 const Question = require('../models/question');
 const QuestionAnswer = require('../models/question_answer');
+const QuestionCandidate = require('../models/question_candidate');
 const Difficulty = require('../models/difficulty');
 
 questionService.getQuestion = async (question_id) => {
@@ -16,9 +17,9 @@ questionService.getQuestion = async (question_id) => {
     }
 }
 
-questionService.createQuestion = async (title, content, answers, explanation, type, category_id, creator_id, difficulty_id) => {
+questionService.createQuestion = async (title, content, answers, explanation, type, category_id, creator_id, difficulty_id, candidates) => {
     try {
-        const question_id = await Question.create({
+        const question = await Question.create({
             title: title,
             content: content,
             type: type,
@@ -31,8 +32,21 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
         {
             await QuestionAnswer.create({
                 answer: i,
-                question_id: question_id
+                question_id: question.id
             });
+        }
+        if(type === 'MULTIPLE_CHOICE')
+        {
+            let number = 0;
+            for(let i of candidates)
+            {
+                await QuestionCandidate.create({
+                    number: number,
+                    content: i,
+                    question_id: question.id
+                })
+                number++;
+            }
         }
         return true;
     } catch (e) {
