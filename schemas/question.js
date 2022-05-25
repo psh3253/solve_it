@@ -15,6 +15,7 @@ module.exports = gql`
         creationDate: Int!
         private: Boolean!
         tryCnt: Int!
+        testCategory: Category!
     }
 
     type Record {
@@ -37,7 +38,7 @@ module.exports = gql`
         difficulty: Int!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: QuestionCategory
+        questionCategory: Category
     }
 
     enum QuestionType {
@@ -45,15 +46,6 @@ module.exports = gql`
         FILL_BLANK
         SHORT_ANSWER
         CODING_TEST
-    }
-
-    enum QuestionCategory {
-        ENGLISH
-        TOEIC
-        TOEFL
-        MATH
-        SCIENCE
-        HANGUL
     }
 
     type Other implements Question {
@@ -66,7 +58,7 @@ module.exports = gql`
         difficulty: Int!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: QuestionCategory
+        questionCategory: Category
     }
 
     type MultipleChoice {
@@ -79,7 +71,7 @@ module.exports = gql`
         difficulty: Int!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: QuestionCategory
+        questionCategory: Category
         candidates: [String!]!
     }
 `
