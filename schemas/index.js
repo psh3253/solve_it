@@ -18,6 +18,12 @@ const Query = gql`
         message: String!
         success: Boolean!
     }
+    type CreationQuestionResponse {
+        code: Int!
+        message: String!
+        success: Boolean!
+        questionId: Int!
+    }
     scalar Upload
     type File {
         url: String!

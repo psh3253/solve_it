@@ -47,10 +47,12 @@ const QuestionResolver = {
     },
     Mutation: {
         async createQuestion(parent, {input}, context, info) {
+            const question_id = await QuestionService.createQuestion(input.name, input.paragraph, input.answers, input.explanation, input.type, input.questionCategory, context.user, input.questionDifficulty, input.candidates);
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.createQuestion(input.name, input.paragraph, input.answers, input.explanation, input.type, input.questionCategory, context.user, input.questionDifficulty, input.candidates)
+                success: question_id > 0,
+                questionId: question_id
             }
         },
 
