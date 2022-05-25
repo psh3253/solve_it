@@ -42,7 +42,7 @@ module.exports = class Test extends Sequelize.Model {
         db.Test.hasMany(db.Question, {foreignKey: 'test_id', sourceKey: 'id'});
         db.Test.hasMany(db.Report, {foreignKey: 'test_id', sourceKey: 'id'});
         db.Test.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
-        db.Test.belongsToMany(db.User, {through: 'Like', foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.belongsToMany(db.User, {through: 'like', foreignKey: 'test_id', sourceKey: 'id'});
         db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id'});
         db.Test.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
         db.Test.hasMany(db.TestTag, {foreignKey: 'test_id', sourceKey: 'id'});
