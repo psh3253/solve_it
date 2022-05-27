@@ -19,6 +19,6 @@ module.exports = class QuestionAnswer extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.QuestionAnswer.belongsTo(db.Question, {foreignKey: 'question_id', sourceKey: 'id'})
+        db.QuestionAnswer.belongsTo(db.Question, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'})
     }
 };

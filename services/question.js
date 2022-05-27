@@ -167,6 +167,20 @@ questionService.createTest = async (title, content, question_ids, category_id, i
     }
 }
 
+questionService.deleteTest = async(test_id, user_id) => {
+    try {
+        return await Test.destroy({
+            where: {
+                id: test_id,
+                creator_id: user_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 questionService.updateQuestion = async (id, name, paragraph, answers, explanation) => {
     try {
         return await Question.update({

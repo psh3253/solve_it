@@ -44,11 +44,11 @@ module.exports = class Test extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Test.hasMany(db.Report, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.hasMany(db.Report, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
         db.Test.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
-        db.Test.belongsToMany(db.User, {through: 'like', foreignKey: 'test_id', sourceKey: 'id'});
-        db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.belongsToMany(db.User, {through: 'like', foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
         db.Test.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
-        db.Test.hasMany(db.TestTag, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.Test.hasMany(db.TestTag, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
     }
 };
