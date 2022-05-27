@@ -52,13 +52,13 @@ module.exports = class Question extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Question.hasMany(db.CodingQuestionTestCase, {foreignKey: 'question_id', sourceKey: 'id'})
+        db.Question.hasMany(db.CodingQuestionTestCase, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'})
         db.Question.belongsTo(db.Difficulty, {foreignKey: 'difficulty_id', targetKey: 'id'});
         db.Question.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
         db.Question.belongsTo(db.User, {foreignKey: 'creator_id', targetKey: 'id'});
-        db.Question.hasMany(db.TestQuestion, {foreignKey: 'question_id', sourceKey: 'id'});
+        db.Question.hasMany(db.TestQuestion, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
         db.Question.hasMany(db.AnswerRecord, {foreignKey: 'question_id', sourceKey: 'id'});
-        db.Question.hasMany(db.QuestionAnswer, {foreignKey: 'question_id', sourceKey: 'id'});
-        db.Question.hasMany(db.QuestionCandidate, {foreignKey: 'question_id', sourceKey: 'id'});
+        db.Question.hasMany(db.QuestionAnswer, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.Question.hasMany(db.QuestionCandidate, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
     }
 };

@@ -98,6 +98,22 @@ const QuestionResolver = {
                 message: 'complete',
                 success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.private, context.user)
             }
+        },
+
+        async deleteTest(parent, {id}, context, info) {
+            const result = await QuestionService.deleteTest(id, context.user.id);
+            console.log(result)
+            if(!result)
+                return {
+                    code: 200,
+                    message: 'not creator',
+                    success: false
+                }
+            return {
+                code: 200,
+                message: 'complete',
+                success: true
+            }
         }
     }
 };
