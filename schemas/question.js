@@ -3,6 +3,7 @@ const {gql} = require('apollo-server');
 module.exports = gql`
     type Query {
         question(id: ID!): Question
+        test(id: ID!): Test
     }
 
     type Mutation {
@@ -24,6 +25,7 @@ module.exports = gql`
     input createTestInput {
         name: String!
         content: String!
+        private: Boolean!
         questionIds: [Int!]!
         categoryId: Int!
     }
@@ -35,12 +37,12 @@ module.exports = gql`
 
     type Test {
         id: ID!
-        questionIds: [ID!]!
+        questionIds: [QuestionIdNumber!]!
         name: String!
         content: String!
         ownerId: String!
-        tag: String!
-        creationDate: Int!
+        tag: [String!]
+        creationDate: String!
         private: Boolean!
         tryCnt: Int!
         testCategory: Category!
@@ -111,5 +113,10 @@ module.exports = gql`
     type Difficulty {
         id: ID!
         name: String!
+    }
+    
+    type QuestionIdNumber {
+        questionId: ID!
+        number: Int!
     }
 `
