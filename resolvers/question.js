@@ -4,7 +4,7 @@ const Util = require('../util');
 const QuestionResolver = {
     Question: {
         __resolveType: (question) => {
-            if (question.type == "MULTIPLE_CHOICE")
+            if (question.type === "MULTIPLE_CHOICE")
                 return "MultipleChoice"
             else
                 return "Other"
@@ -43,6 +43,40 @@ const QuestionResolver = {
                 questionCategory: question.Category,
                 candidates: candidate_list
             };
+        },
+
+        async test(parent, {id}, context, info) {
+            const test = await QuestionService.getTest(id, context.user.id);
+            if(test === null)
+                return null;
+            const test_question_ids = await QuestionService.getTestQuestions(id);
+            const test_tags = await QuestionService.getTestTags(id);
+            let question_id_list = [];
+            let tag_list = [];
+            for(let i of test_question_ids) {
+                question_id_list.push({
+                    questionId: i.question_id,
+                    number: i.number
+                });
+            }
+            for(let i of test_tags) {
+                tag_list.push(i.tag);
+            }
+            return {
+                id: test.id,
+                name: test.title,
+                content: test.content,
+                ownerId: test.creator_id,
+                creationDate: Util.getDateString(test.created_at),
+                tryCnt: test.try_count,
+                private: test.private,
+                testCategory: {
+                    id: test.Category.id,
+                    name: test.Category.name
+                },
+                questionIds: question_id_list,
+                tag: tag_list
+            }
         }
     },
     Mutation: {
@@ -57,11 +91,10 @@ const QuestionResolver = {
         },
 
         async createTest(parent, {input}, context, info) {
-            context.user = "psh3253";
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, context.user)
+                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.private, context.user)
             }
         }
     }
