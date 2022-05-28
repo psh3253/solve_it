@@ -78,6 +78,27 @@ const QuestionResolver = {
             }
         },
 
+        async allTests(parent, args, context, info) {
+            const tests = await QuestionService.getAllTests();
+            let test_list = [];
+            for(let i of tests)
+            {
+                test_list.push({
+                    id: i.id,
+                    name: i.title,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    private: i.private,
+                    tryCnt: i.try_count,
+                    testCategory: {
+                        id: i.Category.id,
+                        name: i.Category.name
+                    }
+                });
+            }
+            return test_list;
+        },
+
         async testsByCategory(parent, {id}, context, info) {
             const tests = await QuestionService.getTestsByCategoryId(id);
             let test_list = [];
