@@ -74,6 +74,7 @@ questionService.getTest = async (test_id, user_id) => {
         return test;
     } catch (e) {
         console.error(e);
+        return null;
     }
 }
 
@@ -87,6 +88,7 @@ questionService.getTestQuestions = async (test_id) => {
         });
     } catch (e) {
         console.error(e);
+        return null;
     }
 }
 
@@ -100,6 +102,49 @@ questionService.getTestTags = async (test_id) => {
         });
     } catch (e) {
         console.error(e);
+        return null;
+    }
+}
+
+questionService.getTestsByCategoryId = async (category_id) => {
+    try {
+        return await Test.findAll({
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id'],
+            where: {
+                category_id: category_id
+            },
+            include: {
+                model: Category,
+                attributes: ['id', 'name']
+            },
+            order: [
+                ['id', 'DESC']
+            ]
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+questionService.getTestsByCreatorId = async (user_id) => {
+    try {
+        return await Test.findAll({
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id'],
+            where: {
+                creator_id: user_id
+            },
+            include: {
+                model: Category,
+                attributes: ['id', 'name']
+            },
+            order: [
+                ['id', 'DESC']
+            ]
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
     }
 }
 
