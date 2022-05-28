@@ -17,7 +17,10 @@ const profileResolver = {
             let categories = [];
 
             for (let i of userCategories.Categories) {
-                categories.push(i.name);
+                categories.push({
+                    id: i.id,
+                    name: i.name
+                });
             }
             return {
                 ownerId: userProfile.id,

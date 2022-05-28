@@ -27,7 +27,7 @@ profileService.getUserCategories = async function getUserCategory(user_id) {
             },
             include: {
                 model: Category,
-                attributes: ['name']
+                attributes: ['id', 'name']
             }
         });
     } catch (e) {
