@@ -22,7 +22,7 @@ module.exports = gql`
         experience: Int!
         point: Int!
         tier: Int
-        favorites: [String!]
+        favorites: [Category!]
         creationDate: String!
     }
 
