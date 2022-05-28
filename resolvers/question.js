@@ -83,7 +83,7 @@ const QuestionResolver = {
     },
     Mutation: {
         async createQuestion(parent, {input}, context, info) {
-            const question_id = await QuestionService.createQuestion(input.name, input.paragraph, input.answers, input.explanation, input.type, input.questionCategory, context.user, input.questionDifficulty, input.candidates);
+            const question_id = await QuestionService.createQuestion(input.name, input.paragraph, input.answers, input.explanation, input.type, input.questionCategory, context.user.id, input.questionDifficulty, input.candidates);
             return {
                 code: 200,
                 message: 'complete',
@@ -96,14 +96,12 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.private, context.user)
+                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.private, context.user.id)
             }
         },
 
-        async deleteTest(parent, {id}, context, info) {
-            const result = await QuestionService.deleteTest(id, context.user.id);
-            console.log(result)
-            if(!result)
+        async updateTest(parent, {input}, context, info) {
+            if(!await QuestionService.isTestCreator(input.id, "psh3253"))
                 return {
                     code: 200,
                     message: 'not creator',
@@ -112,7 +110,21 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: true
+                success: await QuestionService.updateTest(input.id, input.name, input.content, input.questionIds, input.categoryId, input.private)
+            }
+        },
+
+        async deleteTest(parent, {id}, context, info) {
+            if(!await QuestionService.isTestCreator(input.id, context.user.id))
+                return {
+                    code: 200,
+                    message: 'not creator',
+                    success: false
+                }
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionService.deleteTest(id)
             }
         }
     }

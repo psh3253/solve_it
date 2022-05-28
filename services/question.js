@@ -20,11 +20,11 @@ questionService.getQuestion = async (question_id) => {
                 where: Question.category_id,
                 attributes: ['id', 'name']
             },
-            {
-                model: Difficulty,
-                where: Question.difficulty_id,
-                attribute: ['name', 'experience']
-            }]
+                {
+                    model: Difficulty,
+                    where: Question.difficulty_id,
+                    attribute: ['name', 'experience']
+                }]
         });
     } catch (e) {
         console.error(e);
@@ -70,11 +70,10 @@ questionService.getTest = async (test_id, user_id) => {
                 attribute: ['id', 'name']
             }
         });
-        if(test.private && user_id !== test.creator_id)
+        if (test.private && user_id !== test.creator_id)
             return null;
         return test;
-    } catch (e)
-    {
+    } catch (e) {
         console.error(e);
     }
 }
@@ -87,7 +86,7 @@ questionService.getTestQuestions = async (test_id) => {
                 test_id: test_id
             }
         });
-    }catch (e) {
+    } catch (e) {
         console.error(e);
     }
 }
@@ -116,18 +115,15 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
             creator_id: creator_id,
             difficulty_id: difficulty_id
         });
-        for(let i of answers)
-        {
+        for (let i of answers) {
             await QuestionAnswer.create({
                 answer: i,
                 question_id: question.id
             });
         }
-        if(type === 'MULTIPLE_CHOICE')
-        {
+        if (type === 'MULTIPLE_CHOICE') {
             let number = 1;
-            for(let i of candidates)
-            {
+            for (let i of candidates) {
                 await QuestionCandidate.create({
                     number: number,
                     content: i,
@@ -153,7 +149,7 @@ questionService.createTest = async (title, content, question_ids, category_id, i
             private: is_private
         });
         let number = 1;
-        for(let i of question_ids) {
+        for (let i of question_ids) {
             await TestQuestion.create({
                 question_id: i,
                 test_id: test.id,
@@ -168,14 +164,63 @@ questionService.createTest = async (title, content, question_ids, category_id, i
     }
 }
 
-questionService.deleteTest = async(test_id, user_id) => {
+questionService.isTestCreator = async (test_id, user_id) => {
     try {
-        return await Test.destroy({
+        const test = await Test.findOne({
+            attributes: ['creator_id'],
             where: {
                 id: test_id,
-                creator_id: user_id
             }
         });
+        return test.creator_id === user_id;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionService.updateTest = async (test_id, title, content, question_ids, category_id, is_private) => {
+    try {
+        await Test.update({
+                title: title,
+                content: content,
+                category_id: category_id,
+                private: is_private
+            },
+            {
+                where: {
+                    id: test_id,
+                }
+            });
+        await TestQuestion.destroy({
+            where: {
+                test_id: test_id
+            }
+        });
+        let number = 1;
+        for (let i of question_ids) {
+            await TestQuestion.create({
+                question_id: i,
+                test_id: test_id,
+                number: number
+            });
+            number++;
+        }
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionService.deleteTest = async (test_id) => {
+    try {
+        await Test.destroy({
+            where: {
+                id: test_id,
+            }
+        });
+        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -192,8 +237,8 @@ questionService.updateQuestion = async (id, name, paragraph, answers, explanatio
                 id: question_id
             }
         });
-	} catch (e) {
-	    console.error(e);
+    } catch (e) {
+        console.error(e);
     }
 }
 
