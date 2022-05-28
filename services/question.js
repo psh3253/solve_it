@@ -107,6 +107,23 @@ questionService.getTestTags = async (test_id) => {
     }
 }
 
+questionService.getAllTests = async () => {
+    try {
+        return await Test.findAll({
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id'],
+            include: {
+                model: Category,
+                attributes: ['id', 'name']
+            },
+            order: [
+                ['id', 'DESC']
+            ]
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
 questionService.getTestsByCategoryId = async (category_id) => {
     try {
         return await Test.findAll({

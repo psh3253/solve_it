@@ -4,6 +4,7 @@ module.exports = gql`
     type Query {
         question(id: ID!): Question
         test(id: ID!): Test
+        allTests: [TestHeader!]!
         testsByCategory(id: ID!): [TestHeader!]!
         testsByCreator(id: ID!): [TestHeader!]!
     }
