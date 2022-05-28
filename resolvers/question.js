@@ -15,7 +15,6 @@ const QuestionResolver = {
             const question = await QuestionService.getQuestion(id);
             const answers = await QuestionService.getAnswer(id);
             const candidates = await QuestionService.getCandidate(id);
-
             const wrong_count = question.try_count - question.correct_count
             let answer_list = [];
             let candidate_list = [];
@@ -79,6 +78,48 @@ const QuestionResolver = {
                 questionIds: question_id_list,
                 tag: tag_list
             }
+        },
+
+        async testsByCategory(parent, {id}, context, info) {
+            const tests = await QuestionService.getTestsByCategoryId(id);
+            let test_list = [];
+            for(let i of tests)
+            {
+                test_list.push({
+                    id: i.id,
+                    name: i.title,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    private: i.private,
+                    tryCnt: i.try_count,
+                    testCategory: {
+                        id: i.Category.id,
+                        name: i.Category.name
+                    }
+                });
+            }
+            return test_list;
+        },
+
+        async testsByCreator(parent, {id}, context, info) {
+            const tests = await QuestionService.getTestsByCreatorId(id);
+            let test_list = [];
+            for(let i of tests)
+            {
+                test_list.push({
+                    id: i.id,
+                    name: i.title,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    private: i.private,
+                    tryCnt: i.try_count,
+                    testCategory: {
+                        id: i.Category.id,
+                        name: i.Category.name
+                    }
+                });
+            }
+            return test_list;
         }
     },
     Mutation: {

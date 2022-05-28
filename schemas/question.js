@@ -4,6 +4,8 @@ module.exports = gql`
     type Query {
         question(id: ID!): Question
         test(id: ID!): Test
+        testsByCategory(id: ID!): [TestHeader!]!
+        testsByCreator(id: ID!): [TestHeader!]!
     }
 
     type Mutation {
@@ -53,6 +55,16 @@ module.exports = gql`
         content: String!
         ownerId: String!
         tag: [String!]
+        creationDate: String!
+        private: Boolean!
+        tryCnt: Int!
+        testCategory: Category!
+    }
+    
+    type TestHeader {
+        id: ID!
+        name: String!
+        ownerId: String!
         creationDate: String!
         private: Boolean!
         tryCnt: Int!
