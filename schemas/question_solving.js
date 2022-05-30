@@ -1,6 +1,16 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
+    type Query {
+        testLikesCount(id: ID!): Int!
+    }
+
+    type Mutation {
+        likeTest(id: ID!): NormalResponse
+        unlikeTest(id: ID!): NormalResponse
+        submitAnswer(id: ID!, answers:[answers!]): NormalResponse
+    }
+
     type Asking {
         id: ID!
         title: String!

@@ -11,10 +11,12 @@ module.exports = gql`
 
     type Mutation {
         createQuestion(input: createQuestionInput): CreationQuestionResponse
+        updateQuestion(input: updateQuestionInput): CreationQuestionResponse
+        deleteQuestion(id: ID!): NormalResponse
         createTest(input: createTestInput): NormalResponse
         updateTest(input: updateTestInput): NormalResponse
         deleteTest(id: ID!): NormalResponse
-    }
+    } 
 
     input createQuestionInput {
         name: String!,
@@ -27,6 +29,16 @@ module.exports = gql`
         candidates: [String!]
     }
     
+    input updateQuestionInput {
+        id: Int!,
+        name: String!,
+        paragraph: String!,
+        answers: [String!]!,
+        explanation: String,
+        type: QuestionType!,
+        candidates: [String!]
+    }
+
     input createTestInput {
         name: String!
         content: String!
