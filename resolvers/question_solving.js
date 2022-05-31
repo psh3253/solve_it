@@ -4,11 +4,7 @@ const Util = require('../util');
 const QuestionSolvingResolver = {
     Query: {
         async testLikesCount(parent, {id}, context, info) {
-            const likes = await QuestionSolvingService.getTestLikesCount(id);
-
-            return {
-                count: likes.count
-            };
+            return await QuestionSolvingService.getTestLikesCount(id);
         }
     },
     Mutation: {
