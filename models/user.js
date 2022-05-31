@@ -57,5 +57,6 @@ module.exports = class User extends Sequelize.Model {
         db.User.hasMany(db.Reply, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.belongsToMany(db.Category, {through: 'user_category', foreignKey: 'user_id', sourceKey: 'id', timestamps: false, onDelete: 'cascade'});
         db.User.hasMany(db.IssuedCoupon, {foreignKey: 'user_id', sourceKey: 'id'});
+        db.User.hasMany(db.QuestionDifficulty, {foreignKey: 'creator_id', sourceKey: 'id'});
     }
 };
