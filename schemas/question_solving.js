@@ -6,10 +6,18 @@ module.exports = gql`
     }
 
     type Mutation {
-        contributeDifficulty(questionId: ID!, difficultyId: ID!): NormalResponse
+        contributeDifficulty(questionId: ID!, difficulty: Int!): NormalResponse
         likeTest(id: ID!): NormalResponse
         unlikeTest(id: ID!): NormalResponse
         submitAnswer(id: ID!, answers:[String!]): NormalResponse
+        createAsking(input: AskingInput!): NormalResponse
+        deleteAsking(id: ID!): NormalResponse
+    }
+    
+    input AskingInput {
+        title: String!
+        content: String!
+        questionId: ID!
     }
 
     type Asking {
@@ -18,7 +26,7 @@ module.exports = gql`
         content: String!
         ownerId: String!
         creationDate: Int!
-        testId: ID!
+        questionId: ID!
     }
 
     type ReviewNote {
