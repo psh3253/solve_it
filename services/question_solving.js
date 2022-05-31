@@ -1,8 +1,9 @@
 const questionSolvingService = {};
-const Like = require('../models/like');
 const Question = require('../models/question');
 const AnswerSheet = require('../models/answer_sheet');
 const AnswerRecord = require('../models/answer_record');
+const User = require('../models/user');
+const Test = require('../models/test');
 const TestQuestion = require('../models/test_question');
 const QuestionDifficulty = require('../models/question_difficulty');
 
@@ -28,11 +29,14 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
 
 questionSolvingService.getTestLikesCount = async (test_id) => {
     try {
-        return await Like.count({
+        const test = await Test.findAll({
+            attributes: ['id'],
             where: {
-                test_id: test_id
+                id: test_id
             }
         });
+
+        await test.countUsers(user_id);
     } catch (e) {
         console.error(e);
         return null;
@@ -41,10 +45,16 @@ questionSolvingService.getTestLikesCount = async (test_id) => {
 
 questionSolvingService.likeTest = async (test_id, user_id) => {
     try {
-        return await Like.create({
-            test_id: test_id,
-            creator_id: user_id
+        const test = await Test.findOne({
+            attributes: ['id'],
+            where: {
+                id: test_id
+                //include
+            }
         });
+
+        await test.addUser(user_id);
+        return 1;
     } catch (e) {
         console.error(e);
         return null;
@@ -53,12 +63,15 @@ questionSolvingService.likeTest = async (test_id, user_id) => {
 
 questionSolvingService.unlikeTest = async (test_id, user_id) => {
     try {
-        return await Like.destroy({
+        const test = await Test.findOne({
+            attributes: ['id'],
             where: {
-                test_id: test_id,
-                creator_id: user_id
+                id: test_id
             }
         });
+
+        await test.removeUser(user_id);
+        return 1;
     } catch (e) {
         console.error(e);
         return null;
@@ -79,30 +92,26 @@ questionSolvingService.getTestQuestion = async (question_id) => {
     }
 }
 
-questionSolvingService.submitAnswer = async (question_id, answers, user_id) => {
+questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
-        const testQuestion = await this.getTestQuestion(question_id)
-        
         await AnswerSheet.create({
             test_id: test_id,
             creator_id: user_id
         });
 
         const answer_sheet = await AnswerSheet.findOne({
-            attribute: [id, created_at, update_at, test_id, creator_id],
+            attribute: ['id', 'created_at', 'update_at', 'test_id', 'creator_id'],
             where: {
                 test_id: test_id
             }
         });
 
-        for (let i of answers) {
-            await AnswerRecord.create({
-                answer: i,
-                answer_sheet_id: answer_sheet.id,
-                test_question_id: testQuestion.id,
-                question_id: question_id
-            })
-        };
+        await AnswerRecord.create({
+            answer: answers,
+            answer_sheet_id: answer_sheet.id,
+            test_question_id: test_id,
+            question_id: question_id
+        });
         return true;
     } catch (e) {
         console.error(e)
