@@ -200,6 +200,67 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
     }
 }
 
+questionService.updateQuestion = async (question_id, title, content, answers, explanation, candidates) => {
+    try {
+        await Question.update({
+            title: title,
+            content: content,
+            explanation: explanation
+            },
+            {
+                where: {
+                    id: question_id,
+                }
+        });
+        await QuestionAnswer.destroy({
+            where: {
+                question_id: question_id
+            }
+        });
+        for (let i of answers) {
+            await QuestionAnswer.create({
+                question_id: question_id,
+                answer: i
+            });
+        }
+        if (type === 'MULTIPLE_CHOICE') {
+            await QuestionCandidate.destroy({
+                where: {
+                    question_id: question_id
+                }
+            })
+            let number = 1;
+            for (let i of candidates) {
+                await QuestionCandidate.create({
+                    number: number,
+                    content: i,
+                    question_id: question_id
+                })
+                number++;
+            }
+        }
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionService.deleteQuestion = async (question_id) => {
+    try {
+        await Question.destroy({
+            where: {
+                id: question_id,
+            }
+        });
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+
 questionService.createTest = async (title, content, question_ids, category_id, is_private, creator_id) => {
     try {
         const test = await Test.create({
@@ -285,21 +346,6 @@ questionService.deleteTest = async (test_id) => {
     } catch (e) {
         console.error(e);
         return false;
-    }
-}
-
-questionService.updateQuestion = async (id, name, paragraph, answers, explanation) => {
-    try {
-        return await Question.update({
-            title: name,
-            content: paragraph,
-            answer: answers,
-            where: {
-                id: question_id
-            }
-        });
-    } catch (e) {
-        console.error(e);
     }
 }
 

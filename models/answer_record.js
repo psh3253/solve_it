@@ -3,13 +3,19 @@ const Sequelize = require('sequelize');
 module.exports = class AnswerRecord extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                autoIncrement: true
+            },
             answer: {
                 type: Sequelize.STRING(50),
                 allowNull: false
             },
             is_correct: {
                 type: Sequelize.BOOLEAN,
-                allowNull: false
+                allowNull: true
             }
         }, {
             sequelize,

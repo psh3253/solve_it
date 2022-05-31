@@ -1,4 +1,5 @@
 const QuestionService = require('../services/question');
+const QuestionSolvingService = require('../services/question_solving');
 const Util = require('../util');
 
 const QuestionResolver = {
@@ -149,6 +150,30 @@ const QuestionResolver = {
                 message: 'complete',
                 success: question_id > 0,
                 questionId: question_id
+            }
+        },
+
+        async updateQuestion(parent, {input}, context, info) {
+            const question_id = await QuestionService.updateQuestion(input, question_id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
+            return {
+                code: 200,
+                message: 'complete',
+                success: question_id > 0,
+                questionId: question_id
+            }
+        },
+
+        async deleteQuestion(parent, {id}, context, info) {
+            if(!await QuestionService.isQuestionCreator(id, context.user.id))
+                return {
+                    code: 200,
+                    message: 'not creator',
+                    success: false
+                }
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionService.deleteTest(id)
             }
         },
 
