@@ -113,6 +113,7 @@ const QuestionResolver = {
                     creationDate: Util.getDateString(i.created_at),
                     private: i.private,
                     tryCnt: i.try_count,
+                    like: i.dataValues.like,
                     testCategory: {
                         id: i.Category.id,
                         name: i.Category.name
@@ -134,6 +135,7 @@ const QuestionResolver = {
                     creationDate: Util.getDateString(i.created_at),
                     private: i.private,
                     tryCnt: i.try_count,
+                    like: i.dataValues.like,
                     testCategory: {
                         id: i.Category.id,
                         name: i.Category.name
