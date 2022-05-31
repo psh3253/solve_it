@@ -8,7 +8,7 @@ module.exports = gql`
     type Mutation {
         likeTest(id: ID!): NormalResponse
         unlikeTest(id: ID!): NormalResponse
-        submitAnswer(id: ID!, answers:[answers!]): NormalResponse
+        submitAnswer(id: ID!, answers:[String!]): NormalResponse
     }
 
     type Asking {
