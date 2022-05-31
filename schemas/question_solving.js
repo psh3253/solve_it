@@ -9,7 +9,7 @@ module.exports = gql`
         contributeDifficulty(questionId: ID!, difficultyId: ID!): NormalResponse
         likeTest(id: ID!): NormalResponse
         unlikeTest(id: ID!): NormalResponse
-        submitAnswer(id: ID!, answers:[String!]): NormalResponse
+        submitAnswer(testId: Int!, questionId: Int!, answers:String!): NormalResponse
     }
 
     type Asking {

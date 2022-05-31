@@ -26,16 +26,17 @@ const QuestionSolvingResolver = {
             }
         },
 
-        async submitAnswer(parent, {id, answers}, context, info) {
+        async submitAnswer(parent, {test_id, question_id, answers}, context, info) {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionSolvingService.submitAnswer(id, answers, context.user.id)
+                success: await QuestionSolvingService.submitAnswer(test_id, question_id, answers, context.user.id)
             }
         },
 
         async likeTest(parent, {id}, context, info) {
             const test_id = await QuestionSolvingService.likeTest(id, context.user.id);
+
             return {
                 code: 200,
                 message: 'complete',
