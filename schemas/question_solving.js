@@ -21,15 +21,6 @@ module.exports = gql`
         testId: ID!
     }
 
-    enum OrderBy {
-        DATE
-        DATE_DESC
-        LIKE
-        LIKE_DESC
-        SOLVING_COUNT
-        SOLVING_COUNT_DESC
-    }
-
     type ReviewNote {
         ownerId: String!
         testId: Int!
