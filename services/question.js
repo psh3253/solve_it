@@ -1,4 +1,5 @@
 const questionService = {};
+const {sequelize} = require('../models/index');
 const Question = require('../models/question');
 const QuestionAnswer = require('../models/question_answer');
 const QuestionCandidate = require('../models/question_candidate');
@@ -7,6 +8,7 @@ const TestQuestion = require('../models/test_question');
 const TestTag = require('../models/test_tag');
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category');
+const User = require('../models/user');
 
 questionService.getQuestion = async (question_id) => {
     try {
@@ -60,7 +62,9 @@ questionService.getCandidate = async (question_id) => {
 questionService.getTest = async (test_id, user_id) => {
     try {
         const test = await Test.findOne({
-            attribute: ['id', 'title', 'content', 'try_count', 'created_at', 'category_id', 'private', 'creator_id'],
+            attribute: ['id', 'title', 'content', 'try_count', 'created_at', 'category_id', 'private', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
             where: {
                 id: test_id
             },
@@ -106,17 +110,42 @@ questionService.getTestTags = async (test_id) => {
     }
 }
 
-questionService.getAllTests = async () => {
+questionService.getAllTests = async (page, order) => {
+    let order_way;
+    switch (order) {
+        case 'DATE':
+            order_way = ['created_at', 'ASC']
+            break;
+        case 'DATE_DESC':
+            order_way = ['created_at', 'DESC']
+            break;
+        case 'LIKE':
+            order_way = [sequelize.col('like'), 'ASC']
+            break;
+        case 'LIKE_DESC':
+            order_way = [sequelize.col('like'), 'DESC']
+            break;
+        case 'SOLVING_COUNT':
+            order_way = ['try_count', 'ASC']
+            break;
+        case 'SOLVING_COUNT_DESC':
+            order_way = ['try_count', 'DESC']
+            break;
+        default:
+            order_way = ['id', 'DESC']
+    }
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id'],
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
             include: {
                 model: Category,
-                attributes: ['id', 'name']
+                attributes: ['id', 'name'],
             },
-            order: [
-                ['id', 'DESC']
-            ]
+            limit: 10,
+            offset: (page - 1) * 10,
+            order: [order_way]
         });
     } catch (e) {
         console.error(e);
@@ -126,7 +155,9 @@ questionService.getAllTests = async () => {
 questionService.getTestsByCategoryId = async (category_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id'],
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
             where: {
                 category_id: category_id
             },
@@ -147,7 +178,9 @@ questionService.getTestsByCategoryId = async (category_id) => {
 questionService.getTestsByCreatorId = async (user_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id'],
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
             where: {
                 creator_id: user_id
             },
@@ -203,15 +236,15 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
 questionService.updateQuestion = async (question_id, title, content, answers, explanation, candidates) => {
     try {
         await Question.update({
-            title: title,
-            content: content,
-            explanation: explanation
+                title: title,
+                content: content,
+                explanation: explanation
             },
             {
                 where: {
                     id: question_id,
                 }
-        });
+            });
         await QuestionAnswer.destroy({
             where: {
                 question_id: question_id
