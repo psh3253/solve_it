@@ -29,14 +29,14 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
 
 questionSolvingService.getTestLikesCount = async (test_id) => {
     try {
-        const test = await Test.findAll({
+        const test = await Test.findOne({
             attributes: ['id'],
             where: {
                 id: test_id
             }
         });
 
-        await test.countUsers(user_id);
+        return await test.countUsers();
     } catch (e) {
         console.error(e);
         return null;
@@ -49,7 +49,6 @@ questionSolvingService.likeTest = async (test_id, user_id) => {
             attributes: ['id'],
             where: {
                 id: test_id
-                //include
             }
         });
 
