@@ -149,6 +149,7 @@ questionService.getAllTests = async (page, order) => {
         });
     } catch (e) {
         console.error(e);
+        return null;
     }
 }
 
