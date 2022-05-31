@@ -6,7 +6,7 @@ const AnswerRecord = require('../models/answer_record');
 const TestQuestion = require('../models/test_question');
 const QuestionDifficulty = require('../models/question_difficulty');
 
-questionService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
+questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
         const result = await QuestionDifficulty.findOrCreate({
             attributes: ['question_id'],
