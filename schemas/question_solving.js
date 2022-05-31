@@ -1,6 +1,12 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
+    
+    
+    type Mutation {
+        contributeDifficulty(questionId: ID!, difficultyId: ID!): NormalResponse    
+    }
+    
     type Asking {
         id: ID!
         title: String!

@@ -163,7 +163,7 @@ const QuestionResolver = {
         },
 
         async updateTest(parent, {input}, context, info) {
-            if(!await QuestionService.isTestCreator(input.id, "psh3253"))
+            if(!await QuestionService.isTestCreator(input.id, context.user.id))
                 return {
                     code: 200,
                     message: 'not creator',
@@ -177,7 +177,7 @@ const QuestionResolver = {
         },
 
         async deleteTest(parent, {id}, context, info) {
-            if(!await QuestionService.isTestCreator(input.id, context.user.id))
+            if(!await QuestionService.isTestCreator(id, context.user.id))
                 return {
                     code: 200,
                     message: 'not creator',

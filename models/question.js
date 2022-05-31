@@ -60,5 +60,6 @@ module.exports = class Question extends Sequelize.Model {
         db.Question.hasMany(db.AnswerRecord, {foreignKey: 'question_id', sourceKey: 'id'});
         db.Question.hasMany(db.QuestionAnswer, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
         db.Question.hasMany(db.QuestionCandidate, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.Question.hasMany(db.QuestionDifficulty, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
     }
 };
