@@ -5,7 +5,7 @@ const QuestionSolvingResolver = {
     Query: {
         async testLikesCount(parent, {id}, context, info) {
             const likes = await QuestionSolvingService.getTestLikesCount(id);
-            
+
             return {
                 count: likes.count
             };
@@ -13,7 +13,7 @@ const QuestionSolvingResolver = {
     },
     Mutation: {
         async contributeDifficulty(parent, {questionId, difficultyId}, context, info) {
-            if(!await QuestionSolvingService.contributeDifficulty(questionId, difficultyId, context.user.id))
+            if (!await QuestionSolvingService.contributeDifficulty(questionId, difficultyId, context.user.id))
                 return {
                     code: 200,
                     message: 'already contributed',
@@ -24,7 +24,8 @@ const QuestionSolvingResolver = {
                 message: 'complete',
                 success: true
             }
-        }
+        },
+
         async submitAnswer(parent, {id, answers}, context, info) {
             return {
                 code: 200,
