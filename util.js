@@ -11,4 +11,12 @@ util.getDateString = function getDateString(datetime) {
     return year + '-' + month  + '-' + day + ' ' + hours + ':' + minutes  + ':' + seconds;
 }
 
+util.normalResponse = (code, message, success) => {
+    return {
+        code: code,
+        message: message,
+        success: success
+    }
+}
+
 module.exports = util;

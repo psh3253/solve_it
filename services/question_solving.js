@@ -6,6 +6,9 @@ const User = require('../models/user');
 const Test = require('../models/test');
 const TestQuestion = require('../models/test_question');
 const QuestionDifficulty = require('../models/question_difficulty');
+const QuestionAnswer = require('../models/question_answer');
+
+const QuestionService = require('../services/question');
 const Asking = require('../models/asking');
 const Reply = require('../models/reply');
 
@@ -94,6 +97,36 @@ questionSolvingService.unlikeTest = async (test_id, user_id) => {
         }
     }
 
+questionSolvingService.getAnswerSheet = async (test_id, user_id) => {
+    try {
+        return await AnswerSheet.findOne({
+            attribute: ['id', 'created_at', 'update_at', 'test_id', 'creator_id'],
+            where: {
+                test_id: test_id,
+                creator_id: user_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+questionSolvingService.getTestQuestion = async (test_id, question_id) => {
+    try {
+        return await TestQuestion.findOne({
+            attribute: ['id', 'number'],
+            where: {
+                test_id: test_id,
+                question_id: question_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
         await AnswerSheet.create({
@@ -101,12 +134,7 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
             creator_id: user_id
         });
 
-        const answer_sheet = await AnswerSheet.findOne({
-            attribute: ['id', 'created_at', 'update_at', 'test_id', 'creator_id'],
-            where: {
-                test_id: test_id
-            }
-        });
+        const answer_sheet = this.getAnswerSheet(test_id, user_id);
 
         await AnswerRecord.create({
             answer: answers,
@@ -118,6 +146,24 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
     } catch (e) {
         console.error(e)
         return false;
+    }
+}
+
+questionSolvingService.getAnswerRecord = async (test_id, question_id, user_id) => {
+    try {
+        const answer_sheet = this.getAnswerSheet(test_id, user_id);
+        const test_question = this.getTestQuestion(test_id, question_id);
+
+        return await AnswerRecord.findOne({
+            attributes: ['id', 'answer', 'is_correct'],
+            where: {
+                answer_sheet_id: answer_sheet.id,
+                test_question_number: test_question.number
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
     }
 }
 
@@ -184,6 +230,20 @@ questionSolvingService.getAsking = async (asking_id) => {
     } catch (e) {
         console.error(e);
         return null;
+    }
+}
+
+questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) => {
+    try {
+        await AnswerRecord.update({
+            is_correct: is_correct,
+            where: {
+                id: answer_record_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return e;
     }
 }
 
