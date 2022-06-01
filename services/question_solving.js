@@ -161,7 +161,10 @@ questionSolvingService.getAnswerRecord = async (test_id, question_id, user_id) =
             }
         });
     } catch (e) {
-        console.error(e)
+        console.error(e);
+        return null;
+    }
+}
 
 questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
     try {
