@@ -8,8 +8,19 @@ const QuestionSolvingResolver = {
             return await QuestionSolvingService.getTestLikesCount(id);
         },
 
-        async judgeResult(parent, {testId, questionId}, context, info) {
+        async questionJudgeResult(parent, {testId, questionId}, context, info) {
             return await QuestionSolvingService.getAnswerRecord(testId, questionId, context.user.id).is_correct;
+        },
+
+        async testJudgeResult(parent, {testId}, context, info) {
+            const answer_records = QuestionSolvingService.getAnswerRecords(testId);
+            let results = [];
+            
+            for (let record of answer_records) {
+                results.push(record.is_correct);
+            }
+
+            return results;
         }
     },
     Mutation: {
@@ -37,39 +48,85 @@ const QuestionSolvingResolver = {
 
         async judgeAnswer(parent, {testId, questionId}, context, info) {
             const answer_record = await QuestionSolvingService.getAnswerRecord(testId, questionId, context.uer.id);
+            const answers = await QuestionService.getAnswer(questionId);
+            let answer_list = [];
+            let user_answers = answer_record.answer.split(',');
 
-            // DB returns null? or 'null'?
+
             if (answer_record.length == 0 || answer_record.answer == null) {
-                QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct);
-                return Util.normalResponse(200, 'wrong answer', answer_record.is_correct);
+                
+                return Util.normalResponse(200, 'complete',
+                        QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
             }
 
-            // DB returns true? or 'true'?
             if (answer_record.is_correct == true)
-                return Util.normalResponse(200, 'correct answer', answer_record.is_correct);
+                return Util.normalResponse(200, 'complete',
+                        QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
 
-            const answers = await QuestionService.getAnswer(question_id);
-            let answer_list = [];
 
             for (let answer of answers)
                 answer_list.push(answer.answer);
 
-            let user_answers = answer_record.answer.split(',');
-
+            
             if (answer_list.length != user_answers.length) {
-                QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct);
-                return Util.normalResponse(200, 'wrong answer', answer_record.is_correct);
+                return Util.normalResponse(200, 'complete',
+                        QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
             }
 
             for (let i = 0; i < answer_list.length; ++i) {
                 if (answer_list[i] != user_answers[i]) {
-                    QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct);
-                    return Util.normalResponse(200, 'wrong answer', answer_record.is_correct);
+                    return Util.normalResponse(200, 'complete',
+                            QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));;
                 }
             }
 
-            QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct);
-            return Util.normalResponse(200, 'correct answer', answer_record.is_correct);
+            return Util.normalResponse(200, 'complete',
+                    QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
+        },
+
+        async judgeAnswers(parent, {testId}, context, info) {
+            try {
+                const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
+                console.log(answer_records);
+
+                for (let record of answer_records) {
+                    const answers = await QuestionService.getAnswer(questionId);
+                    let answer_list = [];
+                    let user_answers = record.answer.split(',');
+        
+                    if (record.length == 0 || record.answer == null) {
+                        QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                        continue;
+                    }
+        
+                    if (record.is_correct == true)
+                        continue;
+        
+                    
+                    for (let answer of answers)
+                        answer_list.push(answer.answer);
+        
+        
+                    if (answer_list.length != user_answers.length) {
+                        QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                        continue;
+                    }
+        
+                    for (let i = 0; i < answer_list.length; ++i) {
+                        if (answer_list[i] != user_answers[i]) {
+                            QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                            continue;
+                        }
+                    }
+        
+                    QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                }
+
+                return Util.normalResponse(200, 'complete', true);
+            } catch (e) {
+                console.log(e);
+                return Util.normalResponse(200, 'judge failed', false);
+            }
         },
 
         async likeTest(parent, {id}, context, info) {
