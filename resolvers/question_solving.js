@@ -22,11 +22,11 @@ const QuestionSolvingResolver = {
             }
         },
 
-        async submitAnswer(parent, {test_id, question_id, answers}, context, info) {
+        async submitAnswer(parent, {testId, questionId, answers}, context, info) {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionSolvingService.submitAnswer(test_id, question_id, answers, context.user.id)
+                success: await QuestionSolvingService.submitAnswer(testId, questionId, answers, context.user.id)
             }
         },
 
