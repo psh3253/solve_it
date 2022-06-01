@@ -3,7 +3,8 @@ const {gql} = require('apollo-server');
 module.exports = gql`
     type Query {
         testLikesCount(id: ID!): Int!
-        judgeResult(questionId: Int!): Boolean
+        questionJudgeResult(questionId: Int!): Boolean
+        testJudgeResult(testId: Int!): [Boolean]
     }
 
     type Mutation {
@@ -12,6 +13,7 @@ module.exports = gql`
         unlikeTest(id: ID!): NormalResponse
         submitAnswer(testId: Int!, questionId: Int!, answers:String!): NormalResponse
         judgeAnswer(testId: Int!, questionId: Int!): NormalResponse
+        judgeAnswers(testId: Int!): NormalResponse
         createAsking(input: AskingInput!): NormalResponse
         deleteAsking(id: ID!): NormalResponse
     }
