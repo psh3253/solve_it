@@ -41,7 +41,7 @@ const QuestionSolvingResolver = {
         },
 
         async unlikeTest(parent, {id}, context, info) {
-            const test_id = await QuestionSolvingService.unlikeTest(id);
+            const test_id = await QuestionSolvingService.unlikeTest(id, context.user.id);
             return {
                 code: 200,
                 message: 'complete',

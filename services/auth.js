@@ -14,7 +14,7 @@ authService.login = async function login(id, password) {
         });
         if(user != null)
         {
-            return jsonwebtoken.sign({id}, process.env.JWT_SECRET_KEY, {expiresIn: '1800s'});
+            return jsonwebtoken.sign({id}, process.env.JWT_SECRET_KEY, {expiresIn: '7200s'});
         }
         return null;
     } catch (e) {

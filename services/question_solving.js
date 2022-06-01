@@ -67,7 +67,8 @@ questionSolvingService.unlikeTest = async (test_id, user_id) => {
         const test = await Test.findOne({
             attributes: ['id'],
             where: {
-                id: test_id
+                id: test_id,
+                creator_id: user_id
             }
         });
 
