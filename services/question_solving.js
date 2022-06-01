@@ -126,6 +126,20 @@ questionSolvingService.getTestQuestion = async (test_id, question_id) => {
     }
 }
 
+questionSolvingService.getAllTestQuestion = async (test_id) => {
+    try {
+        return await TestQuestion.findAll({
+            attribute: ['id', 'number', 'question_id'],
+            where: {
+                test_id: test_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
         await AnswerSheet.create({
@@ -162,6 +176,30 @@ questionSolvingService.getAnswerRecord = async (test_id, question_id, user_id) =
         });
     } catch (e) {
         console.error(e)
+    }
+}
+
+questionSolvingService.getAnswerRecords = async (test_id, user_id) => {
+    try {
+        const answer_sheet = this.getAnswerSheet(test_id);
+        const test_questions = this.getAllTestQuestion(test_id, question_id);
+        let answer_list = [];
+
+        for (let test_question of test_questions) {
+            answer_list.push(
+                await AnswerRecord.findOne({
+                    attributes: ['id', 'answer', 'is_correct'],
+                    where: {
+                        answer_sheet_id: answer_sheet.id,
+                        test_question_number: test_question.number
+                    }
+                })
+            );
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
 
 questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
     try {

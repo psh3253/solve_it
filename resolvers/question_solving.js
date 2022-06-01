@@ -72,6 +72,10 @@ const QuestionSolvingResolver = {
             return Util.normalResponse(200, 'correct answer', answer_record.is_correct);
         },
 
+        async judgeTest(parent, {testId}, context, info) {
+            
+        },
+
         async likeTest(parent, {id}, context, info) {
             const test_id = await QuestionSolvingService.likeTest(id, context.user.id);
 
