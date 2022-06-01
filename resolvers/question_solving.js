@@ -13,8 +13,8 @@ const QuestionSolvingResolver = {
         }
     },
     Mutation: {
-        async contributeDifficulty(parent, {questionId, difficultyId}, context, info) {
-            if (!await QuestionSolvingService.contributeDifficulty(questionId, difficultyId, context.user.id))
+        async contributeDifficulty(parent, {questionId, difficulty}, context, info) {
+            if (!await QuestionSolvingService.contributeDifficulty(questionId, difficulty, context.user.id))
                 return {
                     code: 200,
                     message: 'already contributed',
@@ -27,11 +27,11 @@ const QuestionSolvingResolver = {
             }
         },
 
-        async submitAnswer(parent, {test_id, question_id, answers}, context, info) {
+        async submitAnswer(parent, {testId, questionId, answers}, context, info) {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionSolvingService.submitAnswer(test_id, question_id, answers, context.user.id)
+                success: await QuestionSolvingService.submitAnswer(testId, questionId, answers, context.user.id)
             }
         },
 
@@ -88,6 +88,28 @@ const QuestionSolvingResolver = {
                 code: 200,
                 message: 'complete',
                 success: test_id > 0,
+            }
+        },
+
+        async createAsking(parent, {input}, context, info) {
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, "psh3253")
+            }
+        },
+
+        async deleteAsking(parent, {id}, context, info) {
+            if(!await QuestionSolvingService.isAskingCreator(id, context.user.id))
+                return {
+                    code: 200,
+                    message: 'not creator',
+                    success: false
+                }
+            return {
+                code: 200,
+                message: 'complete',
+                success: true
             }
         }
     }

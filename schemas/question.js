@@ -4,7 +4,7 @@ module.exports = gql`
     type Query {
         question(id: ID!): Question
         test(id: ID!): Test
-        allTests: [TestHeader!]!
+        allTests(page: Int!, order: OrderBy): [TestHeader!]!
         testsByCategory(id: ID!): [TestHeader!]!
         testsByCreator(id: ID!): [TestHeader!]!
     }
@@ -16,7 +16,16 @@ module.exports = gql`
         createTest(input: createTestInput): NormalResponse
         updateTest(input: updateTestInput): NormalResponse
         deleteTest(id: ID!): NormalResponse
-    } 
+    }
+
+    enum OrderBy {
+        DATE
+        DATE_DESC
+        LIKE
+        LIKE_DESC
+        SOLVING_COUNT
+        SOLVING_COUNT_DESC
+    }
 
     input createQuestionInput {
         name: String!,
@@ -71,6 +80,7 @@ module.exports = gql`
         creationDate: String!
         private: Boolean!
         tryCnt: Int!
+        like: Int!
         testCategory: Category!
     }
     
@@ -81,6 +91,7 @@ module.exports = gql`
         creationDate: String!
         private: Boolean!
         tryCnt: Int!
+        like: Int!
         testCategory: Category!
     }
 
