@@ -144,11 +144,12 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
         });
 
         const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
-        
+        const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
+
         await AnswerRecord.create({
             answer: answers,
             answer_sheet_id: answer_sheet.id,
-            test_question_id: test_id,
+            test_question_id: test_question.id,
             question_id: question_id
         });
         return true;
@@ -167,7 +168,7 @@ questionSolvingService.getAnswerRecord = async (test_id, question_id, user_id) =
             attributes: ['id', 'answer', 'is_correct'],
             where: {
                 answer_sheet_id: answer_sheet.id,
-                test_question_number: test_question.number
+                test_question_id: test_question.id
             }
         });
     } catch (e) {
@@ -185,10 +186,10 @@ questionSolvingService.getAnswerRecords = async (test_id, user_id) => {
         for (let test_question of test_questions) {
             answer_record_list.push(
                 await AnswerRecord.findOne({
-                    attributes: ['id', 'answer', 'is_correct'],
+                    attributes: ['id', 'answer', 'is_correct', 'question_id'],
                     where: {
                         answer_sheet_id: answer_sheet.id,
-                        test_question_number: test_question.number
+                        test_question_id: test_question.id
                     }
                 })
             );
@@ -270,7 +271,8 @@ questionSolvingService.getAsking = async (asking_id) => {
 questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) => {
     try {
         await AnswerRecord.update({
-            is_correct: is_correct,
+            is_correct: is_correct
+        }, {
             where: {
                 id: answer_record_id
             }

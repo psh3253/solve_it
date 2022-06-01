@@ -1,4 +1,4 @@
-const QuestionService = require('../services/question_solving');
+const QuestionService = require('../services/question');
 const QuestionSolvingService = require('../services/question_solving');
 const Util = require('../util');
 
@@ -13,9 +13,9 @@ const QuestionSolvingResolver = {
         },
 
         async testJudgeResult(parent, {testId}, context, info) {
-            const answer_records = QuestionSolvingService.getAnswerRecords(testId);
+            const answer_records = await QuestionSolvingService.getAnswerRecords(testId, "test@test.com");
             let results = [];
-            
+
             for (let record of answer_records) {
                 results.push(record.is_correct);
             }
@@ -86,16 +86,15 @@ const QuestionSolvingResolver = {
 
         async judgeAnswers(parent, {testId}, context, info) {
             try {
-                const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
-                console.log(answer_records);
+                const answer_records = await QuestionSolvingService.getAnswerRecords(testId, "test@test.com");
 
                 for (let record of answer_records) {
-                    const answers = await QuestionService.getAnswer(questionId);
+                    const answers = await QuestionService.getAnswer(record.question_id);
                     let answer_list = [];
                     let user_answers = record.answer.split(',');
         
                     if (record.length == 0 || record.answer == null) {
-                        QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                        QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
         
@@ -108,23 +107,23 @@ const QuestionSolvingResolver = {
         
         
                     if (answer_list.length != user_answers.length) {
-                        QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                        QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
         
                     for (let i = 0; i < answer_list.length; ++i) {
                         if (answer_list[i] != user_answers[i]) {
-                            QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                            QuestionSolvingService.updateJudgeResult(record.id, false);
                             continue;
                         }
                     }
         
-                    QuestionSolvingService.updateJudgeResult(record.id, record.is_correct);
+                    QuestionSolvingService.updateJudgeResult(record.id, true);
                 }
 
                 return Util.normalResponse(200, 'complete', true);
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 return Util.normalResponse(200, 'judge failed', false);
             }
         },
