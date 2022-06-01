@@ -11,7 +11,7 @@ module.exports = class Question extends Sequelize.Model {
             },
             title: {
                 type: Sequelize.STRING(50),
-                allowNull: false
+                allowNull: true
             },
             content: {
                 type: Sequelize.TEXT,
@@ -21,9 +21,9 @@ module.exports = class Question extends Sequelize.Model {
                 type: Sequelize.STRING(30),
                 allowNull: false
             },
-            answer: {
-                type: Sequelize.STRING(50),
-                allowNull: false
+            explanation:  {
+                type: Sequelize.TEXT,
+                allowNull: true
             },
             correct_count: {
                 type: Sequelize.INTEGER,
@@ -52,11 +52,14 @@ module.exports = class Question extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Question.hasMany(db.CodingQuestionTestCase, {foreignKey: 'question_id', sourceKey: 'id'})
+        db.Question.hasMany(db.CodingQuestionTestCase, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'})
         db.Question.belongsTo(db.Difficulty, {foreignKey: 'difficulty_id', targetKey: 'id'});
         db.Question.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
         db.Question.belongsTo(db.User, {foreignKey: 'creator_id', targetKey: 'id'});
-        db.Question.hasMany(db.TestQuestion, {foreignKey: 'question_id', sourceKey: 'id'});
-        db.Question.belongsTo(db.Test, {foreignKey: 'test_id', targetKey: 'id'});
+        db.Question.hasMany(db.TestQuestion, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.Question.hasMany(db.AnswerRecord, {foreignKey: 'question_id', sourceKey: 'id'});
+        db.Question.hasMany(db.QuestionAnswer, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.Question.hasMany(db.QuestionCandidate, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.Question.hasMany(db.QuestionDifficulty, {foreignKey: 'question_id', sourceKey: 'id', onDelete: 'cascade'});
     }
 };

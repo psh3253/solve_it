@@ -1,4 +1,5 @@
 const profileService = {};
+const {Op} = require("sequelize");
 const User = require('../models/user');
 const Category = require('../models/category');
 const IssuedCoupon = require('../models/issued_coupon');
@@ -26,7 +27,7 @@ profileService.getUserCategories = async function getUserCategory(user_id) {
             },
             include: {
                 model: Category,
-                attributes: ['name']
+                attributes: ['id', 'name']
             }
         });
     } catch (e) {
@@ -43,11 +44,73 @@ profileService.getUserCoupons = async function getUserCoupons(user_id) {
                 attributes: ['id', 'name', 'explanation', 'price']
             }
         })
-    } catch(e) {
+    } catch (e) {
         console.error(e);
     }
 }
 
+profileService.getAllCoupons = async function getAllCoupons() {
+    try {
+        return await Coupon.findAll({
+            attributes: ['id', 'name', 'explanation', 'price']
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+profileService.getAllCategories = async function getAllCategories() {
+    try {
+        return await Category.findAll({
+            attributes: ['id', 'name']
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+profileService.updateNickname = async function updateNickname(user_id, nickname) {
+    try {
+        await User.update({
+            nickname: nickname
+        }, {
+            where: {
+                id: user_id
+            }
+        });
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+profileService.updateCategory = async function updateCategory(user_id, categories) {
+    try {
+        const user = await User.findOne({
+            attributes: ['id'],
+            where: {
+                id: user_id
+            }
+        });
+        const allCategories = await Category.findAll({
+            attributes: ['id']
+        });
+        await user.removeCategories(allCategories);
+        const user_categories_id = await Category.findAll({
+            where: {
+                name: {
+                    [Op.in]: categories
+                }
+            }
+        });
+        await user.addCategories(user_categories_id);
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
 
 profileService.updateMyCoupon = async function updateMyCoupon(user_id, coupon_id, coupon_price) {
 

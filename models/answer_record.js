@@ -3,13 +3,19 @@ const Sequelize = require('sequelize');
 module.exports = class AnswerRecord extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                autoIncrement: true
+            },
             answer: {
                 type: Sequelize.STRING(50),
                 allowNull: false
             },
             is_correct: {
                 type: Sequelize.BOOLEAN,
-                allowNull: false
+                allowNull: true
             }
         }, {
             sequelize,
@@ -25,5 +31,6 @@ module.exports = class AnswerRecord extends Sequelize.Model {
     static associate(db) {
         db.AnswerRecord.belongsTo(db.AnswerSheet, {foreignKey: 'answer_sheet_id', targetKey: 'id'});
         db.AnswerRecord.belongsTo(db.TestQuestion, {foreignKey: 'test_question_id', targetKey: 'id'});
+        db.AnswerRecord.belongsTo(db.Question, {foreignKey: 'question_id', targetKey: 'id'});
     }
 };

@@ -1,22 +1,32 @@
 const {gql} = require('apollo-server');
 
 module.exports = gql`
+    type Query {
+        testLikesCount(id: ID!): Int!
+    }
+
+    type Mutation {
+        contributeDifficulty(questionId: ID!, difficulty: Int!): NormalResponse
+        likeTest(id: ID!): NormalResponse
+        unlikeTest(id: ID!): NormalResponse
+        submitAnswer(id: ID!, answers:[String!]): NormalResponse
+        createAsking(input: AskingInput!): NormalResponse
+        deleteAsking(id: ID!): NormalResponse
+    }
+    
+    input AskingInput {
+        title: String!
+        content: String!
+        questionId: ID!
+    }
+
     type Asking {
         id: ID!
         title: String!
         content: String!
         ownerId: String!
         creationDate: Int!
-        testId: ID!
-    }
-
-    enum OrderBy {
-        DATE
-        DATE_DESC
-        LIKE
-        LIKE_DESC
-        SOLVING_COUNT
-        SOLVING_COUNT_DESC
+        questionId: ID!
     }
 
     type ReviewNote {

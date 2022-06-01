@@ -19,6 +19,6 @@ module.exports = class TestTag extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.TestTag.belongsTo(db.Test, {foreignKey: 'test_id', sourceKey: 'id'});
+        db.TestTag.belongsTo(db.Test, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
     }
 };
