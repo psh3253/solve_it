@@ -1,5 +1,4 @@
 const QuestionService = require('../services/question');
-const QuestionSolvingService = require('../services/question_solving');
 const Util = require('../util');
 
 const QuestionResolver = {
@@ -79,8 +78,8 @@ const QuestionResolver = {
             }
         },
 
-        async allTests(parent, {page, order}, context, info) {
-            const tests = await QuestionService.getAllTests(page, order);
+        async allTests(parent, args, context, info) {
+            const tests = await QuestionService.getAllTests();
             let test_list = [];
             for(let i of tests)
             {
@@ -91,7 +90,6 @@ const QuestionResolver = {
                     creationDate: Util.getDateString(i.created_at),
                     private: i.private,
                     tryCnt: i.try_count,
-                    like: i.dataValues.like,
                     testCategory: {
                         id: i.Category.id,
                         name: i.Category.name
@@ -113,7 +111,6 @@ const QuestionResolver = {
                     creationDate: Util.getDateString(i.created_at),
                     private: i.private,
                     tryCnt: i.try_count,
-                    like: i.dataValues.like,
                     testCategory: {
                         id: i.Category.id,
                         name: i.Category.name
@@ -135,7 +132,6 @@ const QuestionResolver = {
                     creationDate: Util.getDateString(i.created_at),
                     private: i.private,
                     tryCnt: i.try_count,
-                    like: i.dataValues.like,
                     testCategory: {
                         id: i.Category.id,
                         name: i.Category.name
