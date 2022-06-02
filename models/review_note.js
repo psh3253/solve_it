@@ -19,6 +19,7 @@ module.exports = class ReviewNote extends Sequelize.Model {
             underscored: true,
             modelName: 'ReviewNote',
             tableName: 'review_note',
+            indexes: [{ unique: true, fields: ['creator_id', 'question_id'] }],
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });

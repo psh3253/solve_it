@@ -7,6 +7,8 @@ const QuestionSchema = require('./question');
 const QuestionResolver = require('../resolvers/question');
 const QuestionSolvingSchema = require('./question_solving');
 const QuestionSolvingResolver = require('../resolvers/question_solving');
+const ReviewNoteSchema = require('./review_note');
+const ReviewNoteResolver = require('../resolvers/review_note');
 const {gql} = require('apollo-server');
 
 const Query = gql`
@@ -33,8 +35,8 @@ const Query = gql`
 `;
 
 const schema = makeExecutableSchema({
-    typeDefs: [Query, AuthSchema, ProfileSchema, QuestionSchema, QuestionSolvingSchema],
-    resolvers: [AuthResolver, ProfileResolver, QuestionResolver, QuestionSolvingResolver]
+    typeDefs: [Query, AuthSchema, ProfileSchema, QuestionSchema, QuestionSolvingSchema, ReviewNoteSchema],
+    resolvers: [AuthResolver, ProfileResolver, QuestionResolver, QuestionSolvingResolver, ReviewNoteResolver]
 });
 
 module.exports = schema;
