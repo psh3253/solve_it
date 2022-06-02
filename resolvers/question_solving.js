@@ -13,7 +13,7 @@ const QuestionSolvingResolver = {
         },
 
         async testJudgeResult(parent, {testId}, context, info) {
-            const answer_records = await QuestionSolvingService.getAnswerRecords(testId, "test@test.com");
+            const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
             let results = [];
 
             for (let record of answer_records) {
@@ -86,7 +86,7 @@ const QuestionSolvingResolver = {
 
         async judgeAnswers(parent, {testId}, context, info) {
             try {
-                const answer_records = await QuestionSolvingService.getAnswerRecords(testId, "test@test.com");
+                const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
 
                 for (let record of answer_records) {
                     const answers = await QuestionService.getAnswer(record.question_id);
