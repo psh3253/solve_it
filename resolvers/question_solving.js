@@ -8,16 +8,26 @@ const QuestionSolvingResolver = {
             return await QuestionSolvingService.getTestLikesCount(id);
         },
 
-        async questionJudgeResult(parent, {testId, questionId}, context, info) {
+        async questionAnswer(parent, {testId, questionId}, context, info) {
             return await QuestionSolvingService.getAnswerRecord(testId, questionId, context.user.id).is_correct;
         },
 
-        async testJudgeResult(parent, {testId}, context, info) {
+        async testAnswers(parent, {testId}, context, info) {
             const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
             let results = [];
 
             for (let record of answer_records) {
-                results.push(record.is_correct);
+                const answers = await QuestionService.getAnswer(record.question_id);
+                let answer_list = [];
+
+                for (let answer of answers)
+                    answer_list.push(answer.answer);
+
+                results.push({
+                    correctAnswer: answer_list,
+                    myAnswer: record.answer,
+                    is_correct: record.is_correct
+                });
             }
 
             return results;
