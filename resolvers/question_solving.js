@@ -24,6 +24,7 @@ const QuestionSolvingResolver = {
                     answer_list.push(answer.answer);
 
                 results.push({
+                    questionId: record.question_id,
                     correctAnswer: answer_list,
                     myAnswer: record.answer,
                     is_correct: record.is_correct
