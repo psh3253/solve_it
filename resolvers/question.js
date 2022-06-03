@@ -176,7 +176,7 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.deleteTest(id)
+                success: await QuestionService.deleteQuestion(id)
             }
         },
 

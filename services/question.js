@@ -280,6 +280,21 @@ questionService.updateQuestion = async (question_id, title, content, answers, ex
     }
 }
 
+questionService.isQuestionCreator = async (question_id, user_id) => {
+    try {
+        const question = await Question.findOne({
+            attributes: ['creator_id'],
+            where: {
+                id: question_id,
+            }
+        });
+        return question.creator_id === user_id;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 questionService.deleteQuestion = async (question_id) => {
     try {
         await Question.destroy({

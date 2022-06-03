@@ -5,6 +5,8 @@ module.exports = gql`
         testLikesCount(id: ID!): Int!
         questionAnswer(questionId: Int!): Boolean
         testAnswers(testId: Int!): [AnswerSet]
+        askingByQuestion(id: ID!): [Asking!]!
+        repliesByAsking(id: ID!): [Reply!]!
     }
 
     type Mutation {
@@ -16,6 +18,8 @@ module.exports = gql`
         judgeAnswers(testId: Int!): NormalResponse
         createAsking(input: AskingInput!): NormalResponse
         deleteAsking(id: ID!): NormalResponse
+        createReply(input: ReplyInput!): NormalResponse
+        deleteReply(id: ID!): NormalResponse
     }
     
     input AskingInput {
@@ -29,14 +33,27 @@ module.exports = gql`
         myAnswer: String!
         is_correct: Boolean
     }
+    
+    input ReplyInput {
+        content: String!
+        askingId: ID!
+    }
 
     type Asking {
         id: ID!
         title: String!
         content: String!
         ownerId: String!
-        creationDate: Int!
+        creationDate: String!
         questionId: ID!
+    }
+    
+    type Reply {
+        id: ID!
+        content: String!,
+        ownerId: String!,
+        creationDate: String!
+        askingId: ID! 
     }
 
     type ReviewNote {
