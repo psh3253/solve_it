@@ -204,7 +204,7 @@ const QuestionSolvingResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, context.user.id)
+                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, "psh3253")
             }
         },
 
