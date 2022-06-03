@@ -6,6 +6,8 @@ const TestQuestion = require('../models/test_question');
 const QuestionDifficulty = require('../models/question_difficulty');
 const Asking = require('../models/asking');
 const Reply = require('../models/reply');
+const {sequelize} = require("../models/index");
+const Category = require("../models/category");
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
@@ -290,6 +292,31 @@ questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) 
     }
 }
 
+questionSolvingService.getSolvingTests = async (user_id) => {
+    try {
+        return await Test.findAll({
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
+            include: [{
+                model: AnswerSheet,
+                where: {
+                    creator_id: user_id
+                },
+                order: [
+                    ['updated_at', 'DESC']
+                ]
+            }, {
+                model: Category,
+                attributes: ['id', 'name']
+            }]
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 questionSolvingService.isReplyCreator = async (reply_id, user_id) => {
     try {
         const reply = await Reply.findOne({
@@ -319,7 +346,7 @@ questionSolvingService.getRepliesByAskingId = async (asking_id) => {
     }
 }
 
-questionSolvingService.createReply = async(asking_id, content, creator_id) => {
+questionSolvingService.createReply = async (asking_id, content, creator_id) => {
     try {
         await Reply.create({
             asking_id: asking_id,
