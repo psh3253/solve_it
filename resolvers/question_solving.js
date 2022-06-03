@@ -121,12 +121,6 @@ const QuestionSolvingResolver = {
                 return Util.normalResponse(200, 'complete',
                     QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
             }
-
-            if (answer_record.is_correct == true)
-                return Util.normalResponse(200, 'complete',
-                    QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
-
-
             for (let answer of answers)
                 answer_list.push(answer.answer);
 
@@ -153,6 +147,7 @@ const QuestionSolvingResolver = {
                 const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
 
                 for (let record of answer_records) {
+                    let status = false;
                     const answers = await QuestionService.getAnswer(record.question_id);
                     let answer_list = [];
                     let user_answers = record.answer.split(',');
@@ -161,11 +156,6 @@ const QuestionSolvingResolver = {
                         QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
-
-                    if (record.is_correct == true)
-                        continue;
-
-
                     for (let answer of answers)
                         answer_list.push(answer.answer);
 
@@ -178,10 +168,11 @@ const QuestionSolvingResolver = {
                     for (let i = 0; i < answer_list.length; ++i) {
                         if (answer_list[i] != user_answers[i]) {
                             QuestionSolvingService.updateJudgeResult(record.id, false);
-                            continue;
+                            status = true;
                         }
                     }
-
+                    if (status)
+                        continue;
                     QuestionSolvingService.updateJudgeResult(record.id, true);
                 }
 

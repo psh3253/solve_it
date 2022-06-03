@@ -140,15 +140,28 @@ questionSolvingService.getAllTestQuestion = async (test_id) => {
 
 questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
-        await AnswerSheet.create({
-            test_id: test_id,
-            creator_id: user_id
-        });
-
         const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        if (answer_sheet == null) {
+            await AnswerSheet.create({
+                test_id: test_id,
+                creator_id: user_id
+            });
+        }
+
+        else {
+            await AnswerSheet.update({
+                test_id: test_id,
+                creator_id: user_id,
+            }, {
+                where: {
+                    id: answer_sheet.id
+                }
+            });
+        }
+
         const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
 
-        await AnswerRecord.create({
+        await AnswerRecord.upsert({
             answer: answers,
             answer_sheet_id: answer_sheet.id,
             test_question_id: test_question.id,
