@@ -16,7 +16,9 @@ module.exports = gql`
     }
 
     type ReviewNote {
-        id: Int!
-        explanation: String!
+        ownerId: String!
+        testId: Int!
+        questionID: Int!
+        explanation: String
     }
 `;

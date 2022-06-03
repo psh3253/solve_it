@@ -6,6 +6,8 @@ const TestQuestion = require('../models/test_question');
 const QuestionDifficulty = require('../models/question_difficulty');
 const Asking = require('../models/asking');
 const Reply = require('../models/reply');
+const {sequelize} = require("../models/index");
+const Category = require("../models/category");
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
@@ -259,10 +261,13 @@ questionSolvingService.deleteAsking = async (asking_id) => {
     }
 }
 
-questionSolvingService.getAskingsByQuestionId = async (question_id) => {
+questionSolvingService.getAskingByQuestionId = async (question_id) => {
     try {
         return await Asking.findAll({
-            attributes: ['id', 'title', 'created_at', 'question_id', 'creator_id']
+            attributes: ['id', 'title', 'content', 'created_at', 'question_id', 'creator_id'],
+            where: {
+                question_id: question_id
+            }
         });
     } catch (e) {
         console.error(e);
@@ -273,7 +278,10 @@ questionSolvingService.getAskingsByQuestionId = async (question_id) => {
 questionSolvingService.getAsking = async (asking_id) => {
     try {
         return await Asking.findOne({
-            attributes: ['id', 'title', 'content', 'created_at', 'question_id', 'creator_id']
+            attributes: ['id', 'title', 'content', 'created_at', 'question_id', 'creator_id'],
+            where: {
+                id: asking_id
+            }
         });
     } catch (e) {
         console.error(e);
@@ -297,6 +305,47 @@ questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) 
     }
 }
 
+questionSolvingService.getSolvingTests = async (user_id) => {
+    try {
+        console.log(user_id);
+        return await Test.findAll({
+            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
+            include: [{
+                model: AnswerSheet,
+                where: {
+                    creator_id: user_id
+                },
+                order: [
+                    ['updated_at', 'DESC']
+                ]
+            }, {
+                model: Category,
+                attributes: ['id', 'name']
+            }]
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+questionSolvingService.isReplyCreator = async (reply_id, user_id) => {
+    try {
+        const reply = await Reply.findOne({
+            attributes: ['creator_id'],
+            where: {
+                id: reply_id,
+            }
+        });
+        return reply.creator_id === user_id;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 questionSolvingService.getRepliesByAskingId = async (asking_id) => {
     try {
         return await Reply.findAll({
@@ -308,6 +357,34 @@ questionSolvingService.getRepliesByAskingId = async (asking_id) => {
     } catch (e) {
         console.error(e);
         return null;
+    }
+}
+
+questionSolvingService.createReply = async (asking_id, content, creator_id) => {
+    try {
+        await Reply.create({
+            asking_id: asking_id,
+            content: content,
+            creator_id: creator_id
+        });
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionSolvingService.deleteReply = async (reply_id) => {
+    try {
+        await Reply.destroy({
+            where: {
+                id: reply_id
+            }
+        });
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
     }
 }
 

@@ -24,13 +24,66 @@ const QuestionSolvingResolver = {
                     answer_list.push(answer.answer);
 
                 results.push({
+                    questionId: record.question_id,
                     correctAnswer: answer_list,
                     myAnswer: record.answer,
                     is_correct: record.is_correct
                 });
             }
-
             return results;
+        },
+
+        async mySolvingTests(parent, args, context, info) {
+            const tests = await QuestionSolvingService.getSolvingTests(context.user.id);
+            let test_list = [];
+            for(let i of tests)
+            {
+                test_list.push({
+                    id: i.id,
+                    name: i.title,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    private: i.private,
+                    tryCnt: i.try_count,
+                    like: i.dataValues.like,
+                    testCategory: {
+                        id: i.Category.id,
+                        name: i.Category.name
+                    }
+                })
+            }
+            return test_list;
+        },
+
+        async askingByQuestion(parent, {id}, context, info) {
+            const asking = await QuestionSolvingService.getAskingByQuestionId(id);
+            let asking_list = [];
+            for (let i of asking) {
+                asking_list.push({
+                    id: i.id,
+                    title: i.title,
+                    content: i.content,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    questionId: i.question_id
+                });
+            }
+            return asking_list;
+        },
+
+        async repliesByAsking(parent, {id}, context, info) {
+            const replies = await QuestionSolvingService.getRepliesByAskingId(id);
+            let reply_list = [];
+            for (let i of replies) {
+                reply_list.push({
+                    id: i.id,
+                    content: i.content,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    askingId: i.asking_id
+                });
+            }
+            return reply_list;
         }
     },
     Mutation: {
@@ -64,29 +117,29 @@ const QuestionSolvingResolver = {
 
 
             if (answer_record.length == 0 || answer_record.answer == null) {
-                
-                return Util.normalResponse(200, 'complete',
-                        QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
-            }
 
+                return Util.normalResponse(200, 'complete',
+                    QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
+            }
             for (let answer of answers)
                 answer_list.push(answer.answer);
 
-            
+
             if (answer_list.length != user_answers.length) {
                 return Util.normalResponse(200, 'complete',
-                        QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
+                    QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
             }
 
             for (let i = 0; i < answer_list.length; ++i) {
                 if (answer_list[i] != user_answers[i]) {
                     return Util.normalResponse(200, 'complete',
-                            QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));;
+                        QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
+                    ;
                 }
             }
 
             return Util.normalResponse(200, 'complete',
-                    QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
+                QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
         },
 
         async judgeAnswers(parent, {testId}, context, info) {
@@ -98,31 +151,28 @@ const QuestionSolvingResolver = {
                     const answers = await QuestionService.getAnswer(record.question_id);
                     let answer_list = [];
                     let user_answers = record.answer.split(',');
-        
+
                     if (record.length == 0 || record.answer == null) {
                         QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
-                    
                     for (let answer of answers)
                         answer_list.push(answer.answer);
-        
-        
+
+
                     if (answer_list.length != user_answers.length) {
                         QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
-        
+
                     for (let i = 0; i < answer_list.length; ++i) {
                         if (answer_list[i] != user_answers[i]) {
                             QuestionSolvingService.updateJudgeResult(record.id, false);
                             status = true;
                         }
                     }
-        
                     if (status)
                         continue;
-
                     QuestionSolvingService.updateJudgeResult(record.id, true);
                 }
 
@@ -161,7 +211,7 @@ const QuestionSolvingResolver = {
         },
 
         async deleteAsking(parent, {id}, context, info) {
-            if(!await QuestionSolvingService.isAskingCreator(id, context.user.id))
+            if (!await QuestionSolvingService.isAskingCreator(id, context.user.id))
                 return {
                     code: 200,
                     message: 'not creator',
@@ -170,7 +220,29 @@ const QuestionSolvingResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: true
+                success: await QuestionSolvingService.deleteAsking(id)
+            }
+        },
+
+        async createReply(parent, {input}, context, info) {
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionSolvingService.createReply(input.askingId, input.content, context.user.id)
+            }
+        },
+
+        async deleteReply(parent, {id}, context, info) {
+            if (!await QuestionSolvingService.isReplyCreator(id, context.user.id))
+                return {
+                    code: 200,
+                    message: 'not creator',
+                    success: false
+                }
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionSolvingService.deleteReply(id)
             }
         }
     }

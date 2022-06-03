@@ -34,7 +34,7 @@ module.exports = class Asking extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Asking.hasMany(db.Reply, {foreignKey: 'asking_id', sourceKey: 'id'});
+        db.Asking.hasMany(db.Reply, {foreignKey: 'asking_id', sourceKey: 'id', onDelete: 'cascade'});
         db.Asking.belongsTo(db.Question, { foreignKey: 'question_id', targetKey: 'id' });
         db.Asking.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
     }
