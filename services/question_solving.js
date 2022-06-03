@@ -83,7 +83,7 @@ questionSolvingService.unlikeTest = async (test_id, user_id) => {
 questionSolvingService.getTestQuestion = async (question_id) => {
     try {
         return await TestQuestion.findOne({
-            attribute: [id, number, test_id],
+            attribute: ['id', 'number', 'test_id'],
             where: {
                 question_id: question_id
             }
