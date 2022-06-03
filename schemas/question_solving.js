@@ -5,6 +5,9 @@ module.exports = gql`
         testLikesCount(id: ID!): Int!
         questionAnswer(questionId: Int!): Boolean
         testAnswers(testId: Int!): [AnswerSet]
+        askingByQuestion(id: ID!): [Asking!]!
+        repliesByAsking(id: ID!): [Reply!]!
+        mySolvingTests: [TestHeader!]!
     }
 
     type Mutation {
@@ -14,11 +17,13 @@ module.exports = gql`
         submitAnswer(testId: Int!, questionId: Int!, answers:String!): NormalResponse
         judgeAnswer(testId: Int!, questionId: Int!): NormalResponse
         judgeAnswers(testId: Int!): NormalResponse
-        createAsking(input: AskingInput!): NormalResponse
+        createAsking(input: CreateAskingInput!): NormalResponse
         deleteAsking(id: ID!): NormalResponse
+        createReply(input: CreateReplyInput!): NormalResponse
+        deleteReply(id: ID!): NormalResponse
     }
-    
-    input AskingInput {
+
+    input CreateAskingInput {
         title: String!
         content: String!
         questionId: ID!
@@ -30,20 +35,25 @@ module.exports = gql`
         is_correct: Boolean
     }
 
+    input CreateReplyInput {
+        content: String!
+        askingId: ID!
+    }
+
     type Asking {
         id: ID!
         title: String!
         content: String!
         ownerId: String!
-        creationDate: Int!
+        creationDate: String!
         questionId: ID!
     }
 
-    type ReviewNote {
-        ownerId: String!
-        testId: Int!
-        questionID: Int!
-        explanation: String
-        reason: String
+    type Reply {
+        id: ID!
+        content: String!,
+        ownerId: String!,
+        creationDate: String!
+        askingId: ID!
     }
 `;

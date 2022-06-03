@@ -30,7 +30,7 @@ module.exports = class Reply extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Reply.belongsTo(db.Asking, { foreignKey: 'asking_id', targetKey: 'id' });
+        db.Reply.belongsTo(db.Asking, { foreignKey: 'asking_id', targetKey: 'id', onDelete: 'cascade' });
         db.Reply.belongsTo(db.User, { foreignKey: 'creator_id', targetKey: 'id' });
     }
 };
