@@ -32,6 +32,29 @@ const QuestionSolvingResolver = {
             return results;
         },
 
+        async mySolvingTests(parent, args, context, info) {
+            const tests = await QuestionSolvingService.getSolvingTests("psh3253");
+            console.log(tests)
+            let test_list = [];
+            for(let i of tests)
+            {
+                test_list.push({
+                    id: i.id,
+                    name: i.title,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    private: i.private,
+                    tryCnt: i.try_count,
+                    like: i.dataValues.like,
+                    testCategory: {
+                        id: i.Category.id,
+                        name: i.Category.name
+                    }
+                })
+            }
+            return test_list;
+        },
+
         async askingByQuestion(parent, {id}, context, info) {
             const asking = await QuestionSolvingService.getAskingByQuestionId(id);
             let asking_list = [];

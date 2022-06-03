@@ -10,11 +10,11 @@ module.exports = gql`
     }
 
     type Mutation {
-        createQuestion(input: createQuestionInput): CreationQuestionResponse
-        updateQuestion(input: updateQuestionInput): CreationQuestionResponse
+        createQuestion(input: CreateQuestionInput): CreationQuestionResponse
+        updateQuestion(input: UpdateQuestionInput): CreationQuestionResponse
         deleteQuestion(id: ID!): NormalResponse
-        createTest(input: createTestInput): NormalResponse
-        updateTest(input: updateTestInput): NormalResponse
+        createTest(input: CreateTestInput): NormalResponse
+        updateTest(input: UpdateTestInput): NormalResponse
         deleteTest(id: ID!): NormalResponse
     }
 
@@ -27,7 +27,7 @@ module.exports = gql`
         SOLVING_COUNT_DESC
     }
 
-    input createQuestionInput {
+    input CreateQuestionInput {
         name: String!,
         paragraph: String!,
         answers: [String!]!,
@@ -38,7 +38,7 @@ module.exports = gql`
         candidates: [String!]
     }
     
-    input updateQuestionInput {
+    input UpdateQuestionInput {
         id: Int!,
         name: String!,
         paragraph: String!,
@@ -48,7 +48,7 @@ module.exports = gql`
         candidates: [String!]
     }
 
-    input createTestInput {
+    input CreateTestInput {
         name: String!
         content: String!
         private: Boolean!
@@ -56,7 +56,7 @@ module.exports = gql`
         categoryId: Int!
     }
     
-    input updateTestInput {
+    input UpdateTestInput {
         id: ID!
         name: String!
         content: String!
