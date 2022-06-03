@@ -245,5 +245,4 @@ const QuestionSolvingResolver = {
         }
     }
 };
-
 module.exports = QuestionSolvingResolver;
