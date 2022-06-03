@@ -19,28 +19,10 @@ reviewNoteService.getReviewNote = async (question_id, user_id) => {
 
 reviewNoteService.createReviewNote = async (question_id, explanation, user_id) => {
     try {
-        await ReviewNote.create({
+        await ReviewNote.upsert({
             explanation: explanation,
             creator_id: user_id,
             question_id: question_id
-        });
-
-        return true;
-    } catch (e) {
-        console.error(e);
-        return false;
-    }
-}
-
-reviewNoteService.updateReviewNote = async (id, question_id, explanation, user_id) => {
-    try {
-        await ReviewNote.update({
-            explanation: explanation,
-            creator_id: user_id,
-            question_id: question_id,
-            where: {
-                id: id
-            }
         });
 
         return true;
