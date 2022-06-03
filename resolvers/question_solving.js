@@ -36,8 +36,7 @@ const QuestionSolvingResolver = {
         async mySolvingTests(parent, args, context, info) {
             const tests = await QuestionSolvingService.getSolvingTests(context.user.id);
             let test_list = [];
-            for(let i of tests)
-            {
+            for (let i of tests) {
                 test_list.push({
                     id: i.id,
                     name: i.title,
@@ -116,7 +115,7 @@ const QuestionSolvingResolver = {
             let user_answers = answer_record.answer.split(',');
 
 
-            if (answer_record.length == 0 || answer_record.answer == null) {
+            if (answer_record.length === 0) {
 
                 return Util.normalResponse(200, 'complete',
                     QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
@@ -125,16 +124,15 @@ const QuestionSolvingResolver = {
                 answer_list.push(answer.answer);
 
 
-            if (answer_list.length != user_answers.length) {
+            if (answer_list.length !== user_answers.length) {
                 return Util.normalResponse(200, 'complete',
                     QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
             }
 
             for (let i = 0; i < answer_list.length; ++i) {
-                if (answer_list[i] != user_answers[i]) {
+                if (answer_list[i] !== user_answers[i]) {
                     return Util.normalResponse(200, 'complete',
                         QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
-                    ;
                 }
             }
 
@@ -152,22 +150,22 @@ const QuestionSolvingResolver = {
                     let answer_list = [];
                     let user_answers = record.answer.split(',');
 
-                    if (record.length == 0 || record.answer == null) {
-                        QuestionSolvingService.updateJudgeResult(record.id, false);
+                    if (record.length === 0 || record.answer == null) {
+                        await QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
                     for (let answer of answers)
                         answer_list.push(answer.answer);
 
 
-                    if (answer_list.length != user_answers.length) {
-                        QuestionSolvingService.updateJudgeResult(record.id, false);
+                    if (answer_list.length !== user_answers.length) {
+                        await QuestionSolvingService.updateJudgeResult(record.id, false);
                         continue;
                     }
 
                     for (let i = 0; i < answer_list.length; ++i) {
-                        if (answer_list[i] != user_answers[i]) {
-                            QuestionSolvingService.updateJudgeResult(record.id, false);
+                        if (answer_list[i] !== user_answers[i]) {
+                            await QuestionSolvingService.updateJudgeResult(record.id, false);
                             status = true;
                         }
                     }
@@ -206,7 +204,7 @@ const QuestionSolvingResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, "psh3253")
+                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, context.user.id)
             }
         },
 
