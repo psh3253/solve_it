@@ -39,9 +39,12 @@ profileService.getUserCoupons = async function getUserCoupons(user_id) {
     try {
         return await IssuedCoupon.findAll({
             attributes: ['count', 'created_at', 'last_used_at', 'coupon_id'],
+            where: {
+                user_id: user_id
+            },
             include: {
                 model: Coupon,
-                attributes: ['id', 'name', 'explanation', 'price']
+                attributes: ['id', 'name', 'explanation', 'price'],
             }
         })
     } catch (e) {
