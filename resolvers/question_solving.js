@@ -204,7 +204,7 @@ const QuestionSolvingResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, "psh3253")
+                success: await QuestionSolvingService.createAsking(input.questionId, input.title, input.content, context.user.id)
             }
         },
 
@@ -245,5 +245,4 @@ const QuestionSolvingResolver = {
         }
     }
 };
-
 module.exports = QuestionSolvingResolver;
