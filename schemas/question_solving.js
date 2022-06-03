@@ -30,7 +30,6 @@ module.exports = gql`
     }
 
     type AnswerSet {
-        questionId: ID!
         correctAnswer: [String]!
         myAnswer: String!
         is_correct: Boolean

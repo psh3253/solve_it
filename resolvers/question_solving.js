@@ -34,7 +34,8 @@ const QuestionSolvingResolver = {
         },
 
         async mySolvingTests(parent, args, context, info) {
-            const tests = await QuestionSolvingService.getSolvingTests(context.user.id);
+            const tests = await QuestionSolvingService.getSolvingTests("psh3253");
+            console.log(tests)
             let test_list = [];
             for(let i of tests)
             {
