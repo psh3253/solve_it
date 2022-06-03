@@ -9,6 +9,10 @@ module.exports = class Report extends Sequelize.Model {
                 primaryKey: true,
                 autoIncrement: true,
             },
+            type: {
+                type: Sequelize.STRING(30),
+                allowNull: false,
+            },
             content: {
                 type: Sequelize.STRING(100),
                 allowNull: false,
@@ -18,6 +22,11 @@ module.exports = class Report extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: false,
             },
+            created_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.NOW
+            }
         }, {
             sequelize,
             timestamps: false,
