@@ -157,7 +157,7 @@ const QuestionResolver = {
         },
 
         async updateQuestion(parent, {input}, context, info) {
-            const question_id = await QuestionService.updateQuestion(input, question_id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
+            const question_id = await QuestionService.updateQuestion(input.question_id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
             return {
                 code: 200,
                 message: 'complete',
