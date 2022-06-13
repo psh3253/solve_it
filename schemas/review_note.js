@@ -2,12 +2,12 @@ const {gql} = require('apollo-server');
 
 module.exports = gql`
     type Query {
-        reviewNote(questionId: Int!): ReviewNote
+        reviewNote(questionId: ID!): ReviewNote
     }
 
     type Mutation {
         createReviewNote(input: createReviewNoteInput!): NormalResponse
-        deleteReviewNote(questionId: Int!): NormalResponse
+        deleteReviewNote(questionId: ID!): NormalResponse
     }
 
     input createReviewNoteInput {
@@ -17,8 +17,8 @@ module.exports = gql`
 
     type ReviewNote {
         ownerId: String!
-        testId: Int!
-        questionID: Int!
+        testId: ID!
+        questionID: ID!
         explanation: String
     }
 `;

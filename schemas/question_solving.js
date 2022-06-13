@@ -3,8 +3,8 @@ const {gql} = require('apollo-server');
 module.exports = gql`
     type Query {
         testLikesCount(id: ID!): Int!
-        questionAnswer(questionId: Int!): Boolean
-        testAnswers(testId: Int!): [AnswerSet]
+        questionAnswer(questionId: ID!): Boolean
+        testAnswers(testId: ID!): [AnswerSet]
         askingByQuestion(id: ID!): [Asking!]!
         repliesByAsking(id: ID!): [Reply!]!
         mySolvingTests: [TestHeader!]!
@@ -14,9 +14,9 @@ module.exports = gql`
         contributeDifficulty(questionId: ID!, difficulty: Int!): NormalResponse
         likeTest(id: ID!): NormalResponse
         unlikeTest(id: ID!): NormalResponse
-        submitAnswer(testId: Int!, questionId: Int!, answers:String!): NormalResponse
-        judgeAnswer(testId: Int!, questionId: Int!): NormalResponse
-        judgeAnswers(testId: Int!): NormalResponse
+        submitAnswer(testId: ID!, questionId: ID!, answers:String!): NormalResponse
+        judgeAnswer(testId: ID!, questionId: ID!): NormalResponse
+        judgeAnswers(testId: ID!): NormalResponse
         createAsking(input: CreateAskingInput!): NormalResponse
         deleteAsking(id: ID!): NormalResponse
         createReply(input: CreateReplyInput!): NormalResponse

@@ -39,7 +39,7 @@ module.exports = gql`
     }
     
     input UpdateQuestionInput {
-        id: Int!,
+        id: ID!,
         name: String!,
         paragraph: String!,
         answers: [String!]!,
@@ -52,8 +52,8 @@ module.exports = gql`
         name: String!
         content: String!
         private: Boolean!
-        questionIds: [Int!]!
-        categoryId: Int!
+        questionIds: [ID!]!
+        categoryId: ID!
     }
     
     input UpdateTestInput {
@@ -61,8 +61,8 @@ module.exports = gql`
         name: String!
         content: String!
         private: Boolean!
-        questionIds: [Int!]!
-        categoryId: Int!
+        questionIds: [ID!]!
+        categoryId: ID!
     }
 
     type Path {
@@ -102,7 +102,7 @@ module.exports = gql`
         endDate: Int
         answers: [String!]!
         checks: [Boolean]!
-        testId: Int!
+        testId: ID!
     }
 
     interface Question {
