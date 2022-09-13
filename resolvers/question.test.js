@@ -1,7 +1,7 @@
 const {Query, Mutation} = require('./question');
 const QuestionService = require("../services/question");
 
-test('문제 조회', async () => {
+describe('look up a question', () => {
     // given
     const id = 1;
     const title = '제목 1';
@@ -24,12 +24,15 @@ test('문제 조회', async () => {
             answer: 1
         }
     ]
+    const candidate_list = [
+        {
+            number: 1,
+            content: '내용 1'
+        }
+    ]
     const expected_answer_list = [1];
 
-    QuestionService.getQuestion = jest.fn();
-    QuestionService.getAnswer = jest.fn();
-    QuestionService.getCandidate = jest.fn();
-    QuestionService.getQuestion.mockImplementation((question_id) => {
+    QuestionService.getQuestion = jest.fn().mockImplementation((question_id) => {
             return {
                 id: id,
                 title: title,
@@ -49,27 +52,38 @@ test('문제 조회', async () => {
             }
         }
     );
-    QuestionService.getAnswer.mockImplementation((question_id) => {
+    QuestionService.getAnswer = jest.fn().mockImplementation((question_id) => {
         return answer_list;
     });
-    QuestionService.getCandidate.mockImplementation((question_id) => {
-        return [
-            // 작성
-        ];
+    QuestionService.getCandidate = jest.fn().mockImplementation((question_id) => {
+        return candidate_list;
     })
 
-    // when
-    const data = await Query.question(null, {id: 1}, null, null);
+    it('success', async () => {
 
-    // then
-    expect(data.id).toEqual(id);
-    expect(data.name).toEqual(title);
-    expect(data.paragraph).toEqual(content);
-    expect(data.explanation).toEqual(explanation);
-    expect(data.type).toEqual(type);
-    expect(data.difficulty).toEqual(difficulty);
-    expect(data.answerCnt).toEqual(try_count);
-    expect(data.wrongCnt).toEqual(wrong_count);
-    expect(data.questionCategory).toEqual(category);
-    expect(data.answers).toEqual(expected_answer_list);
+        // when
+        const data = await Query.question(null, {id: 1}, null, null);
+
+        // then
+        expect(data.id).toEqual(id);
+        expect(data.name).toEqual(title);
+        expect(data.paragraph).toEqual(content);
+        expect(data.explanation).toEqual(explanation);
+        expect(data.type).toEqual(type);
+        expect(data.difficulty).toEqual(difficulty);
+        expect(data.answerCnt).toEqual(try_count);
+        expect(data.wrongCnt).toEqual(wrong_count);
+        expect(data.questionCategory).toEqual(category);
+        expect(data.answers).toEqual(expected_answer_list);
+        expect(data.candidates).toEqual(candidate_list);
+    });
+
+    it('fail', async() => {
+        // when
+        const data = await Query.question(null, {id: 2}, null, null);
+
+        // then
+        expect(data).toEqual(undefined);
+    })
+
 });

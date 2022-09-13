@@ -5,18 +5,15 @@ const testId = 'id'
 const testPw = 'password'
 
 AuthService.login = jest.fn().mockImplementation((ID, hashedPW) => {
-    if (ID == testId && hashedPW == testPw)
-        return true
-    else
-        return false
+    return ID === testId && hashedPW === testPw;
 })
 
 describe('auth', () => {
     it('login success', () => {
-        expect(authResolver.Query.login(undefined, {ID: testId, hashedPW: testPw})).toBe(true)
+        expect(authResolver.Query.login(undefined, {ID: testId, hashedPW: testPw}, undefined, undefined)).toEqual(true)
     });
 
     it('login failed', () => {
-        expect(authResolver.Query.login('aaa', 'password')).toBe(false)
+        expect(authResolver.Query.login(undefined, {ID: 'aaa', hashedPW: 'password'}, undefined, undefined)).toEqual(false)
     });
 });
