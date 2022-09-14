@@ -1,5 +1,5 @@
 const questionService = {};
-const {sequelize} = require('../models/index');
+const {sequelize} = require('../models');
 const Question = require('../models/question');
 const QuestionAnswer = require('../models/question_answer');
 const QuestionCandidate = require('../models/question_candidate');
@@ -36,7 +36,7 @@ questionService.getQuestion = async (question_id) => {
 questionService.getAnswer = async (question_id) => {
     try {
         return await QuestionAnswer.findAll({
-            attribute: ['answer'],
+            attributes: ['answer'],
             where: {
                 question_id: question_id
             }
@@ -49,7 +49,7 @@ questionService.getAnswer = async (question_id) => {
 questionService.getCandidate = async (question_id) => {
     try {
         return await QuestionCandidate.findAll({
-            attribute: ['number', 'content'],
+            attributes: ['number', 'content'],
             where: {
                 question_id: question_id,
             }
@@ -62,7 +62,7 @@ questionService.getCandidate = async (question_id) => {
 questionService.getTest = async (test_id, user_id) => {
     try {
         const test = await Test.findOne({
-            attribute: ['id', 'title', 'content', 'try_count', 'created_at', 'category_id', 'private', 'creator_id', [
+            attributes: ['id', 'title', 'content', 'try_count', 'created_at', 'category_id', 'is_private', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             where: {
@@ -73,7 +73,7 @@ questionService.getTest = async (test_id, user_id) => {
                 attribute: ['id', 'name']
             }
         });
-        if (test.private && user_id !== test.creator_id)
+        if (test.is_private && user_id !== test.creator_id)
             return null;
         return test;
     } catch (e) {
@@ -136,7 +136,7 @@ questionService.getAllTests = async (page, order) => {
     }
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             include: {
@@ -156,7 +156,7 @@ questionService.getAllTests = async (page, order) => {
 questionService.getTestsByCategoryId = async (category_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             where: {
@@ -179,7 +179,7 @@ questionService.getTestsByCategoryId = async (category_id) => {
 questionService.getTestsByCreatorId = async (user_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             where: {
@@ -317,7 +317,7 @@ questionService.createTest = async (title, content, question_ids, category_id, i
             content: content,
             creator_id: creator_id,
             category_id: category_id,
-            private: is_private
+            is_private: is_private
         });
         let number = 1;
         for (let i of question_ids) {
@@ -356,7 +356,7 @@ questionService.updateTest = async (test_id, title, content, question_ids, categ
                 title: title,
                 content: content,
                 category_id: category_id,
-                private: is_private
+                is_private: is_private
             },
             {
                 where: {

@@ -308,7 +308,7 @@ questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) 
 questionSolvingService.getSolvingTests = async (user_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'private', 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             include: [{
