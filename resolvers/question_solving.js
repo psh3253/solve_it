@@ -42,7 +42,7 @@ const QuestionSolvingResolver = {
                     name: i.title,
                     ownerId: i.creator_id,
                     creationDate: Util.getDateString(i.created_at),
-                    private: i.private,
+                    is_private: i.is_private,
                     tryCnt: i.try_count,
                     like: i.dataValues.like,
                     testCategory: {

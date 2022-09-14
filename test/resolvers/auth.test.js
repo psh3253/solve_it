@@ -1,10 +1,10 @@
-const authResolver = require('./auth')
-const AuthService = require('../services/auth')
+const authResolver = require('../../resolvers/auth')
+const AuthService = require('../../services/auth')
 
 const testId = 'id'
 const testPw = 'password'
 
-AuthService.login = jest.fn().mockImplementation((ID, hashedPW) => {
+AuthService.login = jest.fn((ID, hashedPW) => {
     return ID === testId && hashedPW === testPw;
 })
 

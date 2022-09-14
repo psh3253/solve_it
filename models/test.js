@@ -22,7 +22,7 @@ module.exports = class Test extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: 0,
             },
-            private: {
+            is_private: {
                 type: Sequelize.BOOLEAN,
                 allowNull: false,
                 defaultValue: false

@@ -14,6 +14,8 @@ const QuestionResolver = {
     Query: {
         async question(parent, {id}, context, info) {
             const question = await QuestionService.getQuestion(id);
+            if(question === null)
+                return null;
             const answers = await QuestionService.getAnswer(id);
             const candidates = await QuestionService.getCandidate(id);
             const wrong_count = question.try_count - question.correct_count
@@ -46,7 +48,7 @@ const QuestionResolver = {
         },
 
         async test(parent, {id}, context, info) {
-            const test = await QuestionService.getTest(id, context.user.id);
+            const test = await QuestionService.getTest(id, "psh3253");
             if(test === null)
                 return null;
             const test_question_ids = await QuestionService.getTestQuestions(id);
@@ -69,13 +71,14 @@ const QuestionResolver = {
                 ownerId: test.creator_id,
                 creationDate: Util.getDateString(test.created_at),
                 tryCnt: test.try_count,
-                private: test.private,
+                is_private: test.is_private,
+                like: test.dataValues.like,
                 testCategory: {
                     id: test.Category.id,
                     name: test.Category.name
                 },
                 questionIds: question_id_list,
-                tag: tag_list
+                tag: tag_list,
             }
         },
 
@@ -89,7 +92,7 @@ const QuestionResolver = {
                     name: i.title,
                     ownerId: i.creator_id,
                     creationDate: Util.getDateString(i.created_at),
-                    private: i.private,
+                    is_private: i.is_private,
                     tryCnt: i.try_count,
                     like: i.dataValues.like,
                     testCategory: {
@@ -111,7 +114,7 @@ const QuestionResolver = {
                     name: i.title,
                     ownerId: i.creator_id,
                     creationDate: Util.getDateString(i.created_at),
-                    private: i.private,
+                    is_private: i.is_private,
                     tryCnt: i.try_count,
                     like: i.dataValues.like,
                     testCategory: {
@@ -133,7 +136,7 @@ const QuestionResolver = {
                     name: i.title,
                     ownerId: i.creator_id,
                     creationDate: Util.getDateString(i.created_at),
-                    private: i.private,
+                    is_private: i.is_private,
                     tryCnt: i.try_count,
                     like: i.dataValues.like,
                     testCategory: {
@@ -184,7 +187,7 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.private, context.user.id)
+                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.is_private, context.user.id)
             }
         },
 
@@ -198,7 +201,7 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.updateTest(input.id, input.name, input.content, input.questionIds, input.categoryId, input.private)
+                success: await QuestionService.updateTest(input.id, input.name, input.content, input.questionIds, input.categoryId, input.is_private)
             }
         },
 
