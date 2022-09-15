@@ -14,21 +14,21 @@ AuthService.signup = jest.fn((id, password, nickname) => {
 })
 
 describe('login', () => {
-    it('login success', () => {
+    it('success', () => {
         expect(Query.login(undefined, {ID: testId, hashedPW: testPw}, undefined, undefined)).toEqual(true)
     });
 
-    it('login failed: id does not exist', () => {
+    it('failed: id does not exist', () => {
         expect(Query.login(undefined, {ID: 'wrongid', hashedPW: testPw}, undefined, undefined)).toEqual(false)
     });
 
-    it('login failed: password not match', () => {
+    it('failed: password not match', () => {
         expect(Query.login(undefined, {ID: testId, hashedPW: 'wrongpw'}, undefined, undefined)).toEqual(false)
     });
 });
 
 describe('signup', () => {
-    it('signup success', () => {
+    it('success', () => {
         const signupResponse = Mutation.signup(undefined, {ID: testId, hashedPW: testPw, name: testName}, undefined, undefined)
 
         expect(signupResponse.code).toEqual(200)
@@ -36,7 +36,7 @@ describe('signup', () => {
         expect(signupResponse.success).toEqual(true)
     })
 
-    it('signup fail: id undefined', () => {
+    it('fail: id undefined', () => {
         const signupResponse = Mutation.signup(undefined, {ID: undefined, hashedPW: testPw, name: testName}, undefined, undefined)
         
         expect(signupResponse.success).toEqual(false)
