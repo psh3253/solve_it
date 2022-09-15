@@ -35,9 +35,12 @@ const profileResolver = {
         },
 
         async myCoupons(parent, args, context, info) {
-            const userCoupons = await ProfileService.getUserCoupons(context.user);
-            let coupons = [];
+            const userCoupons = await ProfileService.getUserCoupons(context.user.id);
             
+            if (userCoupons === null)
+                return [];
+
+            let coupons = [];
             for(let i of userCoupons) {
                 coupons.push({
                     count: i.count,
