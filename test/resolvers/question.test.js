@@ -4,12 +4,12 @@ const QuestionService = require("../../services/question");
 describe('get a question', () => {
     // given
     const id = 1;
-    const title = 'ì œëª© 1';
-    const content = 'ë‚´ìš© 1';
+    const title = '? œëª? 1';
+    const content = '?‚´?š© 1';
     const type = 'MULTIPLE_CHOICE';
-    const explanation = 'ì„¤ëª… 1';
+    const explanation = '?„¤ëª? 1';
     const difficulty = {
-        name: 'ë‚œì´ë„ 1',
+        name: '?‚œ?´?„ 1',
         experience: 100
     };
     const try_count = 10;
@@ -27,7 +27,7 @@ describe('get a question', () => {
     const candidate_list = [
         {
             number: 1,
-            content: 'ë‚´ìš© 1'
+            content: '?‚´?š© 1'
         }
     ]
     const expected_answer_list = [1];
@@ -95,13 +95,13 @@ describe('get a question', () => {
 describe('get a test', () => {
     // given
     const id = 1;
-    const title = "ì œëª© 1";
-    const content = "ë‚´ìš© 1";
+    const title = "? œëª? 1";
+    const content = "?‚´?š© 1";
     const created_at = "2022-01-01T00:00:00.000Z";
     const expected_created_at = "2022-01-01 09:00:00";
     const try_count = 10;
     const is_private = 0;
-    const creator_id = "ì•„ì´ë”” 1";
+    const creator_id = "?•„?´?”” 1";
     const like = 0;
     const category = {
         id: 1,
@@ -121,11 +121,11 @@ describe('get a test', () => {
     ]
     const tag_list = [
         {
-            tag: "íƒœê·¸ 1"
+            tag: "?ƒœê·? 1"
         }
     ]
     const expected_tag_list = [
-        "íƒœê·¸ 1"
+        "?ƒœê·? 1"
     ]
     QuestionService.getTest = jest.fn((test_id, user_id) => {
         if (test_id !== 1)
