@@ -4,12 +4,12 @@ const QuestionService = require("../../services/question");
 describe('get a question', () => {
     // given
     const id = 1;
-    const title = '? œëª? 1';
-    const content = '?‚´?š© 1';
+    const title = 'ì œëª© 1';
+    const content = 'ë‚´ìš© 1';
     const type = 'MULTIPLE_CHOICE';
-    const explanation = '?„¤ëª? 1';
+    const explanation = 'ì„¤ëª… 1';
     const difficulty = {
-        name: '?‚œ?´?„ 1',
+        name: 'ë‚œì´ë„ 1',
         experience: 100
     };
     const try_count = 10;
@@ -27,7 +27,7 @@ describe('get a question', () => {
     const candidate_list = [
         {
             number: 1,
-            content: '?‚´?š© 1'
+            content: 'í›„ë³´ì§€ 1'
         }
     ]
     const expected_answer_list = [1];
@@ -95,13 +95,13 @@ describe('get a question', () => {
 describe('get a test', () => {
     // given
     const id = 1;
-    const title = "? œëª? 1";
-    const content = "?‚´?š© 1";
+    const title = "ì œëª© 1";
+    const content = "ë‚´ìš© 1";
     const created_at = "2022-01-01T00:00:00.000Z";
     const expected_created_at = "2022-01-01 09:00:00";
     const try_count = 10;
     const is_private = 0;
-    const creator_id = "?•„?´?”” 1";
+    const creator_id = "ì•„ì´ë”” 1";
     const like = 0;
     const category = {
         id: 1,
@@ -121,11 +121,11 @@ describe('get a test', () => {
     ]
     const tag_list = [
         {
-            tag: "?ƒœê·? 1"
+            tag: "íƒœê·¸ 1"
         }
     ]
     const expected_tag_list = [
-        "?ƒœê·? 1"
+        "íƒœê·¸ 1"
     ]
     QuestionService.getTest = jest.fn((test_id, user_id) => {
         if (test_id !== 1)
@@ -173,4 +173,158 @@ describe('get a test', () => {
         expect(data.questionIds).toEqual(expected_question_id_list);
         expect(data.tag).toEqual(expected_tag_list);
     })
-})
+});
+
+describe('get all tests', () => {
+    // given
+    const id = 1;
+    const title = "ì œëª© 1";
+    const created_at = "2022-01-01T00:00:00.000Z";
+    const expected_created_at = "2022-01-01 09:00:00";
+    const try_count = 10;
+    const is_private = 0;
+    const creator_id = "ì•„ì´ë”” 1";
+    const like = 0;
+    const category = {
+        id: 1,
+        name: "ì¹´í…Œê³ ë¦¬ 1"
+    }
+
+    QuestionService.getAllTests = jest.fn((page, order) => {
+        if (page !== 1)
+            return null;
+        return [
+            {
+                id: id,
+                title: title,
+                try_count: try_count,
+                created_at: created_at,
+                is_private: is_private,
+                creator_id: creator_id,
+                dataValues: {
+                    like: like
+                },
+                Category: {
+                    id: category.id,
+                    name: category.name
+                }
+            }
+        ]
+    });
+
+    it('success', async () => {
+        // when
+        const data = await Query.allTests(undefined, {page: 1, order: "DATE"}, undefined, undefined)
+
+        // then
+        expect(data[0].id).toEqual(id);
+        expect(data[0].name).toEqual(title);
+        expect(data[0].ownerId).toEqual(creator_id);
+        expect(data[0].creationDate).toEqual(expected_created_at);
+        expect(data[0].tryCnt).toEqual(try_count);
+        expect(data[0].is_private).toEqual(is_private);
+        expect(data[0].like).toEqual(like);
+        expect(data[0].testCategory).toEqual(category);
+    });
+});
+
+describe('get tests by category', () => {
+    // given
+    const id = 1;
+    const title = "ì œëª© 1";
+    const created_at = "2022-01-01T00:00:00.000Z";
+    const expected_created_at = "2022-01-01 09:00:00";
+    const try_count = 10;
+    const is_private = 0;
+    const creator_id = "ì•„ì´ë”” 1";
+    const like = 0;
+    const category = {
+        id: 1,
+        name: "ì¹´í…Œê³ ë¦¬ 1"
+    }
+
+    QuestionService.getTestsByCategoryId = jest.fn((category_id) => {
+        if (category_id !== 1)
+            return null;
+        return [
+            {
+                id: id,
+                title: title,
+                try_count: try_count,
+                created_at: created_at,
+                is_private: is_private,
+                creator_id: creator_id,
+                dataValues: {
+                    like: like
+                },
+                Category: {
+                    id: category.id,
+                    name: category.name
+                }
+            }
+        ]
+    });
+
+    it('success', async () => {
+        // when
+        const data = await Query.testsByCategory(undefined, {id: 1}, undefined, undefined)
+
+        // then
+        expect(data[0].id).toEqual(id);
+        expect(data[0].name).toEqual(title);
+        expect(data[0].ownerId).toEqual(creator_id);
+        expect(data[0].creationDate).toEqual(expected_created_at);
+        expect(data[0].tryCnt).toEqual(try_count);
+        expect(data[0].is_private).toEqual(is_private);
+        expect(data[0].like).toEqual(like);
+        expect(data[0].testCategory).toEqual(category);
+    });
+});
+
+describe('create a question', () => {
+    // given
+    const id = 1;
+    const title = "ì œëª© 1";
+    const content = "ë‚´ìš© 1";
+    const creator_id = "ì•„ì´ë”” 1";
+    const explanation = "ì„¤ëª… 1";
+    const type = "MULTIPLE_CHOICE"
+    const difficulty = 1;
+    const category = {
+        id: 1,
+        name: "ì¹´í…Œê³ ë¦¬ 1"
+    }
+    const answers = ["ì •ë‹µ 1"];
+    const candidates = ["í›„ë³´ 1"];
+    const context = {
+        user: {
+            id: creator_id
+        }
+    }
+
+    QuestionService.createQuestion = jest.fn((title, content, answers, explanation, type, category_id, creator_id, difficulty_id, candidates) => {
+        if(title && content && answers && explanation && type && category_id && creator_id && difficulty_id && candidates)
+            return id;
+        return null;
+    });
+
+    it('success', async () => {
+        // when
+        const result = await Mutation.createQuestion(undefined, {input: {
+            name: title,
+            paragraph: content,
+            answers: answers,
+            explanation: explanation,
+            type: type,
+            questionCategory: category.id,
+            questionDifficulty: difficulty,
+            candidates: candidates
+        }}, context, undefined);
+
+        // then
+        expect(result.code).toEqual(200);
+        expect(result.success).toEqual(true);
+        expect(result.message).toEqual("complete");
+        expect(result.questionId).toEqual(id);
+    });
+});
