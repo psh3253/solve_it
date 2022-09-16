@@ -88,8 +88,8 @@ const profileResolver = {
             return ProfileService.updateMyCoupon(args.couponID)
         },
         async updateProfile(parent, args, context, info) {
-            const result1 = await ProfileService.updateNickname(context.user, args.name);
-            const result2 = await ProfileService.updateCategory(context.user, args.favorite);
+            const result1 = await ProfileService.updateNickname(context.user.id, args.name);
+            const result2 = await ProfileService.updateCategory(context.user.id, args.favorite);
             return {
                 code: 200,
                 message: 'complete',
