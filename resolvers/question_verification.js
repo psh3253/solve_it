@@ -44,7 +44,7 @@ const QuestionVerificationResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionVerificationService.createReport(input.content, input.testId, input.type, "psh3253")
+                success: await QuestionVerificationService.createReport(input.content, input.testId, input.type, context.user.id)
             }
         },
 

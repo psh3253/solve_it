@@ -87,6 +87,7 @@ module.exports = gql`
     type TestHeader {
         id: ID!
         name: String!
+        content: String!
         ownerId: String!
         creationDate: String!
         private: Boolean!
