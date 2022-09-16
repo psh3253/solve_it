@@ -70,19 +70,26 @@ profileService.getAllCategories = jest.fn(() => {
     return testCategory
 })
 
+profileService.updateNickname = jest.fn((user_id, nickname) => {
+    if (user_id === testProfile.ownerId)
+        return true;
+    return false;
+})
+
+profileService.updateNickname = jest.fn((user_id, nickname) => {
+    if (user_id === testProfile.ownerId)
+        return true;
+    return false;
+})
+
 describe('get profile', () => {
     it('success', async () => {
         const profile = await Query.profile(undefined, {ID: testProfile.ownerId}, undefined, undefined)
         expect(profile).toEqual(testProfile)
     })
-
-    // ? resolver에서 profile이 null이라면?
-    it('fail: profile not found', async () => {
-
-    })
 })
 
-describe('get coupons', () => {
+describe('get my coupons', () => {
     it('myCoupons: success', async () => {
         const coupons = await Query.myCoupons(undefined, undefined, testContext, undefined)
         let i = 0
@@ -93,7 +100,9 @@ describe('get coupons', () => {
             i++
         }
     })
+})
 
+describe('get all coupons', () => {
     it('coupons: success', async () => {
         const coupons = await Query.coupons(undefined, undefined, undefined, undefined)
         let i = 0
@@ -108,20 +117,5 @@ describe('get coupons', () => {
 describe('get categories', () => {
     it('success', async () => {
         expect(await Query.categories()).toEqual(testCategory)
-    })
-})
-
-// TODO: need to implement
-/**
-describe('update my coupon', () => {
-    it('success', async () => {
-
-    })
-})
- */
-
-describe('update profile', () => {
-    it('success', async () => {
-        
     })
 })
