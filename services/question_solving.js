@@ -196,6 +196,7 @@ questionSolvingService.getAnswerRecords = async (test_id, user_id) => {
     try {
         const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
         const test_questions = await questionSolvingService.getAllTestQuestion(test_id);
+
         let answer_record_list = [];
 
         for (let test_question of test_questions) {
@@ -308,7 +309,7 @@ questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) 
 questionSolvingService.getSolvingTests = async (user_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'try_count', ['private', 'is_private'], 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             include: [{

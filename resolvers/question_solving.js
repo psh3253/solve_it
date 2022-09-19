@@ -1,3 +1,4 @@
+const { getAnswer } = require('../services/question');
 const QuestionService = require('../services/question');
 const QuestionSolvingService = require('../services/question_solving');
 const Util = require('../util');
@@ -16,7 +17,10 @@ const QuestionSolvingResolver = {
             const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
             let results = [];
 
+            if (answer_records === null) return [];
             for (let record of answer_records) {
+                if (record === null) continue
+
                 const answers = await QuestionService.getAnswer(record.question_id);
                 let answer_list = [];
 
@@ -35,6 +39,9 @@ const QuestionSolvingResolver = {
 
         async mySolvingTests(parent, args, context, info) {
             const tests = await QuestionSolvingService.getSolvingTests(context.user.id);
+
+            if (tests === null) return [];
+
             let test_list = [];
             for (let i of tests) {
                 test_list.push({
@@ -56,6 +63,9 @@ const QuestionSolvingResolver = {
 
         async askingByQuestion(parent, {id}, context, info) {
             const asking = await QuestionSolvingService.getAskingByQuestionId(id);
+
+            if (asking === null) return [];
+
             let asking_list = [];
             for (let i of asking) {
                 asking_list.push({
@@ -72,6 +82,9 @@ const QuestionSolvingResolver = {
 
         async repliesByAsking(parent, {id}, context, info) {
             const replies = await QuestionSolvingService.getRepliesByAskingId(id);
+
+            if (replies === null) return [];
+
             let reply_list = [];
             for (let i of replies) {
                 reply_list.push({
