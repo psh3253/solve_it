@@ -29,7 +29,8 @@ sequelize.sync({force: false})
     .then(() => {
         console.log("MySQL Connect Success");
     })
-    .catch(() => {
+    .catch((e) => {
+        console.log(e);
         console.error("MySQL Connect Fail");
     });
 
