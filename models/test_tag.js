@@ -3,10 +3,21 @@ const Sequelize = require('sequelize');
 module.exports = class TestTag extends Sequelize.Model {
     static init(sequelize) {
         return super.init({
+            id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                autoIncrement: true
+            },
             tag: {
                 type: Sequelize.STRING(30),
                 allowNull: false
-            }
+            },
+            created_at: {
+                type: Sequelize.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.NOW,
+            },
         }, {
             sequelize,
             timestamps: false,
@@ -20,5 +31,6 @@ module.exports = class TestTag extends Sequelize.Model {
 
     static associate(db) {
         db.TestTag.belongsTo(db.Test, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.TestTag.belongsTo(db.User, {foreignKey: 'creator_id', sourceKey: 'id'});
     }
 };
