@@ -129,7 +129,6 @@ const QuestionSolvingResolver = {
 
 
             if (answer_record.length === 0) {
-
                 return Util.normalResponse(200, 'complete',
                     QuestionSolvingService.updateJudgeResult(answer_record.id, answer_record.is_correct));
             }
