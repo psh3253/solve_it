@@ -17,7 +17,7 @@ module.exports = gql`
 
     type CodingTestCase {
         id: ID!
-        input: [String!]!
+        input: String!
         output: [String!]!
     }
 `;
