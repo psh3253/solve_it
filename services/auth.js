@@ -28,7 +28,8 @@ authService.signup = async function signup(id, password, nickname) {
         await User.create({
             id: id,
             password: password,
-            nickname: nickname
+            nickname: nickname,
+            tier_id: 1,
         });
         return true;
     } catch (e) {

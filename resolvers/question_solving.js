@@ -1,6 +1,7 @@
 const { getAnswer } = require('../services/question');
 const QuestionService = require('../services/question');
 const QuestionSolvingService = require('../services/question_solving');
+const ProfileService = require('../services/profile');
 const Util = require('../util');
 
 const QuestionSolvingResolver = {
@@ -103,7 +104,7 @@ const QuestionSolvingResolver = {
             if (!await QuestionSolvingService.contributeDifficulty(questionId, difficulty, context.user.id))
                 return {
                     code: 200,
-                    message: 'already contributed',
+                    message: 'under tier',
                     success: false
                 }
             return {
@@ -154,6 +155,7 @@ const QuestionSolvingResolver = {
 
         async judgeAnswers(parent, {testId}, context, info) {
             try {
+                let total_experience = 0;
                 const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
 
                 for (let record of answer_records) {
@@ -183,9 +185,10 @@ const QuestionSolvingResolver = {
                     }
                     if (status)
                         continue;
-                    QuestionSolvingService.updateJudgeResult(record.id, true);
+                    await QuestionSolvingService.updateJudgeResult(record.id, true);
+                    total_experience += QuestionSolvingService.getExperience(record.question_id);
                 }
-
+                await ProfileService.addUserExperience(context.user.id, total_experience);
                 return Util.normalResponse(200, 'complete', true);
             } catch (e) {
                 console.error(e);

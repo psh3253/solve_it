@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Category = require('../models/category');
 const IssuedCoupon = require('../models/issued_coupon');
 const Coupon = require('../models/coupon');
+const Tier = require('../models/tier');
 
 profileService.getUserProfile = async function getUserProfile(user_id) {
     try {
@@ -69,6 +70,52 @@ profileService.getAllCategories = async function getAllCategories() {
         });
     } catch (e) {
         console.error(e);
+    }
+}
+
+profileService.getUserTier = async function getUserTier(user_id) {
+    try {
+        return await User.findOne({
+            attributes: ['tier_id'],
+            where: {
+                id: user_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+profileService.addUserExperience = async function addUserExperience(user_id, experience) {
+    try {
+        await User.increment('experience', {
+            by: experience,
+            where: {
+                id: user_id
+            }
+        });
+        const tier = await Tier.findOne({
+            attributes: ['id'],
+            where: {
+                experience: {
+                    [Op.lte]: experience
+                }
+            },
+            order: [
+                ['experience', 'DESC']
+            ]
+        });
+        await User.update({
+            tier_id: tier.id
+        }, {
+            where: {
+                id: user_id
+            }
+        });
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
     }
 }
 

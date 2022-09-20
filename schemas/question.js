@@ -51,7 +51,7 @@ module.exports = gql`
     input CreateTestInput {
         name: String!
         content: String!
-        private: Boolean!
+        isPrivate: Boolean!
         questionIds: [ID!]!
         categoryId: ID!
     }
@@ -60,7 +60,7 @@ module.exports = gql`
         id: ID!
         name: String!
         content: String!
-        private: Boolean!
+        isPrivate: Boolean!
         questionIds: [ID!]!
         categoryId: ID!
     }
@@ -78,7 +78,7 @@ module.exports = gql`
         ownerId: String!
         tag: [String!]
         creationDate: String!
-        private: Boolean!
+        isPrivate: Boolean!
         tryCnt: Int!
         like: Int!
         testCategory: Category!
@@ -90,7 +90,7 @@ module.exports = gql`
         content: String!
         ownerId: String!
         creationDate: String!
-        private: Boolean!
+        isPrivate: Boolean!
         tryCnt: Int!
         like: Int!
         testCategory: Category!

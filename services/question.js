@@ -46,6 +46,26 @@ questionService.getAnswer = async (question_id) => {
     }
 }
 
+questionService.getExperience = async (question_id) => {
+    try {
+        const difficulty_id = (await Question.findOne({
+            attributes: ['difficulty_id'],
+            where: {
+                id: question_id
+            }
+        })).difficulty_id;
+        return (await Difficulty.findOne({
+            attributes: ['experience'],
+            where: {
+                id: difficulty_id
+            }
+        })).experience;
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 questionService.getCandidate = async (question_id) => {
     try {
         return await QuestionCandidate.findAll({

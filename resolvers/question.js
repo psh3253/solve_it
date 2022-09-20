@@ -160,7 +160,7 @@ const QuestionResolver = {
         },
 
         async updateQuestion(parent, {input}, context, info) {
-            const question_id = await QuestionService.updateQuestion(input.question_id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
+            const question_id = await QuestionService.updateQuestion(input.id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
             return {
                 code: 200,
                 message: 'complete',
@@ -187,7 +187,7 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.is_private, context.user.id)
+                success: await QuestionService.createTest(input.name, input.content, input.questionIds, input.categoryId, input.isPrivate, context.user.id)
             }
         },
 
@@ -201,7 +201,7 @@ const QuestionResolver = {
             return {
                 code: 200,
                 message: 'complete',
-                success: await QuestionService.updateTest(input.id, input.name, input.content, input.questionIds, input.categoryId, input.is_private)
+                success: await QuestionService.updateTest(input.id, input.name, input.content, input.questionIds, input.categoryId, input.isPrivate)
             }
         },
 
