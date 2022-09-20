@@ -303,28 +303,212 @@ describe('create a question', () => {
     }
 
     QuestionService.createQuestion = jest.fn((title, content, answers, explanation, type, category_id, creator_id, difficulty_id, candidates) => {
-        if(title && content && answers && explanation && type && category_id && creator_id && difficulty_id && candidates)
+        if (title && content && answers && explanation && type && category_id && creator_id && difficulty_id && candidates)
             return id;
         return null;
     });
 
     it('success', async () => {
         // when
-        const result = await Mutation.createQuestion(undefined, {input: {
-            name: title,
-            paragraph: content,
-            answers: answers,
-            explanation: explanation,
-            type: type,
-            questionCategory: category.id,
-            questionDifficulty: difficulty,
-            candidates: candidates
-        }}, context, undefined);
+        const result = await Mutation.createQuestion(undefined, {
+            input: {
+                name: title,
+                paragraph: content,
+                answers: answers,
+                explanation: explanation,
+                type: type,
+                questionCategory: category.id,
+                questionDifficulty: difficulty,
+                candidates: candidates
+            }
+        }, context, undefined);
 
         // then
         expect(result.code).toEqual(200);
         expect(result.success).toEqual(true);
         expect(result.message).toEqual("complete");
         expect(result.questionId).toEqual(id);
+    });
+});
+
+describe('update a question', () => {
+    // given
+    const id = 1;
+    const title = "제목 1";
+    const content = "내용 1";
+    const creator_id = "아이디 1";
+    const explanation = "설명 1";
+    const type = "MULTIPLE_CHOICE";
+    const answers = ["정답 1"];
+    const candidates = ["후보 1"];
+    const context = {
+        user: {
+            id: creator_id
+        }
+    }
+
+    QuestionService.updateQuestion = jest.fn((question_id, title, content, answers, explanation, candidates) => {
+        if (question_id && title && content && answers && explanation && candidates)
+            return id;
+        return null;
+    });
+
+    it('success', async () => {
+        // when
+        const result = await Mutation.updateQuestion(undefined, {
+            input: {
+                id: id,
+                name: title,
+                paragraph: content,
+                answers: answers,
+                explanation: explanation,
+                type: type,
+                candidates: candidates
+            }
+        }, context, undefined);
+
+        // then
+        expect(result.code).toEqual(200);
+        expect(result.success).toEqual(true);
+        expect(result.message).toEqual("complete");
+        expect(result.questionId).toEqual(id);
+    });
+});
+
+describe('delete a question', () => {
+    // given
+    const id = 1;
+    const creator_id = "아이디 1";
+    const context = {
+        user: {
+            id: creator_id
+        }
+    }
+    QuestionService.isQuestionCreator = jest.fn((question_id, creator_id) => {
+        return !!(question_id && creator_id);
+    });
+
+    QuestionService.deleteQuestion = jest.fn((id) => {
+        return !!id;
+    });
+
+    it('success', async () => {
+        // when
+        const result = await Mutation.deleteQuestion(undefined, {id: id}, context, undefined);
+
+        // then
+        expect(result.code).toEqual(200);
+        expect(result.success).toEqual(true);
+        expect(result.message).toEqual("complete");
+    });
+});
+
+describe('create a test', () => {
+    // given
+    const id = 1;
+    const title = "제목 1";
+    const content = "내용 1";
+    const creator_id = "아이디 1";
+    const is_private = false;
+    const context = {
+        user: {
+            id: creator_id
+        }
+    }
+    const question_ids = [1];
+    const category_id = 1;
+
+    QuestionService.createTest = jest.fn((title, content, question_ids, category_id, is_private, creator_id) => {
+        return !!(title && content && question_ids && category_id && is_private != null && creator_id);
+    });
+
+    it('success', async () => {
+        // when
+        const result = await Mutation.createTest(undefined, {
+            input: {
+                name: title,
+                content: content,
+                isPrivate: is_private,
+                questionIds: question_ids,
+                categoryId: category_id
+            }
+        }, context, undefined);
+
+        // then
+        expect(result.code).toEqual(200);
+        expect(result.success).toEqual(true);
+        expect(result.message).toEqual("complete");
+    });
+});
+
+describe('update a test', () => {
+    // given
+    const id = 1;
+    const title = "제목 1";
+    const content = "내용 1";
+    const creator_id = "아이디 1";
+    const is_private = false;
+    const context = {
+        user: {
+            id: creator_id
+        }
+    }
+    const question_ids = [1];
+    const category_id = 1;
+
+    QuestionService.isTestCreator = jest.fn((test_id, creator_id) => {
+        return !!(test_id && creator_id);
+    });
+
+    QuestionService.updateTest = jest.fn((test_id, title, content, question_ids, category_id, is_private) => {
+        return !!(test_id && title && content && question_ids && category_id && is_private != null);
+    });
+
+    it('success', async () => {
+        // when
+        const result = await Mutation.updateTest(undefined, {
+            input: {
+                id: id,
+                name: title,
+                content: content,
+                isPrivate: is_private,
+                questionIds: question_ids,
+                categoryId: category_id
+            }
+        }, context, undefined);
+
+        // then
+        expect(result.code).toEqual(200);
+        expect(result.success).toEqual(true);
+        expect(result.message).toEqual("complete");
+    });
+});
+
+describe('delete a test', () => {
+    // given
+    const id = 1;
+    const creator_id = "아이디 1";
+    const context = {
+        user: {
+            id: creator_id
+        }
+    }
+
+    QuestionService.isTestCreator = jest.fn((test_id, creator_id) => {
+        return !!(test_id && creator_id);
+    });
+
+    QuestionService.deleteTest = jest.fn((id) => {
+        return !!id;
+    });
+
+    it('success', async () => {
+        // when
+        const result = await Mutation.deleteTest(undefined, {id: id}, context, undefined);
+
+        // then
+        expect(result.code).toEqual(200);
+        expect(result.success).toEqual(true);
+        expect(result.message).toEqual("complete");
     });
 });
