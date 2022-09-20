@@ -20,7 +20,7 @@ module.exports = class User extends Sequelize.Model {
                 type: Sequelize.STRING(50),
                 allowNull: true,
             },
-            experience: { // 경험치
+            experience: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 defaultValue: 0,

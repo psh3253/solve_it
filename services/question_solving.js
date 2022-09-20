@@ -6,11 +6,22 @@ const TestQuestion = require('../models/test_question');
 const QuestionDifficulty = require('../models/question_difficulty');
 const Asking = require('../models/asking');
 const Reply = require('../models/reply');
+const User = require('../models/user');
 const {sequelize} = require("../models/index");
 const Category = require("../models/category");
+const Question = require("../models/question");
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
+        const user = await User.findOne({
+            attributes: ['id', 'tier_id'],
+            where: {
+                id: user_id
+            }
+        });
+        if(user.tier_id < 3) {
+            return false;
+        }
         const result = await QuestionDifficulty.findOrCreate({
             attributes: ['question_id'],
             where: {
@@ -23,7 +34,21 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
                 creator_id: user_id
             }
         });
-        return result[1];
+        const difficulty = await QuestionDifficulty.findAll({
+            attributes: [[sequelize.fn('round', sequelize.fn('avg', sequelize.col('difficulty_id')), 0), 'difficulty']],
+            where: {
+                question_id: question_id
+            },
+            group: ['question_id'],
+        });
+        await Question.update({
+            difficulty_id: difficulty.dataValues.difficulty
+        }, {
+            where: {
+                id: question_id
+            }
+        })
+        return true;
     } catch (e) {
         console.error(e);
     }
