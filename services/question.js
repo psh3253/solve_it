@@ -99,7 +99,7 @@ questionService.getTestQuestions = async (test_id) => {
 questionService.getTestTags = async (test_id) => {
     try {
         return TestTag.findAll({
-            attributes: ['tag'],
+            attributes: ['id', 'tag', 'created_at', 'creator_id', 'test_id'],
             where: {
                 test_id: test_id
             }
