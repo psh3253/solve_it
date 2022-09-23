@@ -24,13 +24,17 @@ module.exports = class TestTag extends Sequelize.Model {
             underscored: true,
             modelName: 'TestTag',
             tableName: 'test_tag',
+            indexes: [{
+                unique: true,
+                fields: ['tag', 'test_id', 'creator_id']
+            }],
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });
     }
 
     static associate(db) {
-        db.TestTag.belongsTo(db.Test, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
-        db.TestTag.belongsTo(db.User, {foreignKey: 'creator_id', sourceKey: 'id'});
+        db.TestTag.belongsTo(db.Test, {foreignKey: 'test_id', targetKey: 'id', onDelete: 'cascade'});
+        db.TestTag.belongsTo(db.User, {foreignKey: 'creator_id', targetKey: 'id'});
     }
 };
