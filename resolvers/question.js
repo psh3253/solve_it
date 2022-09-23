@@ -1,5 +1,6 @@
 const QuestionService = require('../services/question');
-const QuestionSolvingService = require('../services/question_solving');
+const {buildTagList} = require('../services/question_solving');
+const QuestionRecommendResolver = require('../resolvers/question_recommend')
 const Util = require('../util');
 
 const QuestionResolver = {
@@ -48,22 +49,24 @@ const QuestionResolver = {
         },
 
         async test(parent, {id}, context, info) {
-            const test = await QuestionService.getTest(id, "psh3253");
+            const test = await QuestionService.getTest(id, context.user.id);
             if(test === null)
                 return null;
             const test_question_ids = await QuestionService.getTestQuestions(id);
             const test_tags = await QuestionService.getTestTags(id);
+
             let question_id_list = [];
-            let tag_list = [];
+
             for(let i of test_question_ids) {
                 question_id_list.push({
                     questionId: i.question_id,
                     number: i.number
                 });
             }
-            for(let i of test_tags) {
-                tag_list.push(i.tag);
-            }
+
+            // TODO: fix initialization error
+            const tag_list = buildTagList(tag_list);
+
             return {
                 id: test.id,
                 name: test.title,

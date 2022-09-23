@@ -76,7 +76,7 @@ module.exports = gql`
         name: String!
         content: String!
         ownerId: String!
-        tag: [String!]
+        tag: [Tag]
         creationDate: String!
         isPrivate: Boolean!
         tryCnt: Int!

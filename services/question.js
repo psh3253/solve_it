@@ -82,7 +82,7 @@ questionService.getCandidate = async (question_id) => {
 questionService.getTest = async (test_id, user_id) => {
     try {
         const test = await Test.findOne({
-            attributes: ['id', 'title', 'content', 'try_count', 'created_at', 'category_id', 'is_private', 'creator_id', [
+            attributes: ['id', 'title', 'content', 'try_count', 'created_at', 'category_id', ['private', 'is_private'], 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             where: {
