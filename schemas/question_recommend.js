@@ -2,12 +2,14 @@ const {gql} = require('apollo-server');
 
 module.exports = gql`
     type Query {
-        tag(testId: ID!): [Tag]
-        myTag(userId: ID!): [Tag]
+        tag(tagId: ID!): Tag
+        tagsOfTest(testId: ID!): [Tag]
+        myTags: [Tag]
     }
 
     type Mutation {
         createTag(name: String!, testId: ID!): NormalResponse
+        updateTag(tagId: ID!, name: String!): NormalResponse
         deleteTag(name: String!, testId: ID!): NormalResponse
     }
 

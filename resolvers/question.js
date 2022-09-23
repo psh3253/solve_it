@@ -64,8 +64,16 @@ const QuestionResolver = {
                 });
             }
 
-            // TODO: fix initialization error
-            const tag_list = buildTagList(tag_list);
+            const tag_list = [];
+            for (let tag of test_tags) {
+                tag_list.push({
+                    id: tag.id,
+                    name: tag.tag,
+                    ownerId: tag.creator_id,
+                    creationDate: Util.getDateString(tag.created_at),
+                    testId: tag.test_id
+                })
+            }
 
             return {
                 id: test.id,
@@ -74,7 +82,7 @@ const QuestionResolver = {
                 ownerId: test.creator_id,
                 creationDate: Util.getDateString(test.created_at),
                 tryCnt: test.try_count,
-                is_private: test.is_private,
+                isPrivate: test.is_private,
                 like: test.dataValues.like,
                 testCategory: {
                     id: test.Category.id,

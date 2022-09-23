@@ -5,6 +5,8 @@ const ProfileSchema = require('./profile');
 const ProfileResolver = require('../resolvers/profile');
 const QuestionSchema = require('./question');
 const QuestionResolver = require('../resolvers/question');
+const QuestionRecommendSchema = require('./question_recommend');
+const QuestionRecommendResolver = require('../resolvers/question_recommend');
 const QuestionSolvingSchema = require('./question_solving');
 const QuestionSolvingResolver = require('../resolvers/question_solving');
 const QuestionVerificationSchema = require('./question_verification');
@@ -37,8 +39,8 @@ const Query = gql`
 `;
 
 const schema = makeExecutableSchema({
-    typeDefs: [Query, AuthSchema, ProfileSchema, QuestionSchema, QuestionSolvingSchema, QuestionVerificationSchema, ReviewNoteSchema],
-    resolvers: [AuthResolver, ProfileResolver, QuestionResolver, QuestionSolvingResolver, QuestionVerificationResolver, ReviewNoteResolver]
+    typeDefs: [Query, AuthSchema, ProfileSchema, QuestionSchema, QuestionRecommendSchema, QuestionSolvingSchema, QuestionVerificationSchema, ReviewNoteSchema],
+    resolvers: [AuthResolver, ProfileResolver, QuestionResolver, QuestionRecommendResolver, QuestionSolvingResolver, QuestionVerificationResolver, ReviewNoteResolver]
 });
 
 module.exports = schema;
