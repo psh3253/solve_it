@@ -97,6 +97,26 @@ const QuestionSolvingResolver = {
                 });
             }
             return reply_list;
+        },
+
+        async allAsking(parent, {page}, context, info) {
+            const askings = await QuestionSolvingService.getAllAsking(page);
+
+            if (askings === null) return [];
+
+            let asking_list = [];
+
+            for (let asking of askings) {
+                asking_list.push({
+                    id: asking.id,
+                    title: asking.title,
+                    content: asking.content,
+                    ownerId: asking.creator_id,
+                    creationDate: asking.created_at,
+                    questionId: asking.question_id
+                })
+            }
+            return asking_list;
         }
     },
     Mutation: {

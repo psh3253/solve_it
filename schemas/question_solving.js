@@ -7,6 +7,7 @@ module.exports = gql`
         testAnswers(testId: ID!): [AnswerSet]
         askingByQuestion(id: ID!): [Asking!]!
         repliesByAsking(id: ID!): [Reply!]!
+        allAsking(page: Int!): [Asking]
         mySolvingTests: [TestHeader!]!
     }
 

@@ -243,6 +243,20 @@ questionSolvingService.getAnswerRecords = async (test_id, user_id) => {
     }
 }
 
+questionSolvingService.getAllAsking = async (page) => {
+    try {
+        return await Asking.findAll({
+            attributes: [ 'id', 'title', 'content', 'created_at', 'question_id', 'creator_id'],
+            limit: 10,
+            offset: (page - 1) * 10,
+            order: [['created_at', 'DESC']]
+        });
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
     try {
         const asking = await Asking.findOne({
@@ -334,7 +348,7 @@ questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) 
 questionSolvingService.getSolvingTests = async (user_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', ['private', 'is_private'], 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             include: [{

@@ -8,7 +8,9 @@ const reviewNoteResolver = {
         
             return {
                 id: review_note.id,
-                explanation: review_note.explanation
+                ownerId: review_note.creator_id,
+                questionId: review_note.question_id,
+                explanation: review_note.explanation,
             }
         }
     },

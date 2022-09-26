@@ -5,7 +5,7 @@ const ReviewNote = require("../models/review_note");
 reviewNoteService.getReviewNote = async (question_id, user_id) => {
     try {
         return await ReviewNote.findOne({
-            attributes: ['id', 'explanation'],
+            attributes: ['id', 'explanation', 'creator_id', 'question_id'],
             where: {
                 question_id: question_id,
                 creator_id: user_id
