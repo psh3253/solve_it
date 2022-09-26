@@ -34,7 +34,7 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
                 creator_id: user_id
             }
         });
-        const difficulty = await QuestionDifficulty.findAll({
+        const difficulty = await QuestionDifficulty.findOne({
             attributes: [[sequelize.fn('round', sequelize.fn('avg', sequelize.col('difficulty_id')), 0), 'difficulty']],
             where: {
                 question_id: question_id
@@ -47,7 +47,7 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
             where: {
                 id: question_id
             }
-        })
+        });
         return true;
     } catch (e) {
         console.error(e);
