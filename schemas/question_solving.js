@@ -5,6 +5,7 @@ module.exports = gql`
         testLikesCount(id: ID!): Int!
         questionAnswer(questionId: ID!): Boolean
         testAnswers(testId: ID!): [AnswerSet]
+        asking(askingId: ID!): Asking
         askingByQuestion(id: ID!): [Asking!]!
         repliesByAsking(id: ID!): [Reply!]!
         allAsking(page: Int!): [Asking]
