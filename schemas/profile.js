@@ -3,16 +3,13 @@ const {gql} = require('apollo-server');
 module.exports = gql`
     type Query {
         profile(ID: String): Profile
-        myCoupons: [CouponWithCnt!]!
         statistics(ID: String): Statistics
-        coupons: [Coupon!]!
         categories: [Category!]!
     }
     
     type Mutation {
         updateProfile(name: String, favorite: [String!]!): NormalResponse
         updateProfileImg(file: Upload!): File!
-        updateMyCoupon(couponId: ID!): NormalResponse
     }
 
     type Profile {
@@ -36,18 +33,6 @@ module.exports = gql`
         category: String
         try_count: Int
         correct_count: Int
-    }
-
-    type CouponWithCnt {
-        coupon: Coupon!
-        count: Int!
-    }
-
-    type Coupon {
-        id: ID!
-        name: String!
-        explanation: String!
-        price: Int!
     }
 
     type Category {
