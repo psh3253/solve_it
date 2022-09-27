@@ -2,8 +2,6 @@ const profileService = {};
 const {Op} = require("sequelize");
 const User = require('../models/user');
 const Category = require('../models/category');
-const IssuedCoupon = require('../models/issued_coupon');
-const Coupon = require('../models/coupon');
 const Tier = require('../models/tier');
 
 profileService.getUserProfile = async function getUserProfile(user_id) {
@@ -30,33 +28,6 @@ profileService.getUserCategories = async function getUserCategory(user_id) {
                 model: Category,
                 attributes: ['id', 'name']
             }
-        });
-    } catch (e) {
-        console.error(e);
-    }
-}
-
-profileService.getUserCoupons = async function getUserCoupons(user_id) {
-    try {
-        return await IssuedCoupon.findAll({
-            attributes: ['count', 'created_at', 'last_used_at', 'coupon_id'],
-            where: {
-                user_id: user_id
-            },
-            include: {
-                model: Coupon,
-                attributes: ['id', 'name', 'explanation', 'price'],
-            }
-        })
-    } catch (e) {
-        console.error(e);
-    }
-}
-
-profileService.getAllCoupons = async function getAllCoupons() {
-    try {
-        return await Coupon.findAll({
-            attributes: ['id', 'name', 'explanation', 'price']
         });
     } catch (e) {
         console.error(e);
@@ -160,10 +131,6 @@ profileService.updateCategory = async function updateCategory(user_id, categorie
         console.error(e);
         return false;
     }
-}
-
-profileService.updateMyCoupon = async function updateMyCoupon(user_id, coupon_id, coupon_price) {
-
 }
 
 module.exports = profileService;

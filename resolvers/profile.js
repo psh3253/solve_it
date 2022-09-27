@@ -1,5 +1,4 @@
 const {GraphQLUpload} = require('graphql-upload')
-// const {finished} = require('stream/promises')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
 const AuthService = require("../services/auth");
@@ -84,9 +83,6 @@ const profileResolver = {
         }
     },
     Mutation: {
-        async updateMyCoupon(parent, args, context, info) {
-            return ProfileService.updateMyCoupon(args.couponID)
-        },
         async updateProfile(parent, args, context, info) {
             const result1 = await ProfileService.updateNickname(context.user.id, args.name);
             const result2 = await ProfileService.updateCategory(context.user.id, args.favorite);

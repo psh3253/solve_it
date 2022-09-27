@@ -62,6 +62,19 @@ const QuestionSolvingResolver = {
             return test_list;
         },
 
+        async asking(parent, {askingId}, context, info) {
+            const asking = await QuestionSolvingService.getAsking(askingId);
+
+            return {
+                id: asking.id,
+                title: asking.title,
+                content: asking.content,
+                ownerId: asking.creator_id,
+                creationDate: asking.created_at,
+                questionId: asking.question_id
+            }
+        },
+
         async askingByQuestion(parent, {id}, context, info) {
             const asking = await QuestionSolvingService.getAskingByQuestionId(id);
 
