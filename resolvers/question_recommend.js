@@ -27,7 +27,6 @@ const QuestionRecommandResolver = {
             const found = await QuestionRecommandService.getTag(tagId);
             
             if (found === null) return null;
-
             return convertTagAttributes(found)
         },
 
