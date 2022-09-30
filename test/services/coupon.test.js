@@ -1,6 +1,7 @@
 const CouponService = require('../../services/coupon');
 const Coupon = require('../../models/coupon');
 const IssuedCoupon = require("../../models/issued_coupon");
+const User = require("../../models/user");
 
 describe('add a coupon', () => {
     // given
@@ -100,3 +101,75 @@ describe('get my coupons', () => {
     });
 });
 
+describe('issue some coupons', () => {
+    // given
+    const user_id = '아이디';
+    const coupon_id = 1;
+    const count = 1;
+
+    IssuedCoupon.create = jest.fn();
+    User.update = jest.fn();
+    Coupon.findOne = jest.fn().mockReturnValue({
+        price: 1000
+    });
+
+    it('success', async () => {
+        // given
+        User.findOne = jest.fn().mockReturnValue({
+            point: 1000
+        });
+
+        // when
+        const result = await CouponService.issueCoupon(user_id, coupon_id, count);
+
+        // then
+        expect(result).toEqual(true);
+    });
+
+    it('fail', async () => {
+        // given
+        User.findOne = jest.fn().mockReturnValue({
+            point: 500
+        });
+
+        // when
+        const result = await CouponService.issueCoupon(user_id, coupon_id, count);
+
+        // then
+        expect(result).toEqual(false);
+    });
+});
+
+describe('use a coupon', () => {
+    // given
+    const user_id = '아이디';
+    const coupon_id = 1;
+
+    IssuedCoupon.update = jest.fn();
+
+    it('success', async () => {
+        // given
+        IssuedCoupon.findOne = jest.fn().mockReturnValue({
+            count: 1
+        });
+
+        // when
+        const result = await CouponService.useCoupon(user_id, coupon_id);
+
+        // then
+        expect(result).toEqual(true);
+    });
+
+    it('fail', async () => {
+        // given
+        IssuedCoupon.findOne = jest.fn().mockReturnValue({
+            count: 0
+        });
+
+        // when
+        const result = await CouponService.useCoupon(user_id, coupon_id);
+
+        // then
+        expect(result).toEqual(false);
+    });
+});

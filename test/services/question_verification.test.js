@@ -5,10 +5,10 @@ describe('get all reports', () => {
     // given
     const id = 1;
     const type = 'SWEAR_WORD';
-    const content = '내용 1';
+    const content = '내용';
     const is_process = false;
     const created_at = '2022-01-01T00:00:00.000Z';
-    const creator_id = '아이디 1';
+    const creator_id = '아이디';
     const test_id = 1;
 
     Report.findAll = jest.fn().mockReturnValue([
@@ -42,10 +42,10 @@ describe('get reports by type', () => {
     // given
     const id = 1;
     const type = 'SWEAR_WORD';
-    const content = '내용 1';
+    const content = '내용';
     const is_process = false;
     const created_at = '2022-01-01T00:00:00.000Z';
-    const creator_id = '아이디 1';
+    const creator_id = '아이디';
     const test_id = 1;
 
     Report.findAll = jest.fn().mockReturnValue([
@@ -78,8 +78,8 @@ describe('get reports by type', () => {
 describe('create a report', () => {
     // given
     const type = 'SWEAR_WORD';
-    const content = '내용 1';
-    const creator_id = '아이디 1';
+    const content = '내용';
+    const creator_id = '아이디';
     const test_id = 1;
 
     Report.create = jest.fn();
@@ -96,12 +96,10 @@ describe('create a report', () => {
 describe('check if the user is the creator of the report', () => {
    // given
     const report_id = 1;
-    const creator_id = "아이디 1";
+    const creator_id = "아이디";
 
-    Report.findOne = jest.fn((options) => {
-        return {
-            creator_id: creator_id
-        }
+    Report.findOne = jest.fn().mockReturnValue({
+        creator_id: creator_id
     });
 
     it('success', async () => {
