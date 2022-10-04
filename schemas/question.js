@@ -13,6 +13,7 @@ module.exports = gql`
         createQuestion(input: CreateQuestionInput): CreationQuestionResponse
         updateQuestion(input: UpdateQuestionInput): CreationQuestionResponse
         deleteQuestion(id: ID!): NormalResponse
+        createCodingTestQuestion(input: CreateCodingTestQuestionInput): CreationQuestionResponse
         createTest(input: CreateTestInput): NormalResponse
         updateTest(input: UpdateTestInput): NormalResponse
         deleteTest(id: ID!): NormalResponse
@@ -36,6 +37,21 @@ module.exports = gql`
         questionCategory: Int!,
         questionDifficulty: Int!,
         candidates: [String!]
+    }
+    
+    input CreateCodingTestQuestionInput {
+        name: String!,
+        paragraph: String!,
+        explanation: String,
+        type: QuestionType!,
+        questionCategory: Int!,
+        questionDifficulty: Int!,
+        testCases: [TestCaseInput!]!
+    }
+    
+    input TestCaseInput {
+        input: String!
+        output: String!
     }
     
     input UpdateQuestionInput {
