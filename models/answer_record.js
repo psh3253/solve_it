@@ -16,6 +16,10 @@ module.exports = class AnswerRecord extends Sequelize.Model {
             is_correct: {
                 type: Sequelize.BOOLEAN,
                 allowNull: true
+            },
+            language: {
+                type: Sequelize.STRING(10),
+                allowNull: true
             }
         }, {
             sequelize,

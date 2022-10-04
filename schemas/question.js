@@ -50,8 +50,8 @@ module.exports = gql`
     }
     
     input TestCaseInput {
-        input: String!
-        output: String!
+        input: String!,
+        output: [String!]!
     }
     
     input UpdateQuestionInput {
@@ -183,4 +183,4 @@ module.exports = gql`
         questionId: ID!
         number: Int!
     }
-`
+`;
