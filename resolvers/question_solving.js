@@ -192,6 +192,15 @@ const QuestionSolvingResolver = {
                 const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
 
                 for (let record of answer_records) {
+                    const question = QuestionService.getQuestion(record.question_id);
+                    if(question.type === 'CODING_TEST')
+                    {
+                        const is_correct = await QuestionSolvingService.judgeCodingTestQuestion(record.answer, record.language, context.user.id, record.question_id);
+                        await QuestionSolvingService.updateJudgeResult(record.id, is_correct);
+                        total_experience += QuestionSolvingService.getExperience(record.question_id);
+                        continue;
+                    }
+
                     let status = false;
                     const answers = await QuestionService.getAnswer(record.question_id);
                     let answer_list = [];
