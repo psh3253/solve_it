@@ -23,6 +23,13 @@ module.exports = gql`
         deleteAsking(id: ID!): NormalResponse
         createReply(input: CreateReplyInput!): NormalResponse
         deleteReply(id: ID!): NormalResponse
+        submitCodingTestAnswer(input: CodingTestAnswerInput!): NormalResponse
+    }
+    
+    input CodingTestAnswerInput {
+        questionId: ID!
+        sourceCode: String!
+        language: String!
     }
 
     input CreateAskingInput {
