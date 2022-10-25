@@ -5,7 +5,7 @@ const reviewNoteResolver = {
     Query: {
         async reviewNote(parent, {questionId}, context, info) {
             const review_note = await ReviewNoteService.getReviewNote(questionId, context.user.id);
-        
+
             return {
                 id: review_note.id,
                 ownerId: review_note.creator_id,

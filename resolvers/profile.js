@@ -35,12 +35,12 @@ const profileResolver = {
 
         async myCoupons(parent, args, context, info) {
             const userCoupons = await ProfileService.getUserCoupons(context.user.id);
-            
+
             if (userCoupons === null)
                 return [];
 
             let coupons = [];
-            for(let i of userCoupons) {
+            for (let i of userCoupons) {
                 coupons.push({
                     count: i.count,
                     coupon: {
@@ -57,8 +57,7 @@ const profileResolver = {
         async coupons(parent, args, context, info) {
             const allCoupons = await ProfileService.getAllCoupons();
             let coupons = [];
-            for(let i of allCoupons)
-            {
+            for (let i of allCoupons) {
                 coupons.push({
                     id: i.id,
                     name: i.name,
@@ -72,8 +71,7 @@ const profileResolver = {
         async categories(parent, args, context, info) {
             const allCategories = await ProfileService.getAllCategories();
             let categories = [];
-            for(let i of allCategories)
-            {
+            for (let i of allCategories) {
                 categories.push({
                     id: i.id,
                     name: i.name
@@ -92,7 +90,7 @@ const profileResolver = {
                 success: result1 && result2
             };
         },
-        updateProfileImg(parent, { file }) {
+        updateProfileImg(parent, {file}) {
             /*
             const { createReadStream, filename, mimetype, encoding } = await file;
             const stream = createReadStream();

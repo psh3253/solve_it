@@ -6,7 +6,7 @@ module.exports = gql`
         statistics(ID: String): Statistics
         categories: [Category!]!
     }
-    
+
     type Mutation {
         updateProfile(name: String, favorite: [String!]!): NormalResponse
         updateProfileImg(file: Upload!): File!
@@ -28,7 +28,7 @@ module.exports = gql`
         correct_count: Int!
         category_log: [Log!]!
     }
-    
+
     type Log {
         category: String
         try_count: Int

@@ -4,7 +4,7 @@ const User = require("../models/user");
 require('dotenv').config();
 
 authService.login = async function login(id, password) {
-    try{
+    try {
         const user = await User.findOne({
             attributes: ['id', 'nickname'],
             where: {
@@ -12,9 +12,8 @@ authService.login = async function login(id, password) {
                 password: password
             }
         });
-        
-        if(user != null)
-        {
+
+        if (user != null) {
             return jsonwebtoken.sign({id}, process.env.JWT_SECRET_KEY, {expiresIn: '72000s'});
         }
         return null;

@@ -8,7 +8,10 @@ Apollo Server와 GraphQL로 제작한 문제 공유 플랫폼 서버 입니다.
 
 ## Getting Started / 어떻게 시작하나요?
 
-SaeHoon's Scheduling System Api Server를 먼저 실행 후 Android Studio로 프로젝트를 열고 프로젝트를 빌드하여 실행하시면 됩니다.
+아래의 명령어로 실행하시면 됩니다.
+```
+npm start
+```
 
 
 ### Prerequisites / 선행 조건
@@ -38,7 +41,6 @@ npm install
 + 로그인 및 회원가입
 + 지필형 문제 제작 및 관리
 + 코딩테스트 문제 제작 및 관리
-+ 텍스트 및 파일을 사용하여 자동 문제 제작
 + 오답노트 및 틀린 문제 모아 보기
 + 문제 신고 및 검증
 + 질문하기 및 답변하기
@@ -48,7 +50,10 @@ npm install
 ## Technology / 기술
 
 + Apollo Server와 GraphQL을 사용하여 서버 요청 쿼리 제작
-+ Sequelize ORM을 사용하여 데이터베이스 관리
++ Judge0 온라인 코드 시스템 API 서버를 사용하여 코딩테스트 구현
++ Sequelize ORM을 사용하여 데이터베이스 접근 계층 구현
+
+* [Judge0](https://judge0.com/)
 
 ## License / 라이센스
 

@@ -26,7 +26,13 @@ module.exports = class Category extends Sequelize.Model {
 
     static associate(db) {
         db.Category.hasMany(db.Question, {foreignKey: 'category_id', sourceKey: 'id'});
-        db.Category.belongsToMany(db.User, {through: 'user_category', foreignKey: 'category_id', sourceKey: 'id', timestamps: false, onDelete: 'cascade'});
+        db.Category.belongsToMany(db.User, {
+            through: 'user_category',
+            foreignKey: 'category_id',
+            sourceKey: 'id',
+            timestamps: false,
+            onDelete: 'cascade'
+        });
         db.Category.hasMany(db.Test, {foreignKey: 'category_id', sourceKey: 'id'});
     }
 };

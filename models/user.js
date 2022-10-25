@@ -50,12 +50,23 @@ module.exports = class User extends Sequelize.Model {
         db.User.hasMany(db.Report, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.Test, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.belongsTo(db.Tier, {foreignKey: 'tier_id', targetKey: 'id'});
-        db.User.belongsToMany(db.Test, {through: 'like', foreignKey: 'creator_id', sourceKey: 'id', onDelete: 'cascade'});
+        db.User.belongsToMany(db.Test, {
+            through: 'like',
+            foreignKey: 'creator_id',
+            sourceKey: 'id',
+            onDelete: 'cascade'
+        });
         db.User.hasMany(db.Question, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.ReviewNote, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.Asking, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.Reply, {foreignKey: 'creator_id', sourceKey: 'id'});
-        db.User.belongsToMany(db.Category, {through: 'user_category', foreignKey: 'user_id', sourceKey: 'id', timestamps: false, onDelete: 'cascade'});
+        db.User.belongsToMany(db.Category, {
+            through: 'user_category',
+            foreignKey: 'user_id',
+            sourceKey: 'id',
+            timestamps: false,
+            onDelete: 'cascade'
+        });
         db.User.hasMany(db.IssuedCoupon, {foreignKey: 'user_id', sourceKey: 'id'});
         db.User.hasMany(db.QuestionDifficulty, {foreignKey: 'creator_id', sourceKey: 'id'});
         db.User.hasMany(db.TestTag, {foreignKey: 'creator_id', sourceKey: 'id', onDelete: 'cascade'})

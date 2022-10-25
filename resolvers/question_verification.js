@@ -8,7 +8,7 @@ const QuestionVerificationResolver = {
         async allReports(parent, {page}, context, info) {
             const reports = await QuestionVerificationService.getAllReports(page);
             let report_list = [];
-            for(let i of reports) {
+            for (let i of reports) {
                 report_list.push({
                     id: i.id,
                     isProcess: i.is_process,
@@ -25,7 +25,7 @@ const QuestionVerificationResolver = {
         async reportsByType(parent, {type}, context, info) {
             const reports = await QuestionVerificationService.getReportsByType(type);
             let report_list = [];
-            for(let i of reports) {
+            for (let i of reports) {
                 report_list.push({
                     id: i.id,
                     isProcess: i.is_process,
