@@ -5,12 +5,12 @@ module.exports = gql`
         allReports(page: Int!): [Report!]!
         reportsByType(type: ReportType!): [Report!]!
     }
-    
+
     type Mutation {
         createReport(input: CreateReportInput): NormalResponse
         deleteReport(id: ID!): NormalResponse
     }
-    
+
     input CreateReportInput {
         content: String!
         testId: ID!
@@ -25,7 +25,7 @@ module.exports = gql`
         COPYRIGHT_INFRINGEMENT
         OTHER
     }
-    
+
     type Report {
         id: ID!
         isProcess: Boolean!

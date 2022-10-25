@@ -25,7 +25,7 @@ module.exports = class AnswerSheet extends Sequelize.Model {
             underscored: true,
             modelName: 'AnswerSheet',
             tableName: 'answer_sheet',
-            indexes: [{ unique: true, fields: ['test_id', 'creator_id'] }],
+            indexes: [{unique: true, fields: ['test_id', 'creator_id']}],
             charset: 'utf8mb4',
             collate: 'utf8mb4_general_ci',
         });

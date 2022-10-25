@@ -24,7 +24,7 @@ module.exports = gql`
         deleteReply(id: ID!): NormalResponse
         submitCodingTestAnswer(input: CodingTestAnswerInput!): NormalResponse
     }
-    
+
     input CodingTestAnswerInput {
         questionId: ID!
         testId: ID!

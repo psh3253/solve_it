@@ -38,7 +38,7 @@ module.exports = gql`
         questionDifficulty: Int!,
         candidates: [String!]
     }
-    
+
     input CreateCodingTestQuestionInput {
         name: String!,
         paragraph: String!,
@@ -48,12 +48,12 @@ module.exports = gql`
         questionDifficulty: Int!,
         testCases: [TestCaseInput!]!
     }
-    
+
     input TestCaseInput {
         input: String!,
         output: [String!]!
     }
-    
+
     input UpdateQuestionInput {
         id: ID!,
         name: String!,
@@ -71,7 +71,7 @@ module.exports = gql`
         questionIds: [ID!]!
         categoryId: ID!
     }
-    
+
     input UpdateTestInput {
         id: ID!
         name: String!
@@ -99,7 +99,7 @@ module.exports = gql`
         like: Int!
         testCategory: Category!
     }
-    
+
     type TestHeader {
         id: ID!
         name: String!
@@ -178,7 +178,7 @@ module.exports = gql`
         id: ID!
         name: String!
     }
-    
+
     type QuestionIdNumber {
         questionId: ID!
         number: Int!
