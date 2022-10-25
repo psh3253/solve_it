@@ -65,15 +65,23 @@ profileService.addUserExperience = async function addUserExperience(user_id, exp
                 id: user_id
             }
         });
+
+        const user = await User.findOne({
+            attributes: ['id', 'experience'],
+            where: {
+                id: user_id
+            }
+        });
+
         const tier = await Tier.findOne({
             attributes: ['id'],
             where: {
-                experience: {
-                    [Op.lte]: experience
+                required_experience: {
+                    [Op.lte]: user.experience
                 }
             },
             order: [
-                ['experience', 'DESC']
+                ['required_experience', 'DESC']
             ]
         });
         await User.update({

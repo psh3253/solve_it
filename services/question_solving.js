@@ -10,6 +10,7 @@ const User = require('../models/user');
 const {sequelize} = require("../models/index");
 const Category = require("../models/category");
 const Question = require("../models/question");
+const Difficulty = require("../models/difficulty");
 const CodingQuestionTestCases = require('../models/coding_question_test_case');
 const axios = require('axios');
 
@@ -431,8 +432,8 @@ const isSupportedLanguage = (language) => {
     return language === 'java' || language === 'python' || language === 'c' || language === 'cpp'
 }
 
-questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, user_id, answer, language) => {
-    if(!isSupportedLanguage(language))
+questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, source_code, language, user_id) => {
+    if (!isSupportedLanguage(language))
         return false;
     try {
         const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
@@ -455,7 +456,7 @@ questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, use
         const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
 
         await AnswerRecord.upsert({
-            answer: answer,
+            answer: source_code,
             answer_sheet_id: answer_sheet.id,
             test_question_id: test_question.id,
             question_id: question_id,
@@ -496,7 +497,7 @@ questionSolvingService.judgeCodingTestQuestion = async (source_code, language, u
             question_id: question_id
         }
     });
-    for(let i = 0; i < test_cases.length; i++) {
+    for (let i = 0; i < test_cases.length; i++) {
         const test_case = test_cases[i];
         await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
             source_code: source_code,
@@ -507,28 +508,59 @@ questionSolvingService.judgeCodingTestQuestion = async (source_code, language, u
                 'Content-Type': 'application/json'
             }
         }).then(function (response) {
-            if(response.status === 201) {
+            if (response.status === 201) {
                 token = response.data.token;
             }
         }).catch(function (error) {
             console.error(error);
         });
         let stdout;
-        await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
-            headers: {
-                'Content-Type': 'application/json'
+        await sleep(3000);
+        while(true)
+        {
+            await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response) {
+                if (response.status === 200) {
+                    stdout = response.data.stdout;
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            if (stdout !== null) {
+                if (stdout.endsWith('\n')) {
+                    stdout = stdout.substring(0, stdout.length - 1);
+                    break;
+                }
             }
-        }).then(function (response) {
-            if(response.status === 200)
-            {
-                stdout = response.data.stdout
-            }
-        }).catch(function (error) {
-            console.error(error);
-        });
-
+            await sleep(500);
+        }
         return test_case.output === stdout;
     }
 }
+
+questionSolvingService.getExperience = async (question_id) => {
+    try {
+        const question = await Question.findOne({
+            attributes: ['difficulty_id'],
+            where: {
+                id: question_id
+            }
+        });
+        const difficulty = await Difficulty.findOne({
+            attributes: ['experience'],
+            where: {
+                id: question.difficulty_id
+            }
+        });
+        return difficulty.experience;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
 
 module.exports = questionSolvingService;
