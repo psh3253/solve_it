@@ -25,7 +25,7 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
         if (user.tier_id < 3) {
             return false;
         }
-        const result = await QuestionDifficulty.findOrCreate({
+        await QuestionDifficulty.findOrCreate({
             attributes: ['question_id'],
             where: {
                 question_id: question_id,
@@ -516,8 +516,7 @@ questionSolvingService.judgeCodingTestQuestion = async (source_code, language, u
         });
         let stdout;
         await sleep(3000);
-        while(true)
-        {
+        while (true) {
             await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
                 headers: {
                     'Content-Type': 'application/json'
