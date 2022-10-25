@@ -1,4 +1,3 @@
-const {getAnswer} = require('../services/question');
 const QuestionService = require('../services/question');
 const QuestionSolvingService = require('../services/question_solving');
 const ProfileService = require('../services/profile');

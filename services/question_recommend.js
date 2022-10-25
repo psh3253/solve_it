@@ -1,4 +1,3 @@
-const {sequelize, Test} = require("../models/index");
 const TestTag = require("../models/test_tag");
 const QuestionRecommendService = {};
 
