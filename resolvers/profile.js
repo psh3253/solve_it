@@ -1,8 +1,6 @@
 // const {GraphQLUpload} = require('graphql-upload')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
-const AuthService = require("../services/auth");
-
 const profileResolver = {
     // Upload: GraphQLUpload,
     Query: {
@@ -31,41 +29,6 @@ const profileResolver = {
                 favorites: categories,
                 creationDate: Util.getDateString(userProfile.created_at)
             };
-        },
-
-        async myCoupons(parent, args, context, info) {
-            const userCoupons = await ProfileService.getUserCoupons(context.user.id);
-
-            if (userCoupons === null)
-                return [];
-
-            let coupons = [];
-            for (let i of userCoupons) {
-                coupons.push({
-                    count: i.count,
-                    coupon: {
-                        id: i.Coupon.id,
-                        name: i.Coupon.name,
-                        explanation: i.Coupon.explanation,
-                        price: i.Coupon.price
-                    }
-                })
-            }
-            return coupons;
-        },
-
-        async coupons(parent, args, context, info) {
-            const allCoupons = await ProfileService.getAllCoupons();
-            let coupons = [];
-            for (let i of allCoupons) {
-                coupons.push({
-                    id: i.id,
-                    name: i.name,
-                    explanation: i.explanation,
-                    price: i.price
-                });
-            }
-            return coupons;
         },
 
         async categories(parent, args, context, info) {

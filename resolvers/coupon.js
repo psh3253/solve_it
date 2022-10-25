@@ -1,5 +1,4 @@
 const CouponService = require('../services/coupon');
-const ProfileService = require("../services/profile");
 
 const couponResolver = {
     Query: {

@@ -8,7 +8,6 @@ const TestQuestion = require('../models/test_question');
 const TestTag = require('../models/test_tag');
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category');
-const User = require('../models/user');
 
 questionService.getQuestion = async (question_id) => {
     try {

@@ -515,7 +515,6 @@ questionSolvingService.judgeCodingTestQuestion = async (source_code, language, u
             console.error(error);
         });
         let stdout;
-        await sleep(3000);
         while (true) {
             await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
                 headers: {

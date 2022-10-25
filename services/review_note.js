@@ -1,5 +1,4 @@
 const reviewNoteService = {};
-const {Op} = require("sequelize");
 const ReviewNote = require("../models/review_note");
 
 reviewNoteService.getReviewNote = async (question_id, user_id) => {
@@ -24,7 +23,6 @@ reviewNoteService.createReviewNote = async (question_id, explanation, user_id) =
             creator_id: user_id,
             question_id: question_id
         });
-
         return true;
     } catch (e) {
         console.error(e);
@@ -40,7 +38,6 @@ reviewNoteService.deleteReviewNote = async (question_id, user_id) => {
                 creator_id: user_id
             }
         });
-
         return true;
     } catch (e) {
         console.error(e);
