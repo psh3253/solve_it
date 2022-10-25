@@ -28,6 +28,7 @@ module.exports = gql`
     
     input CodingTestAnswerInput {
         questionId: ID!
+        testId: ID!
         sourceCode: String!
         language: String!
     }
