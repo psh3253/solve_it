@@ -1,10 +1,10 @@
-const {GraphQLUpload} = require('graphql-upload')
+// const {GraphQLUpload} = require('graphql-upload')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
 const AuthService = require("../services/auth");
 
 const profileResolver = {
-    Upload: GraphQLUpload,
+    // Upload: GraphQLUpload,
     Query: {
         async profile(parent, {ID}, context, info) {
             let targetID = ID;
