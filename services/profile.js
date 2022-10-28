@@ -7,7 +7,7 @@ const Tier = require('../models/tier');
 profileService.getUserProfile = async function getUserProfile(user_id) {
     try {
         return await User.findOne({
-            attributes: ['id', 'nickname', 'experience', 'point', 'created_at', 'tier_id'],
+            attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id'],
             where: {
                 id: user_id
             }
@@ -65,15 +65,23 @@ profileService.addUserExperience = async function addUserExperience(user_id, exp
                 id: user_id
             }
         });
+
+        const user = await User.findOne({
+            attributes: ['id', 'experience'],
+            where: {
+                id: user_id
+            }
+        });
+
         const tier = await Tier.findOne({
             attributes: ['id'],
             where: {
-                experience: {
-                    [Op.lte]: experience
+                required_experience: {
+                    [Op.lte]: user.experience
                 }
             },
             order: [
-                ['experience', 'DESC']
+                ['required_experience', 'DESC']
             ]
         });
         await User.update({
@@ -117,7 +125,7 @@ profileService.updateCategory = async function updateCategory(user_id, categorie
         const allCategories = await Category.findAll({
             attributes: ['id']
         });
-        await user.removeCategories(allCategories);
+        await user.removeCategories(allCategories); // ???
         const user_categories_id = await Category.findAll({
             where: {
                 name: {
@@ -127,6 +135,31 @@ profileService.updateCategory = async function updateCategory(user_id, categorie
         });
         await user.addCategories(user_categories_id);
         return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+profileService.updateProfileImg = async function updateProfileImg(image_url) {
+    try {
+        const user = await User.findOne({
+            attributes: ['id'],
+            where: {
+                image_url: image_url
+            }
+        })
+
+        if (user === null) return false;
+
+        await User.update({
+            image_url: image_url
+        },
+        {
+            where: {
+                id: user.id
+            }
+        })
     } catch (e) {
         console.error(e);
         return false;

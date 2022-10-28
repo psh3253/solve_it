@@ -1,10 +1,11 @@
-const {GraphQLUpload} = require('graphql-upload')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
 const AuthService = require("../services/auth");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const profileResolver = {
-    Upload: GraphQLUpload,
     Query: {
         async profile(parent, {ID}, context, info) {
             let targetID = ID;
@@ -24,7 +25,7 @@ const profileResolver = {
             return {
                 ownerId: userProfile.id,
                 nickname: userProfile.nickname,
-                image: userProfile.image,
+                image: userProfile.image_url,
                 experience: userProfile.experience,
                 point: userProfile.point,
                 tier: userProfile.tier_id,
@@ -92,18 +93,15 @@ const profileResolver = {
                 success: result1 && result2
             };
         },
-        updateProfileImg(parent, { file }) {
-            /*
-            const { createReadStream, filename, mimetype, encoding } = await file;
-            const stream = createReadStream();
-      
-            const out = require('fs').createWriteStream(filename);
-            stream.pipe(out);
-            await finished(out);
-
-            return { filename, mimetype, encoding };
-
-             */
+        async updateProfileImg(parent, {awsRegion, eventTime, imageFileName, imageFileSize}, context, info) {
+            // TODO: verification code
+            const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + imageFileName
+            const result = await ProfileService.updateProfileImg(imageUrl);
+            return {
+                code: 200,
+                message: 'complete',
+                success: result
+            }
         }
     }
 };
