@@ -1,6 +1,4 @@
 const QuestionService = require('../services/question');
-const {buildTagList} = require('../services/question_solving');
-const QuestionRecommendResolver = require('../resolvers/question_recommend')
 const Util = require('../util');
 
 const QuestionResolver = {
