@@ -10,7 +10,8 @@ Apollo Server와 GraphQL로 제작한 문제 공유 플랫폼 서버 입니다.
 
 아래의 명령어로 실행하시면 됩니다.
 ```
-npm start
+docker build -t solveit:1.0 . 
+docker run -it -d --name solveit -p 4000:4000 solveit:1.0
 ```
 
 
@@ -19,7 +20,7 @@ npm start
 아래 사항들이 설치가 되어있어야합니다.
 
 ```
-MySQL Server 8.0 이상의 서버, Node.js 16.13.0 이상, npm 8.1.0 이상
+MySQL Server 8.0 이상의 서버, Node.js 16.13.0 이상, npm 8.1.0 이상, Docker 20 이상
 ```
 
 ### 모듈 설치
@@ -52,6 +53,7 @@ npm install
 + Apollo Server와 GraphQL을 사용하여 서버 요청 쿼리 제작
 + Judge0 온라인 코드 시스템 API 서버를 사용하여 코딩테스트 구현
 + Sequelize ORM을 사용하여 데이터베이스 접근 계층 구현
++ Docker Container를 사용한 배포
 
 * [Judge0](https://judge0.com/)
 
