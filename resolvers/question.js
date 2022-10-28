@@ -165,6 +165,16 @@ const QuestionResolver = {
             }
         },
 
+        async createCodingTestQuestion(parent, {input}, context, info) {
+            const question_id = await QuestionService.createCodingTestQuestion(input.name, input.paragraph, input.explanation, input.questionCategory, input.questionDifficulty, input.testCases, context.user.id);
+            return {
+                code: 200,
+                message: 'complete',
+                success: question_id > 0,
+                questionId: question_id
+            }
+        },
+
         async updateQuestion(parent, {input}, context, info) {
             const question_id = await QuestionService.updateQuestion(input.id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
             return {
