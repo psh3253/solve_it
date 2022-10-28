@@ -1,5 +1,10 @@
 const ProfileService = require('../services/profile');
 const Util = require('../util');
+const AuthService = require("../services/auth");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 const profileResolver = {
     Query: {
         async profile(parent, {ID}, context, info) {
@@ -20,7 +25,7 @@ const profileResolver = {
             return {
                 ownerId: userProfile.id,
                 nickname: userProfile.nickname,
-                image: userProfile.image,
+                image: userProfile.image_url,
                 experience: userProfile.experience,
                 point: userProfile.point,
                 tier: userProfile.tier_id,
@@ -54,10 +59,8 @@ const profileResolver = {
 
         async updateProfileImg(parent, {awsRegion, eventTime, imageFileName, imageFileSize}, context, info) {
             // TODO: verification code
-
-            console.log(awsRegion, eventTime, imageFileName, imageFileSize);
-
-            const result = await ProfileService.updateProfileImg(context.user.id, imageFileName);
+            const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + imageFileName
+            const result = await ProfileService.updateProfileImg(imageUrl);
             return {
                 code: 200,
                 message: 'complete',

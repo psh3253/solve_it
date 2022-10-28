@@ -10,6 +10,7 @@ const {sequelize} = require('./models');
 const server = new ApolloServer({
     schema: schema,
     csrfPrevention: true,
+    allowBatchedHttpRequests: true,
     context: async({req}) => {
         try {
             const op = req.body.query.split('\n')[1].trim();
@@ -17,7 +18,7 @@ const server = new ApolloServer({
                 return {};
 
             const token = req.headers.authorization || '';
-            const user = jsonwebtoken.verify(token.slice(7), process.env.JWT_SECRET_KEY);
+            const user = jsonwebtoken.verify(token.slice(7), process.env.JWT_SECRET_KEY)
             return {user};
         } catch (e) {
             // console.error(e);

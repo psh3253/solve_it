@@ -57,5 +57,4 @@ const QuestionRecommendResolver = {
         }
     }
 }
-
 module.exports = QuestionRecommendResolver;
