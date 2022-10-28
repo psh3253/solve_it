@@ -1,13 +1,11 @@
 const CouponService = require('../services/coupon');
-const ProfileService = require("../services/profile");
 
 const couponResolver = {
     Query: {
         async coupons(parent, args, context, info) {
             const allCoupons = await CouponService.getAllCoupons();
             let coupons = [];
-            for(let i of allCoupons)
-            {
+            for (let i of allCoupons) {
                 coupons.push({
                     id: i.id,
                     name: i.name,
@@ -25,7 +23,7 @@ const couponResolver = {
                 return [];
 
             let coupons = [];
-            for(let i of userCoupons) {
+            for (let i of userCoupons) {
                 coupons.push({
                     count: i.count,
                     coupon: {

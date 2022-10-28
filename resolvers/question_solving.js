@@ -1,4 +1,3 @@
-const { getAnswer } = require('../services/question');
 const QuestionService = require('../services/question');
 const QuestionSolvingService = require('../services/question_solving');
 const ProfileService = require('../services/profile');
@@ -155,8 +154,16 @@ const QuestionSolvingResolver = {
             }
         },
 
+        async submitCodingTestAnswer(parent, {input}, context, info) {
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionSolvingService.submitCodingTestAnswer(input.testId, input.questionId, input.sourceCode, input.language, context.user.id)
+            }
+        },
+
         async judgeAnswer(parent, {testId, questionId}, context, info) {
-            const answer_record = await QuestionSolvingService.getAnswerRecord(testId, questionId, context.uer.id);
+            const answer_record = await QuestionSolvingService.getAnswerRecord(testId, questionId, context.user.id);
             const answers = await QuestionService.getAnswer(questionId);
             let answer_list = [];
             let user_answers = answer_record.answer.split(',');
@@ -190,8 +197,16 @@ const QuestionSolvingResolver = {
             try {
                 let total_experience = 0;
                 const answer_records = await QuestionSolvingService.getAnswerRecords(testId, context.user.id);
-
                 for (let record of answer_records) {
+                    const question = await QuestionService.getQuestion(record.question_id);
+                    if (question.type === 'CODING_TEST') {
+                        const is_correct = await QuestionSolvingService.judgeCodingTestQuestion(record.answer, record.language, context.user.id, record.question_id);
+                        await QuestionSolvingService.updateJudgeResult(record.id, is_correct);
+                        if (is_correct)
+                            total_experience += await QuestionSolvingService.getExperience(record.question_id);
+                        continue;
+                    }
+
                     let status = false;
                     const answers = await QuestionService.getAnswer(record.question_id);
                     let answer_list = [];
@@ -219,7 +234,7 @@ const QuestionSolvingResolver = {
                     if (status)
                         continue;
                     await QuestionSolvingService.updateJudgeResult(record.id, true);
-                    total_experience += QuestionSolvingService.getExperience(record.question_id);
+                    total_experience += await QuestionSolvingService.getExperience(record.question_id);
                 }
                 await ProfileService.addUserExperience(context.user.id, total_experience);
                 return Util.normalResponse(200, 'complete', true);

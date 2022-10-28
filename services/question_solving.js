@@ -10,6 +10,9 @@ const User = require('../models/user');
 const {sequelize} = require("../models/index");
 const Category = require("../models/category");
 const Question = require("../models/question");
+const Difficulty = require("../models/difficulty");
+const CodingQuestionTestCases = require('../models/coding_question_test_case');
+const axios = require('axios');
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
@@ -19,10 +22,10 @@ questionSolvingService.contributeDifficulty = async (question_id, difficulty_id,
                 id: user_id
             }
         });
-        if(user.tier_id < 3) {
+        if (user.tier_id < 3) {
             return false;
         }
-        const result = await QuestionDifficulty.findOrCreate({
+        await QuestionDifficulty.findOrCreate({
             attributes: ['question_id'],
             where: {
                 question_id: question_id,
@@ -171,9 +174,7 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
                 test_id: test_id,
                 creator_id: user_id
             });
-        }
-
-        else {
+        } else {
             await AnswerSheet.update({
                 test_id: test_id,
                 creator_id: user_id,
@@ -227,7 +228,7 @@ questionSolvingService.getAnswerRecords = async (test_id, user_id) => {
         for (let test_question of test_questions) {
             answer_record_list.push(
                 await AnswerRecord.findOne({
-                    attributes: ['id', 'answer', 'is_correct', 'question_id'],
+                    attributes: ['id', 'answer', 'is_correct', 'question_id', 'language'],
                     where: {
                         answer_sheet_id: answer_sheet.id,
                         test_question_id: test_question.id
@@ -246,7 +247,7 @@ questionSolvingService.getAnswerRecords = async (test_id, user_id) => {
 questionSolvingService.getAllAsking = async (page) => {
     try {
         return await Asking.findAll({
-            attributes: [ 'id', 'title', 'content', 'created_at', 'question_id', 'creator_id'],
+            attributes: ['id', 'title', 'content', 'created_at', 'question_id', 'creator_id'],
             limit: 10,
             offset: (page - 1) * 10,
             order: [['created_at', 'DESC']]
@@ -426,5 +427,138 @@ questionSolvingService.deleteReply = async (reply_id) => {
         return false;
     }
 }
+
+const isSupportedLanguage = (language) => {
+    return language === 'java' || language === 'python' || language === 'c' || language === 'cpp'
+}
+
+questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, source_code, language, user_id) => {
+    if (!isSupportedLanguage(language))
+        return false;
+    try {
+        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        if (answer_sheet == null) {
+            await AnswerSheet.create({
+                test_id: test_id,
+                creator_id: user_id
+            });
+        } else {
+            await AnswerSheet.update({
+                test_id: test_id,
+                creator_id: user_id,
+            }, {
+                where: {
+                    id: answer_sheet.id
+                }
+            });
+        }
+
+        const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
+
+        await AnswerRecord.upsert({
+            answer: source_code,
+            answer_sheet_id: answer_sheet.id,
+            test_question_id: test_question.id,
+            question_id: question_id,
+            language: language
+        });
+        return true;
+    } catch (e) {
+        console.error(e)
+        return false;
+    }
+}
+
+const languageToLanguageId = (language) => {
+    let language_id;
+    switch (language) {
+        case 'java':
+            language_id = 62;
+            break;
+        case 'c':
+            language_id = 50;
+            break;
+        case 'c++':
+            language_id = 54;
+            break;
+        case 'python':
+            language_id = 71;
+            break;
+    }
+    return language_id;
+}
+
+questionSolvingService.judgeCodingTestQuestion = async (source_code, language, user_id, question_id) => {
+    let token;
+    const language_id = languageToLanguageId(language);
+    const test_cases = await CodingQuestionTestCases.findAll({
+        attributes: ['input', 'output'],
+        where: {
+            question_id: question_id
+        }
+    });
+    for (let i = 0; i < test_cases.length; i++) {
+        const test_case = test_cases[i];
+        await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
+            source_code: source_code,
+            language_id: language_id,
+            stdin: test_case.input
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function (response) {
+            if (response.status === 201) {
+                token = response.data.token;
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        let stdout;
+        while (true) {
+            await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response) {
+                if (response.status === 200) {
+                    stdout = response.data.stdout;
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            if (stdout !== null) {
+                if (stdout.endsWith('\n')) {
+                    stdout = stdout.substring(0, stdout.length - 1);
+                    break;
+                }
+            }
+            await sleep(500);
+        }
+        return test_case.output === stdout;
+    }
+}
+
+questionSolvingService.getExperience = async (question_id) => {
+    try {
+        const question = await Question.findOne({
+            attributes: ['difficulty_id'],
+            where: {
+                id: question_id
+            }
+        });
+        const difficulty = await Difficulty.findOne({
+            attributes: ['experience'],
+            where: {
+                id: question.difficulty_id
+            }
+        });
+        return difficulty.experience;
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
 
 module.exports = questionSolvingService;

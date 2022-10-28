@@ -1,8 +1,7 @@
-const {sequelize, Test} = require("../models/index");
 const TestTag = require("../models/test_tag");
-const questionRecommandService = {};
+const QuestionRecommendService = {};
 
-questionRecommandService.getTag = async (tag_id) => {
+QuestionRecommendService.getTag = async (tag_id) => {
     try {
         return await TestTag.findOne({
             attributes: ['id', 'tag', 'created_at', 'creator_id', 'test_id'],
@@ -16,7 +15,7 @@ questionRecommandService.getTag = async (tag_id) => {
     }
 }
 
-questionRecommandService.getMyTags = async (user_id) => {
+QuestionRecommendService.getMyTags = async (user_id) => {
     try {
         return await TestTag.findAll({
             attributes: ['id', 'tag', 'created_at', 'creator_id', 'test_id'],
@@ -30,7 +29,7 @@ questionRecommandService.getMyTags = async (user_id) => {
     }
 }
 
-questionRecommandService.createTag = async (name, test_id, user_id) => {
+QuestionRecommendService.createTag = async (name, test_id, user_id) => {
     try {
         await TestTag.create({
             tag: name,
@@ -44,7 +43,7 @@ questionRecommandService.createTag = async (name, test_id, user_id) => {
     }
 }
 
-questionRecommandService.updateTag = async (tag_id, name) => {
+QuestionRecommendService.updateTag = async (tag_id, name) => {
     try {
         await TestTag.update({
             tag: name
@@ -60,7 +59,7 @@ questionRecommandService.updateTag = async (tag_id, name) => {
     }
 }
 
-questionRecommandService.deleteTag = async (name, test_id, user_id) => {
+QuestionRecommendService.deleteTag = async (name, test_id, user_id) => {
     try {
         await TestTag.destroy({
             where: {
@@ -76,4 +75,4 @@ questionRecommandService.deleteTag = async (name, test_id, user_id) => {
     }
 }
 
-module.exports = questionRecommandService;
+module.exports = QuestionRecommendService;

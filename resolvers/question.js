@@ -1,6 +1,4 @@
 const QuestionService = require('../services/question');
-const {buildTagList} = require('../services/question_solving');
-const QuestionRecommendResolver = require('../resolvers/question_recommend')
 const Util = require('../util');
 
 const QuestionResolver = {
@@ -15,14 +13,14 @@ const QuestionResolver = {
     Query: {
         async question(parent, {id}, context, info) {
             const question = await QuestionService.getQuestion(id);
-            if(question === null)
+            if (question === null)
                 return null;
             const answers = await QuestionService.getAnswer(id);
             const candidates = await QuestionService.getCandidate(id);
             const wrong_count = question.try_count - question.correct_count
             let answer_list = [];
             let candidate_list = [];
-            
+
             for (let i of answers) {
                 answer_list.push(i.answer)
             }
@@ -32,7 +30,7 @@ const QuestionResolver = {
                     content: i.content
                 })
             }
-            
+
             return {
                 id: question.id,
                 name: question.title,
@@ -50,14 +48,14 @@ const QuestionResolver = {
 
         async test(parent, {id}, context, info) {
             const test = await QuestionService.getTest(id, context.user.id);
-            if(test === null)
+            if (test === null)
                 return null;
             const test_question_ids = await QuestionService.getTestQuestions(id);
             const test_tags = await QuestionService.getTestTags(id);
 
             let question_id_list = [];
 
-            for(let i of test_question_ids) {
+            for (let i of test_question_ids) {
                 question_id_list.push({
                     questionId: i.question_id,
                     number: i.number
@@ -96,8 +94,7 @@ const QuestionResolver = {
         async allTests(parent, {page, order}, context, info) {
             const tests = await QuestionService.getAllTests(page, order);
             let test_list = [];
-            for(let i of tests)
-            {
+            for (let i of tests) {
                 test_list.push({
                     id: i.id,
                     name: i.title,
@@ -118,8 +115,7 @@ const QuestionResolver = {
         async testsByCategory(parent, {id}, context, info) {
             const tests = await QuestionService.getTestsByCategoryId(id);
             let test_list = [];
-            for(let i of tests)
-            {
+            for (let i of tests) {
                 test_list.push({
                     id: i.id,
                     name: i.title,
@@ -140,8 +136,7 @@ const QuestionResolver = {
         async testsByCreator(parent, {id}, context, info) {
             const tests = await QuestionService.getTestsByCreatorId(id);
             let test_list = [];
-            for(let i of tests)
-            {
+            for (let i of tests) {
                 test_list.push({
                     id: i.id,
                     name: i.title,
@@ -170,6 +165,16 @@ const QuestionResolver = {
             }
         },
 
+        async createCodingTestQuestion(parent, {input}, context, info) {
+            const question_id = await QuestionService.createCodingTestQuestion(input.name, input.paragraph, input.explanation, input.questionCategory, input.questionDifficulty, input.testCases, context.user.id);
+            return {
+                code: 200,
+                message: 'complete',
+                success: question_id > 0,
+                questionId: question_id
+            }
+        },
+
         async updateQuestion(parent, {input}, context, info) {
             const question_id = await QuestionService.updateQuestion(input.id, input.name, input.paragraph, input.answers, input.explanation, input.candidates);
             return {
@@ -181,7 +186,7 @@ const QuestionResolver = {
         },
 
         async deleteQuestion(parent, {id}, context, info) {
-            if(!await QuestionService.isQuestionCreator(id, context.user.id))
+            if (!await QuestionService.isQuestionCreator(id, context.user.id))
                 return {
                     code: 200,
                     message: 'not creator',
@@ -203,7 +208,7 @@ const QuestionResolver = {
         },
 
         async updateTest(parent, {input}, context, info) {
-            if(!await QuestionService.isTestCreator(input.id, context.user.id))
+            if (!await QuestionService.isTestCreator(input.id, context.user.id))
                 return {
                     code: 200,
                     message: 'not creator',
@@ -217,7 +222,7 @@ const QuestionResolver = {
         },
 
         async deleteTest(parent, {id}, context, info) {
-            if(!await QuestionService.isTestCreator(id, context.user.id))
+            if (!await QuestionService.isTestCreator(id, context.user.id))
                 return {
                     code: 200,
                     message: 'not creator',

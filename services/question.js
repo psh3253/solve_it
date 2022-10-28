@@ -3,12 +3,12 @@ const {sequelize} = require('../models');
 const Question = require('../models/question');
 const QuestionAnswer = require('../models/question_answer');
 const QuestionCandidate = require('../models/question_candidate');
+const CodingQuestionTestCase = require('../models/coding_question_test_case');
 const Test = require('../models/test');
 const TestQuestion = require('../models/test_question');
 const TestTag = require('../models/test_tag');
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category');
-const User = require('../models/user');
 
 questionService.getQuestion = async (question_id) => {
     try {
@@ -245,6 +245,34 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
                     question_id: question.id
                 })
                 number++;
+            }
+        }
+        return question.id;
+    } catch (e) {
+        console.error(e);
+        return 0;
+    }
+}
+
+questionService.createCodingTestQuestion = async (title, content, explanation, category_id, difficulty_id, test_cases, creator_id,) => {
+    try {
+        const question = await Question.create({
+            title: title,
+            content: content,
+            type: 'CODING_TEST',
+            explanation: explanation,
+            category_id: category_id,
+            creator_id: creator_id,
+            difficulty_id: difficulty_id
+        });
+
+        for (let i of test_cases) {
+            for(let j of i.output) {
+                await CodingQuestionTestCase.create({
+                    input: i.input,
+                    output: j,
+                    question_id: question.id
+                });
             }
         }
         return question.id;
