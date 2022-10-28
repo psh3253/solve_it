@@ -34,47 +34,10 @@ const profileResolver = {
             };
         },
 
-        async myCoupons(parent, args, context, info) {
-            const userCoupons = await ProfileService.getUserCoupons(context.user.id);
-            
-            if (userCoupons === null)
-                return [];
-
-            let coupons = [];
-            for(let i of userCoupons) {
-                coupons.push({
-                    count: i.count,
-                    coupon: {
-                        id: i.Coupon.id,
-                        name: i.Coupon.name,
-                        explanation: i.Coupon.explanation,
-                        price: i.Coupon.price
-                    }
-                })
-            }
-            return coupons;
-        },
-
-        async coupons(parent, args, context, info) {
-            const allCoupons = await ProfileService.getAllCoupons();
-            let coupons = [];
-            for(let i of allCoupons)
-            {
-                coupons.push({
-                    id: i.id,
-                    name: i.name,
-                    explanation: i.explanation,
-                    price: i.price
-                });
-            }
-            return coupons;
-        },
-
         async categories(parent, args, context, info) {
             const allCategories = await ProfileService.getAllCategories();
             let categories = [];
-            for(let i of allCategories)
-            {
+            for (let i of allCategories) {
                 categories.push({
                     id: i.id,
                     name: i.name
@@ -93,6 +56,7 @@ const profileResolver = {
                 success: result1 && result2
             };
         },
+
         async updateProfileImg(parent, {awsRegion, eventTime, imageFileName, imageFileSize}, context, info) {
             // TODO: verification code
             const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + imageFileName
