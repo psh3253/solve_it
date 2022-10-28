@@ -1,10 +1,8 @@
-// const {GraphQLUpload} = require('graphql-upload')
 const ProfileService = require('../services/profile');
 const Util = require('../util');
 const AuthService = require("../services/auth");
 
 const profileResolver = {
-    // Upload: GraphQLUpload,
     Query: {
         async profile(parent, {ID}, context, info) {
             let targetID = ID;
@@ -90,18 +88,18 @@ const profileResolver = {
                 success: result1 && result2
             };
         },
-        updateProfileImg(parent, {file}) {
-            /*
-            const { createReadStream, filename, mimetype, encoding } = await file;
-            const stream = createReadStream();
-      
-            const out = require('fs').createWriteStream(filename);
-            stream.pipe(out);
-            await finished(out);
 
-            return { filename, mimetype, encoding };
+        async updateProfileImg(parent, {awsRegion, eventTime, imageFileName, imageFileSize}, context, info) {
+            // TODO: verification code
 
-             */
+            console.log(awsRegion, eventTime, imageFileName, imageFileSize);
+
+            const result = await ProfileService.updateProfileImg(context.user.id, imageFileName);
+            return {
+                code: 200,
+                message: 'complete',
+                success: result
+            }
         }
     }
 };
