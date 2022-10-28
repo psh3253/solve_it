@@ -10,11 +10,15 @@ module.exports = class AnswerRecord extends Sequelize.Model {
                 autoIncrement: true
             },
             answer: {
-                type: Sequelize.STRING(50),
+                type: Sequelize.TEXT,
                 allowNull: false
             },
             is_correct: {
                 type: Sequelize.BOOLEAN,
+                allowNull: true
+            },
+            language: {
+                type: Sequelize.STRING(10),
                 allowNull: true
             }
         }, {
