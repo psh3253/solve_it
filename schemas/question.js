@@ -43,7 +43,6 @@ module.exports = gql`
         name: String!,
         paragraph: String!,
         explanation: String,
-        type: QuestionType!,
         questionCategory: Int!,
         questionDifficulty: Int!,
         testCases: [TestCaseInput!]!
