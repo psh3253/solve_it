@@ -125,13 +125,17 @@ module.exports = gql`
         id: ID!
         name: String!
         paragraph: String!
-        answers: [String!]!
         explanation: String
         type: QuestionType
         difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
+    }
+
+    type TestCase {
+        input: String!
+        output: String!
     }
 
     enum QuestionType {
@@ -166,6 +170,19 @@ module.exports = gql`
         wrongCnt: Int
         questionCategory: Category
         candidates: [Candidate!]!
+    }
+    
+    type CodingTest implements Question {
+        id: ID!
+        name: String!
+        paragraph: String!
+        explanation: String
+        type: QuestionType
+        difficulty: Difficulty!
+        answerCnt: Int!
+        wrongCnt: Int
+        questionCategory: Category
+        testCases: [TestCase!]
     }
 
     type Candidate {

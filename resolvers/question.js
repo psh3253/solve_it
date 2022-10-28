@@ -6,6 +6,8 @@ const QuestionResolver = {
         __resolveType: (question) => {
             if (question.type === "MULTIPLE_CHOICE")
                 return "MultipleChoice"
+            else if (question.type === "CODING_TEST")
+                return "CodingTest"
             else
                 return "Other"
         }
@@ -18,8 +20,10 @@ const QuestionResolver = {
             const answers = await QuestionService.getAnswer(id);
             const candidates = await QuestionService.getCandidate(id);
             const wrong_count = question.try_count - question.correct_count
+            const test_cases = await QuestionService.getTestCase(id);
             let answer_list = [];
             let candidate_list = [];
+            let test_case_list = [];
 
             for (let i of answers) {
                 answer_list.push(i.answer)
@@ -28,6 +32,12 @@ const QuestionResolver = {
                 candidate_list.push({
                     number: i.number,
                     content: i.content
+                })
+            }
+            for (let i of test_cases) {
+                test_case_list.push({
+                    input: i.input,
+                    output: i.output
                 })
             }
 
@@ -42,7 +52,8 @@ const QuestionResolver = {
                 answerCnt: question.try_count,
                 wrongCnt: wrong_count,
                 questionCategory: question.Category,
-                candidates: candidate_list
+                candidates: candidate_list,
+                testCases: test_case_list
             };
         },
 

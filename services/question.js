@@ -446,4 +446,18 @@ questionService.deleteTest = async (test_id) => {
     }
 }
 
+questionService.getTestCase = async (question_id) => {
+    try {
+        return await CodingQuestionTestCase.findAll({
+            attributes: ['input', 'output'],
+            where: {
+                question_id: question_id
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 module.exports = questionService;
