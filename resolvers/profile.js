@@ -58,7 +58,13 @@ const profileResolver = {
         },
 
         async updateProfileImg(parent, {awsRegion, eventTime, imageFileName, imageFileSize}, context, info) {
-            // TODO: verification code
+            if (awsRegion !== process.env.AWS_REGION)
+                return {
+                    code: 200,
+                    message: 'failed',
+                    success: false
+                }
+
             const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + imageFileName
             const result = await ProfileService.updateProfileImg(imageUrl);
             return {
