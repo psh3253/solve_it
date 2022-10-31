@@ -135,7 +135,7 @@ module.exports = gql`
 
     type TestCase {
         input: String!
-        output: String!
+        output: [String!]!
     }
 
     enum QuestionType {
