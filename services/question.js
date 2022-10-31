@@ -448,12 +448,29 @@ questionService.deleteTest = async (test_id) => {
 
 questionService.getTestCase = async (question_id) => {
     try {
-        return await CodingQuestionTestCase.findAll({
-            attributes: ['input', 'output'],
+        const test_case_list = [];
+        const test_case_inputs = await CodingQuestionTestCase.findAll({
+            attributes: ['input'],
             where: {
                 question_id: question_id
-            }
+            },
+            group: ['input']
         });
+        for(let i = 0; i < test_case_inputs.length; i++)
+        {
+            const test_case_outputs = await CodingQuestionTestCase.findAll({
+                attributes: ['output'],
+                where: {
+                    question_id: question_id,
+                    input: test_case_inputs[i].input
+                }
+            });
+            test_case_list.push({
+                input: test_case_inputs[i].input,
+                output: test_case_outputs.map((item) => item.output)
+            });
+        }
+        return test_case_list;
     } catch (e) {
         console.error(e);
         return null;
