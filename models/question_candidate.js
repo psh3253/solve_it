@@ -10,7 +10,11 @@ module.exports = class QuestionCandidate extends Sequelize.Model {
             content: {
                 type: Sequelize.STRING(50),
                 allowNull: false
-            }
+            },
+            image_url: {
+                type: Sequelize.STRING(200),
+                allowNull: true,
+            },
         }, {
             sequelize,
             timestamps: false,
