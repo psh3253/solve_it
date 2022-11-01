@@ -282,6 +282,56 @@ questionService.createCodingTestQuestion = async (title, content, explanation, c
     }
 }
 
+questionService.uploadQuestionImageFile = async (question_id, image_url) => {
+    try {
+        const question = await Question.findOne({
+            attributes: ['id'],
+            where: {
+                id: question_id
+            }
+        })
+
+        if (question === null) return false;
+
+        await Question.update({
+            image_url: image_url
+        },
+        {
+            where: {
+                id: question.id
+            }
+        })
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionService.uploadQuestionSoundFile = async (question_id, sound_url) => {
+    try {
+        const question = await Question.findOne({
+            attributes: ['id'],
+            where: {
+                id: question_id
+            }
+        })
+
+        if (question === null) return false;
+
+        await Question.update({
+            image_url: sound_url
+        },
+        {
+            where: {
+                id: question.id
+            }
+        })
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 questionService.updateQuestion = async (question_id, title, content, answers, explanation, candidates) => {
     try {
         await Question.update({

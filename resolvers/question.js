@@ -176,6 +176,48 @@ const QuestionResolver = {
             }
         },
 
+        async uploadQuestionMediaFile(parent, {awsRegion, eventTime, fileName, fileSize}, context, info) {
+            if (awsRegion !== process.env.AWS_REGION)
+                return {
+                    code: 200,
+                    message: 'failed',
+                    success: false
+                }
+            
+            const decoded_file_name = decodeURIComponent(fileName);
+            const file_type = decoded_file_name.split('.').slice(-1)[0];
+            const question_id = decoded_file_name.split('.').slice(0, -1).join('.');
+
+
+            if (["png", "jpg", "jpeg"].includes(file_type)) {
+                const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_IMAGE_DIRECTORY_PATH + "/" + decoded_file_name
+                const result = await QuestionService.uploadQuestionImageFile(question_id, fileUrl);
+
+                return {
+                    code: 200,
+                    message: 'complete',
+                    success: result
+                }
+            }
+
+            else if (["wav", "mp3"].includes(file_type)) {
+                const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_SOUND_DIRECTORY_PATH + "/" + decoded_file_name
+                const result = await QuestionService.uploadQuestionSoundFile(question_id, fileUrl);
+                return {
+                    code: 200,
+                    message: 'complete',
+                    success: result
+                }
+            }
+
+            return {
+                code: 200,
+                message: 'unsupported file extension',
+                success: false
+            }
+            
+        },
+
         async createCodingTestQuestion(parent, {input}, context, info) {
             const question_id = await QuestionService.createCodingTestQuestion(input.name, input.paragraph, input.explanation, input.questionCategory, input.questionDifficulty, input.testCases, context.user.id);
             return {

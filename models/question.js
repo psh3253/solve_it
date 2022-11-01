@@ -17,6 +17,14 @@ module.exports = class Question extends Sequelize.Model {
                 type: Sequelize.TEXT,
                 allowNull: false
             },
+            image_url: {
+                type: Sequelize.STRING(200),
+                allowNull: true,
+            },
+            sound_url: {
+                type: Sequelize.STRING(200),
+                allowNull: true,
+            },
             type: {
                 type: Sequelize.STRING(30),
                 allowNull: false
