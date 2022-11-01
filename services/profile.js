@@ -141,12 +141,12 @@ profileService.updateCategory = async function updateCategory(user_id, categorie
     }
 }
 
-profileService.updateProfileImg = async function updateProfileImg(image_url) {
+profileService.updateProfileImg = async function updateProfileImg(user_id, image_url) {
     try {
         const user = await User.findOne({
             attributes: ['id'],
             where: {
-                image_url: image_url
+                id: user_id
             }
         })
 
@@ -160,6 +160,8 @@ profileService.updateProfileImg = async function updateProfileImg(image_url) {
                 id: user.id
             }
         })
+
+        return true;
     } catch (e) {
         console.error(e);
         return false;

@@ -57,7 +57,7 @@ const profileResolver = {
             };
         },
 
-        async updateProfileImg(parent, {awsRegion, eventTime, imageFileName, imageFileSize}, context, info) {
+        async updateProfileImg(parent, {awsRegion, eventTime, fileName, fileSize}, context, info) {
             if (awsRegion !== process.env.AWS_REGION)
                 return {
                     code: 200,
@@ -65,11 +65,24 @@ const profileResolver = {
                     success: false
                 }
 
-            const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + imageFileName
-            const result = await ProfileService.updateProfileImg(imageUrl);
+            const decoded_file_name = decodeURIComponent(fileName);
+            const file_type = decoded_file_name.split('.').slice(-1)[0];
+            const user_id = decoded_file_name.split('.').slice(0, -1).join('.');
+            
+            if (["png", "jpg", "jpeg"].includes(file_type)) {
+                const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + decoded_file_name
+                const result = await ProfileService.updateProfileImg(user_id, imageUrl);
+                console.log(file_type, user_id, result)
+                return {
+                    code: 200,
+                    message: 'complete',
+                    success: result
+                }
+            }
+
             return {
                 code: 200,
-                message: 'complete',
+                message: 'unsupported file extension',
                 success: result
             }
         }
