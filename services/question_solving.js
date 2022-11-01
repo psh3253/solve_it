@@ -489,20 +489,28 @@ const languageToLanguageId = (language) => {
 }
 
 questionSolvingService.judgeCodingTestQuestion = async (source_code, language, user_id, question_id) => {
+    let is_correct = true;
     let token;
     const language_id = languageToLanguageId(language);
-    const test_cases = await CodingQuestionTestCases.findAll({
-        attributes: ['input', 'output'],
+    const test_case_inputs = await CodingQuestionTestCases.findAll({
+        attributes: ['input'],
         where: {
             question_id: question_id
         }
     });
-    for (let i = 0; i < test_cases.length; i++) {
-        const test_case = test_cases[i];
+    for (let i = 0; i < test_case_inputs.length; i++) {
+        const test_case_input = test_case_inputs[i];
+        const test_case_outputs = await CodingQuestionTestCases.findAll({
+            attributes: ['output'],
+            where: {
+                question_id: question_id,
+                input: test_case_input.input
+            }
+        });
         await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
             source_code: source_code,
             language_id: language_id,
-            stdin: test_case.input
+            stdin: test_case_input.input
         }, {
             headers: {
                 'Content-Type': 'application/json'
@@ -533,10 +541,15 @@ questionSolvingService.judgeCodingTestQuestion = async (source_code, language, u
                     break;
                 }
             }
-            await sleep(500);
+            await sleep(300);
         }
-        return test_case.output === stdout;
+        if (!test_case_outputs.some(test_case_output => stdout.includes(test_case_output.output))) {
+            is_correct = false;
+            break;
+        }
     }
+    console.log(is_correct);
+    return is_correct;
 }
 
 questionSolvingService.getExperience = async (question_id) => {

@@ -18,7 +18,7 @@ authService.login = async function login(id, password) {
         }
         return null;
     } catch (e) {
-        console.error(e);
+        // console.error(e);
     }
 }
 

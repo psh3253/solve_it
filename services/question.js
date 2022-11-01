@@ -173,6 +173,15 @@ questionService.getAllTests = async (page, order) => {
     }
 }
 
+questionService.getAllTestsCount = async () => {
+    try {
+        return await Test.count();
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 questionService.getTestsByCategoryId = async (category_id) => {
     try {
         return await Test.findAll({
