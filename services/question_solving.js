@@ -97,8 +97,7 @@ questionSolvingService.unlikeTest = async (test_id, user_id) => {
         const test = await Test.findOne({
             attributes: ['id'],
             where: {
-                id: test_id,
-                creator_id: user_id
+                id: test_id
             }
         });
 
@@ -107,6 +106,31 @@ questionSolvingService.unlikeTest = async (test_id, user_id) => {
     } catch (e) {
         console.error(e);
         return null;
+    }
+}
+
+questionSolvingService.isLiked = async (test_id, user_id) => {
+    try {
+        const test = await Test.findOne({
+            attributes: ['id'],
+            where: {
+                id: test_id
+            }
+        });
+
+        if (test === null) return false;
+
+        const liked_users = await test.getUsers();
+        
+        if (liked_users === null) return false;
+
+        for (const user of liked_users)
+            if (user.id === user_id) return true;
+    
+        return false;
+    } catch (e) {
+        console.error(e);
+        return false;
     }
 }
 
@@ -195,6 +219,15 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
             test_question_id: test_question.id,
             question_id: question_id
         });
+
+        await Question.increment({
+            try_count: 1
+        }, {
+            where: {
+                id: question_id
+            }
+        })
+
         return true;
     } catch (e) {
         console.error(e)

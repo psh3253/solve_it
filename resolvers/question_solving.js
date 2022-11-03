@@ -61,6 +61,13 @@ const QuestionSolvingResolver = {
             return test_list;
         },
 
+        async like(parent, {testId, userId}, context, info) {
+            const user_id = userId === undefined ? context.user.id : userId;
+            const like = await QuestionSolvingService.isLiked(testId, user_id);
+            
+            return true;
+        },
+
         async asking(parent, {askingId}, context, info) {
             const asking = await QuestionSolvingService.getAsking(askingId);
 
