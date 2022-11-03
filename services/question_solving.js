@@ -1,4 +1,5 @@
 const questionSolvingService = {};
+const questionService = require('./question');
 const AnswerSheet = require('../models/answer_sheet');
 const AnswerRecord = require('../models/answer_record');
 const Test = require('../models/test');
@@ -12,6 +13,7 @@ const Category = require("../models/category");
 const Question = require("../models/question");
 const Difficulty = require("../models/difficulty");
 const CodingQuestionTestCases = require('../models/coding_question_test_case');
+const CodingQuestionStatus = require('../models/coding_question_status');
 const axios = require('axios');
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
@@ -429,7 +431,7 @@ questionSolvingService.deleteReply = async (reply_id) => {
 }
 
 const isSupportedLanguage = (language) => {
-    return language === 'java' || language === 'python' || language === 'c' || language === 'cpp'
+    return language === 'JAVA' || language === 'PYTHON' || language === 'C' || language === 'CPP'
 }
 
 questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, source_code, language, user_id) => {
@@ -472,20 +474,153 @@ questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, sou
 const languageToLanguageId = (language) => {
     let language_id;
     switch (language) {
-        case 'java':
+        case 'JAVA':
             language_id = 62;
             break;
-        case 'c':
+        case 'C':
             language_id = 50;
             break;
-        case 'c++':
+        case 'CPP':
             language_id = 54;
             break;
-        case 'python':
+        case 'PYTHON':
             language_id = 71;
             break;
     }
     return language_id;
+}
+
+questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_idx, user_id) => {
+    try {
+        let is_correct = true;
+        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        const answer_record = await AnswerRecord.findOne({
+            attributes: ['id', 'answer', 'language'],
+            where: {
+                answer_sheet_id: answer_sheet.id,
+                question_id: question_id
+            }
+        });
+
+        //
+        const coding_question_status = await questionSolvingService.getCodingTestResult(test_id, question_id, test_case_idx, user_id);
+        if (coding_question_status === 'not submitted') {
+            await CodingQuestionStatus.create({
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx,
+                user_id: user_id,
+                is_process: true
+            });
+        } else {
+            await CodingQuestionStatus.update({
+                is_process: true,
+                is_correct: false
+            }, {
+                where: {
+                    answer_record_id: answer_record.id,
+                    test_case_idx: test_case_idx,
+                    user_id: user_id
+                }
+            });
+        }
+
+        const test_case = await questionService.getTestCase(test_case_idx, question_id);
+        let token;
+        await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
+            source_code: answer_record.answer,
+            language_id: languageToLanguageId(answer_record.language),
+            stdin: test_case.input
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function (response) {
+            if (response.status === 201) {
+                token = response.data.token;
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        let stdout
+        while (true) {
+            await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response) {
+                if (response.status === 200) {
+                    stdout = response.data.stdout;
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            if (stdout !== null) {
+                if (stdout.endsWith('\n')) {
+                    stdout = stdout.substring(0, stdout.length - 1);
+                }
+                break;
+            }
+            await sleep(300);
+        }
+
+        await CodingQuestionStatus.update({
+            is_process: false
+        }, {
+            where: {
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx,
+                user_id: user_id
+            }
+        });
+
+        if (!test_case.output.includes(stdout)) {
+            is_correct = false;
+        }
+
+        await CodingQuestionStatus.update({
+            is_correct: is_correct
+        }, {
+            where: {
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx,
+                user_id: user_id
+            }
+        });
+        return true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionSolvingService.getCodingTestResult = async (test_id, question_id, test_case_idx, user_id) => {
+    try {
+        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        const answer_record = await AnswerRecord.findOne({
+            attributes: ['id'],
+            where: {
+                answer_sheet_id: answer_sheet.id,
+                question_id: question_id
+            }
+        });
+        const coding_question_status = await CodingQuestionStatus.findOne({
+            attributes: ['is_process', 'is_correct'],
+            where: {
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx
+            }
+        });
+        if (coding_question_status == null)
+            return 'not submitted';
+        else if (coding_question_status.is_process)
+            return 'not complete';
+        else if (coding_question_status.is_correct)
+            return 'success';
+        else
+            return 'not success';
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 questionSolvingService.judgeCodingTestQuestion = async (source_code, language, user_id, question_id) => {

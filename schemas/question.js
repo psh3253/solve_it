@@ -52,7 +52,7 @@ module.exports = gql`
 
     input TestCaseInput {
         input: String!,
-        output: [String!]!
+        outputs: [String!]!
     }
 
     input UpdateQuestionInput {
@@ -136,8 +136,9 @@ module.exports = gql`
     }
 
     type TestCase {
+        id: ID!
         input: String!
-        output: [String!]!
+        outputs: [String!]!
     }
 
     enum QuestionType {
