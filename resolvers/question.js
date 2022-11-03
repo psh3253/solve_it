@@ -122,7 +122,9 @@ const QuestionResolver = {
             }
             return test_list;
         },
-
+        async allTestsCount(parent, args, context, info) {
+            return await QuestionService.getAllTestsCount();
+        },
         async testsByCategory(parent, {id}, context, info) {
             const tests = await QuestionService.getTestsByCategoryId(id);
             let test_list = [];
