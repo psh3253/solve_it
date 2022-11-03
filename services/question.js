@@ -505,7 +505,33 @@ questionService.deleteTest = async (test_id) => {
     }
 }
 
-questionService.getTestCase = async (question_id) => {
+questionService.getTestCase = async (test_case_idx, question_id) => {
+    try {
+        const test_case_input = await CodingQuestionTestCase.findOne({
+            attributes: ['input'],
+            where: {
+                question_id: question_id,
+            },
+            group: ['input'],
+        });
+
+        const test_case_outputs = await CodingQuestionTestCase.findAll({
+            attributes: ['output'],
+            where: {
+                question_id: question_id,
+                input: test_case_input.input
+            }
+        });
+        return {
+            input: test_case_input.input,
+            output: test_case_outputs.map((i) => i.output)
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+questionService.getTestCaseByQuestionId = async (question_id) => {
     try {
         const test_case_list = [];
         const test_case_inputs = await CodingQuestionTestCase.findAll({

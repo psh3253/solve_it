@@ -61,6 +61,13 @@ const QuestionSolvingResolver = {
             return test_list;
         },
 
+        async like(parent, {testId, userId}, context, info) {
+            const user_id = userId === undefined ? context.user.id : userId;
+            const like = await QuestionSolvingService.isLiked(testId, user_id);
+            
+            return true;
+        },
+
         async asking(parent, {askingId}, context, info) {
             const asking = await QuestionSolvingService.getAsking(askingId);
 
@@ -129,6 +136,21 @@ const QuestionSolvingResolver = {
                 })
             }
             return asking_list;
+        },
+        async getCodingTestResult(parent, {testId, questionId, testCaseIdx}, context, info) {
+            console.log(context.user)
+            const result = await QuestionSolvingService.getCodingTestResult(testId, questionId, testCaseIdx, context.user.id);
+            let message = 'complete';
+            let success = false;
+            if(result === 'not complete' || result === 'complete')
+                message = result;
+            if(result === 'not success' || result === 'success')
+                success = result === 'success';
+            return {
+                code: 200,
+                message: message,
+                success: success
+            }
         }
     },
     Mutation: {
@@ -159,6 +181,14 @@ const QuestionSolvingResolver = {
                 code: 200,
                 message: 'complete',
                 success: await QuestionSolvingService.submitCodingTestAnswer(input.testId, input.questionId, input.sourceCode, input.language, context.user.id)
+            }
+        },
+
+        async gradeTestCase(parent, {questionId, testId, testCaseIdx}, context, info) {
+            return {
+                code: 200,
+                message: 'complete',
+                success: await QuestionSolvingService.gradeTestCase(questionId, testId, testCaseIdx, context.user.id)
             }
         },
 

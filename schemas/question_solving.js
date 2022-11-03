@@ -10,6 +10,8 @@ module.exports = gql`
         repliesByAsking(id: ID!): [Reply!]!
         allAsking(page: Int!): [Asking]
         mySolvingTests: [TestHeader!]!
+        like(testId: ID!, userId: ID): Boolean
+        getCodingTestResult(testId: ID!, questionId: ID!, testCaseIdx: Int!): NormalResponse
     }
 
     type Mutation {
@@ -24,13 +26,21 @@ module.exports = gql`
         createReply(input: CreateReplyInput!): NormalResponse
         deleteReply(id: ID!): NormalResponse
         submitCodingTestAnswer(input: CodingTestAnswerInput!): NormalResponse
+        gradeTestCase(testId: ID!, questionId: ID!, testCaseIdx: Int!): NormalResponse
     }
 
     input CodingTestAnswerInput {
         questionId: ID!
         testId: ID!
         sourceCode: String!
-        language: String!
+        language: CodingTestLanguage!
+    }
+    
+    enum CodingTestLanguage {
+        JAVA
+        PYTHON
+        C
+        CPP
     }
 
     input CreateAskingInput {
