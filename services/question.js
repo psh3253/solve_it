@@ -230,33 +230,35 @@ questionService.getTestsByCreatorId = async (user_id) => {
 
 questionService.createQuestion = async (title, content, answers, explanation, type, category_id, creator_id, difficulty_id, candidates) => {
     try {
-        const question = await Question.create({
-            title: title,
-            content: content,
-            type: type,
-            explanation: explanation,
-            category_id: category_id,
-            creator_id: creator_id,
-            difficulty_id: difficulty_id
-        });
-        for (let i of answers) {
-            await QuestionAnswer.create({
-                answer: i,
-                question_id: question.id
+        sequelize.transaction(async (t) => {
+            const question = await Question.create({
+                title: title,
+                content: content,
+                type: type,
+                explanation: explanation,
+                category_id: category_id,
+                creator_id: creator_id,
+                difficulty_id: difficulty_id
             });
-        }
-        if (type === 'MULTIPLE_CHOICE') {
-            let number = 1;
-            for (let i of candidates) {
-                await QuestionCandidate.create({
-                    number: number,
-                    content: i,
+            for (let i of answers) {
+                await QuestionAnswer.create({
+                    answer: i,
                     question_id: question.id
-                })
-                number++;
+                });
             }
-        }
-        return question.id;
+            if (type === 'MULTIPLE_CHOICE') {
+                let number = 1;
+                for (let i of candidates) {
+                    await QuestionCandidate.create({
+                        number: number,
+                        content: i,
+                        question_id: question.id
+                    })
+                    number++;
+                }
+            }
+            return question.id;
+        });
     } catch (e) {
         console.error(e);
         return 0;
@@ -265,26 +267,28 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
 
 questionService.createCodingTestQuestion = async (title, content, explanation, category_id, difficulty_id, test_cases, creator_id,) => {
     try {
-        const question = await Question.create({
-            title: title,
-            content: content,
-            type: 'CODING_TEST',
-            explanation: explanation,
-            category_id: category_id,
-            creator_id: creator_id,
-            difficulty_id: difficulty_id
-        });
+        sequelize.transaction(async (t) => {
+            const question = await Question.create({
+                title: title,
+                content: content,
+                type: 'CODING_TEST',
+                explanation: explanation,
+                category_id: category_id,
+                creator_id: creator_id,
+                difficulty_id: difficulty_id
+            });
 
-        for (let i of test_cases) {
-            for(let j of i.output) {
-                await CodingQuestionTestCase.create({
-                    input: i.input,
-                    output: j,
-                    question_id: question.id
-                });
+            for (let i of test_cases) {
+                for (let j of i.output) {
+                    await CodingQuestionTestCase.create({
+                        input: i.input,
+                        output: j,
+                        question_id: question.id
+                    });
+                }
             }
-        }
-        return question.id;
+            return question.id;
+        });
     } catch (e) {
         console.error(e);
         return 0;
@@ -293,23 +297,24 @@ questionService.createCodingTestQuestion = async (title, content, explanation, c
 
 questionService.uploadQuestionImageFile = async (question_id, image_url) => {
     try {
-        const question = await Question.findOne({
-            attributes: ['id'],
-            where: {
-                id: question_id
-            }
-        })
-
-        if (question === null) return false;
-
-        await Question.update({
-            image_url: image_url
-        },
-        {
-            where: {
-                id: question.id
-            }
-        })
+        sequelize.transaction(async (t) => {
+            const question = await Question.findOne({
+                attributes: ['id'],
+                where: {
+                    id: question_id
+                }
+            })
+            if (question === null) return false;
+            await Question.update({
+                    image_url: image_url
+                },
+                {
+                    where: {
+                        id: question.id
+                    }
+                });
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;
@@ -318,23 +323,24 @@ questionService.uploadQuestionImageFile = async (question_id, image_url) => {
 
 questionService.uploadQuestionSoundFile = async (question_id, sound_url) => {
     try {
-        const question = await Question.findOne({
-            attributes: ['id'],
-            where: {
-                id: question_id
-            }
-        })
-
-        if (question === null) return false;
-
-        await Question.update({
-            image_url: sound_url
-        },
-        {
-            where: {
-                id: question.id
-            }
-        })
+        sequelize.transaction(async (t) => {
+            const question = await Question.findOne({
+                attributes: ['id'],
+                where: {
+                    id: question_id
+                }
+            })
+            if (question === null) return false;
+            await Question.update({
+                    image_url: sound_url
+                },
+                {
+                    where: {
+                        id: question.id
+                    }
+                });
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;
@@ -343,44 +349,46 @@ questionService.uploadQuestionSoundFile = async (question_id, sound_url) => {
 
 questionService.updateQuestion = async (question_id, title, content, answers, explanation, candidates) => {
     try {
-        await Question.update({
-                title: title,
-                content: content,
-                explanation: explanation
-            },
-            {
+        sequelize.transaction(async (t) => {
+            await Question.update({
+                    title: title,
+                    content: content,
+                    explanation: explanation
+                },
+                {
+                    where: {
+                        id: question_id,
+                    }
+                });
+            await QuestionAnswer.destroy({
                 where: {
-                    id: question_id,
+                    question_id: question_id
                 }
             });
-        await QuestionAnswer.destroy({
-            where: {
-                question_id: question_id
+            for (let i of answers) {
+                await QuestionAnswer.create({
+                    question_id: question_id,
+                    answer: i
+                });
             }
-        });
-        for (let i of answers) {
-            await QuestionAnswer.create({
-                question_id: question_id,
-                answer: i
-            });
-        }
-        if (type === 'MULTIPLE_CHOICE') {
-            await QuestionCandidate.destroy({
-                where: {
-                    question_id: question_id
-                }
-            })
-            let number = 1;
-            for (let i of candidates) {
-                await QuestionCandidate.create({
-                    number: number,
-                    content: i,
-                    question_id: question_id
+            if (type === 'MULTIPLE_CHOICE') {
+                await QuestionCandidate.destroy({
+                    where: {
+                        question_id: question_id
+                    }
                 })
-                number++;
+                let number = 1;
+                for (let i of candidates) {
+                    await QuestionCandidate.create({
+                        number: number,
+                        content: i,
+                        question_id: question_id
+                    })
+                    number++;
+                }
             }
-        }
-        return true;
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;
@@ -404,12 +412,14 @@ questionService.isQuestionCreator = async (question_id, user_id) => {
 
 questionService.deleteQuestion = async (question_id) => {
     try {
-        await Question.destroy({
-            where: {
-                id: question_id,
-            }
+        sequelize.transaction(async (t) => {
+            await Question.destroy({
+                where: {
+                    id: question_id,
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -419,23 +429,25 @@ questionService.deleteQuestion = async (question_id) => {
 
 questionService.createTest = async (title, content, question_ids, category_id, is_private, creator_id) => {
     try {
-        const test = await Test.create({
-            title: title,
-            content: content,
-            creator_id: creator_id,
-            category_id: category_id,
-            is_private: is_private
-        });
-        let number = 1;
-        for (let i of question_ids) {
-            await TestQuestion.create({
-                question_id: i,
-                test_id: test.id,
-                number: number
+        sequelize.transaction(async (t) => {
+            const test = await Test.create({
+                title: title,
+                content: content,
+                creator_id: creator_id,
+                category_id: category_id,
+                is_private: is_private
             });
-            number++;
-        }
-        return true;
+            let number = 1;
+            for (let i of question_ids) {
+                await TestQuestion.create({
+                    question_id: i,
+                    test_id: test.id,
+                    number: number
+                });
+                number++;
+            }
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;
@@ -459,32 +471,34 @@ questionService.isTestCreator = async (test_id, user_id) => {
 
 questionService.updateTest = async (test_id, title, content, question_ids, category_id, is_private) => {
     try {
-        await Test.update({
-                title: title,
-                content: content,
-                category_id: category_id,
-                is_private: is_private
-            },
-            {
+        sequelize.transaction(async (t) => {
+            await Test.update({
+                    title: title,
+                    content: content,
+                    category_id: category_id,
+                    is_private: is_private
+                },
+                {
+                    where: {
+                        id: test_id,
+                    }
+                });
+            await TestQuestion.destroy({
                 where: {
-                    id: test_id,
+                    test_id: test_id
                 }
             });
-        await TestQuestion.destroy({
-            where: {
-                test_id: test_id
+            let number = 1;
+            for (let i of question_ids) {
+                await TestQuestion.create({
+                    question_id: i,
+                    test_id: test_id,
+                    number: number
+                });
+                number++;
             }
+            return true;
         });
-        let number = 1;
-        for (let i of question_ids) {
-            await TestQuestion.create({
-                question_id: i,
-                test_id: test_id,
-                number: number
-            });
-            number++;
-        }
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -493,12 +507,14 @@ questionService.updateTest = async (test_id, title, content, question_ids, categ
 
 questionService.deleteTest = async (test_id) => {
     try {
-        await Test.destroy({
-            where: {
-                id: test_id,
-            }
+        sequelize.transaction(async (t) => {
+            await Test.destroy({
+                where: {
+                    id: test_id,
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -541,8 +557,7 @@ questionService.getTestCaseByQuestionId = async (question_id) => {
             },
             group: ['input']
         });
-        for(let i = 0; i < test_case_inputs.length; i++)
-        {
+        for (let i = 0; i < test_case_inputs.length; i++) {
             const test_case_outputs = await CodingQuestionTestCase.findAll({
                 attributes: ['output'],
                 where: {

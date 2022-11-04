@@ -31,12 +31,14 @@ QuestionRecommendService.getMyTags = async (user_id) => {
 
 QuestionRecommendService.createTag = async (name, test_id, user_id) => {
     try {
-        await TestTag.create({
-            tag: name,
-            test_id: test_id,
-            creator_id: user_id
-        })
-        return true;
+        sequelize.transaction(async (t) => {
+            await TestTag.create({
+                tag: name,
+                test_id: test_id,
+                creator_id: user_id
+            })
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;
@@ -45,14 +47,16 @@ QuestionRecommendService.createTag = async (name, test_id, user_id) => {
 
 QuestionRecommendService.updateTag = async (tag_id, name) => {
     try {
-        await TestTag.update({
-            tag: name
-        }, {
-            where: {
-                id: tag_id
-            }
-        })
-        return true;
+        sequelize.transaction(async (t) => {
+            await TestTag.update({
+                tag: name
+            }, {
+                where: {
+                    id: tag_id
+                }
+            })
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;
@@ -61,14 +65,16 @@ QuestionRecommendService.updateTag = async (tag_id, name) => {
 
 QuestionRecommendService.deleteTag = async (name, test_id, user_id) => {
     try {
-        await TestTag.destroy({
-            where: {
-                tag: name,
-                test_id: test_id,
-                creator_id: user_id
-            }
-        })
-        return true;
+        sequelize.transaction(async (t) => {
+            await TestTag.destroy({
+                where: {
+                    tag: name,
+                    test_id: test_id,
+                    creator_id: user_id
+                }
+            })
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;

@@ -35,7 +35,7 @@ module.exports = gql`
         sourceCode: String!
         language: CodingTestLanguage!
     }
-    
+
     enum CodingTestLanguage {
         JAVA
         PYTHON

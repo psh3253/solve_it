@@ -18,12 +18,14 @@ reviewNoteService.getReviewNote = async (question_id, user_id) => {
 
 reviewNoteService.createReviewNote = async (question_id, explanation, user_id) => {
     try {
-        await ReviewNote.upsert({
-            explanation: explanation,
-            creator_id: user_id,
-            question_id: question_id
+        sequelize.transaction(async (t) => {
+            await ReviewNote.upsert({
+                explanation: explanation,
+                creator_id: user_id,
+                question_id: question_id
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -32,13 +34,15 @@ reviewNoteService.createReviewNote = async (question_id, explanation, user_id) =
 
 reviewNoteService.deleteReviewNote = async (question_id, user_id) => {
     try {
-        await ReviewNote.destroy({
-            where: {
-                question_id: question_id,
-                creator_id: user_id
-            }
+        sequelize.transaction(async (t) => {
+            await ReviewNote.destroy({
+                where: {
+                    question_id: question_id,
+                    creator_id: user_id
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;

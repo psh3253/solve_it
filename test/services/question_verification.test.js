@@ -94,7 +94,7 @@ describe('create a report', () => {
 });
 
 describe('check if the user is the creator of the report', () => {
-   // given
+    // given
     const report_id = 1;
     const creator_id = "아이디";
 
@@ -110,7 +110,7 @@ describe('check if the user is the creator of the report', () => {
         expect(result).toEqual(true);
     });
 
-    it('fail: wrong id', async() => {
+    it('fail: wrong id', async () => {
         // given
         const wrong_id = "아이디 2";
 

@@ -1,4 +1,4 @@
-const { Query, Mutation } = require('../../resolvers/auth')
+const {Query, Mutation} = require('../../resolvers/auth')
 const AuthService = require('../../services/auth')
 
 const testId = 'id'
@@ -29,7 +29,11 @@ describe('login', () => {
 
 describe('signup', () => {
     it('success', () => {
-        const signupResponse = Mutation.signup(undefined, {ID: testId, hashedPW: testPw, name: testName}, undefined, undefined)
+        const signupResponse = Mutation.signup(undefined, {
+            ID: testId,
+            hashedPW: testPw,
+            name: testName
+        }, undefined, undefined)
 
         expect(signupResponse.code).toEqual(200)
         expect(signupResponse.message).toEqual('hello')
@@ -37,8 +41,12 @@ describe('signup', () => {
     })
 
     it('fail: id undefined', () => {
-        const signupResponse = Mutation.signup(undefined, {ID: undefined, hashedPW: testPw, name: testName}, undefined, undefined)
-        
+        const signupResponse = Mutation.signup(undefined, {
+            ID: undefined,
+            hashedPW: testPw,
+            name: testName
+        }, undefined, undefined)
+
         expect(signupResponse.success).toEqual(false)
     })
 })

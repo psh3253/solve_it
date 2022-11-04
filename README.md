@@ -3,17 +3,18 @@
 ![](header.png)
 
 Apollo Server와 GraphQL로 제작한 문제 공유 플랫폼 서버 입니다.
+
 + [SolveIt React App](https://github.com/Kihundd/solveit)
 + [SolveIt Android App](https://github.com/AlpCar/solveit0604)
 
 ## Getting Started / 어떻게 시작하나요?
 
 아래의 명령어로 실행하시면 됩니다.
+
 ```
 docker build -t solveit:1.0 . 
 docker run -it -d --name solveit -p 4000:4000 solveit:1.0
 ```
-
 
 ### Prerequisites / 선행 조건
 
@@ -24,6 +25,7 @@ MySQL Server 8.0 이상의 서버, Node.js 16.13.0 이상, npm 8.1.0 이상, Doc
 ```
 
 ### 모듈 설치
+
 아래의 명령어로 필요한 모듈들을 설치합니다.
 
 ```
@@ -39,6 +41,7 @@ npm install
 * [최성찬](https://github.com/AlpCar) - 프로젝트 설계, 안드로이드 앱 제작
 
 ## Function / 기능
+
 + 로그인 및 회원가입
 + 지필형 문제 제작 및 관리
 + 코딩테스트 문제 제작 및 관리

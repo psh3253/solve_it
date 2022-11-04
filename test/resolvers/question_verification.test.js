@@ -14,7 +14,7 @@ describe('get all reports', () => {
     const test_id = 1;
 
     QuestionVerificationService.getAllReports = jest.fn((page) => {
-        if(page !== 1)
+        if (page !== 1)
             return [];
         return [
             {
@@ -64,7 +64,7 @@ describe('get reports by type', () => {
     const test_id = 1;
 
     QuestionVerificationService.getReportsByType = jest.fn((type) => {
-        if(type !== 'SWEAR_WORD')
+        if (type !== 'SWEAR_WORD')
             return [];
         return [
             {
@@ -119,7 +119,13 @@ describe('create a report', () => {
 
     it('success', async () => {
         // when
-        const result = await Mutation.createReport(undefined, {input: {content: content, testId: test_id, type: type}}, context, undefined);
+        const result = await Mutation.createReport(undefined, {
+            input: {
+                content: content,
+                testId: test_id,
+                type: type
+            }
+        }, context, undefined);
 
         // then
         expect(result.code).toEqual(200);
@@ -129,7 +135,13 @@ describe('create a report', () => {
 
     it('fail', async () => {
         // when
-        const result = await Mutation.createReport(undefined, {input: {content: content, testId: test_id, type: null}}, context, undefined);
+        const result = await Mutation.createReport(undefined, {
+            input: {
+                content: content,
+                testId: test_id,
+                type: null
+            }
+        }, context, undefined);
 
         // then
         expect(result.code).toEqual(200);

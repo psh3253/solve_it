@@ -24,13 +24,15 @@ authService.login = async function login(id, password) {
 
 authService.signup = async function signup(id, password, nickname) {
     try {
-        await User.create({
-            id: id,
-            password: password,
-            nickname: nickname,
-            tier_id: 0,
+        sequelize.transaction(async (t) => {
+            await User.create({
+                id: id,
+                password: password,
+                nickname: nickname,
+                tier_id: 0,
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
