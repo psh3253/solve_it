@@ -178,22 +178,19 @@ const QuestionResolver = {
             }
         },
 
-        async uploadQuestionMediaFile(parent, {awsRegion, eventTime, fileName, fileSize}, context, info) {
+        async lambdaUploadQuestionMediaFile(parent, {awsRegion, fileName, fileExtension}, context, info) {
             if (awsRegion !== process.env.AWS_REGION)
                 return {
                     code: 200,
                     message: 'failed',
                     success: false
-                }
+                };
             
             const decoded_file_name = decodeURIComponent(fileName);
-            const file_type = decoded_file_name.split('.').slice(-1)[0];
-            const question_id = decoded_file_name.split('.').slice(0, -1).join('.');
 
-
-            if (["png", "jpg", "jpeg"].includes(file_type)) {
-                const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_IMAGE_DIRECTORY_PATH + "/" + decoded_file_name
-                const result = await QuestionService.uploadQuestionImageFile(question_id, fileUrl);
+            if (["png", "jpg", "jpeg"].includes(fileExtension)) {
+                const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_IMAGE_DIRECTORY_PATH + "/" + decoded_file_name + '.' + fileExtension;
+                const result = await QuestionService.uploadQuestionImageFile(fileName, fileUrl);
 
                 return {
                     code: 200,

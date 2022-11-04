@@ -310,6 +310,8 @@ questionService.uploadQuestionImageFile = async (question_id, image_url) => {
                 id: question.id
             }
         })
+
+        return true;
     } catch (e) {
         console.error(e);
         return false;

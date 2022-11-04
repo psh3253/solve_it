@@ -12,7 +12,7 @@ module.exports = gql`
 
     type Mutation {
         createQuestion(input: CreateQuestionInput): CreationQuestionResponse
-        uploadQuestionMediaFile(awsRegion: String!, eventTime: String!, fileName: String!, fileSize: Int!): NormalResponse
+        lambdaUploadQuestionMediaFile(awsRegion: String!, eventTime: String!, fileName: String!, fileExtension: String!, fileSize: Int!): NormalResponse
         updateQuestion(input: UpdateQuestionInput): CreationQuestionResponse
         deleteQuestion(id: ID!): NormalResponse
         createCodingTestQuestion(input: CreateCodingTestQuestionInput): CreationQuestionResponse
