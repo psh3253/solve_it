@@ -1,5 +1,6 @@
 const questionVerificationService = {};
 const Report = require('../models/report');
+const {sequelize} = require('../models');
 
 questionVerificationService.getAllReports = async (page) => {
     try {
