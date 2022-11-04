@@ -214,7 +214,7 @@ const QuestionResolver = {
                 message: 'unsupported file extension',
                 success: false
             }
-            
+
         },
 
         async createCodingTestQuestion(parent, {input}, context, info) {

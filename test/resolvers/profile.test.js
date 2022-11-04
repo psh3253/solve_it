@@ -1,4 +1,4 @@
-const { Query, Mutation } = require('../../resolvers/profile')
+const {Query, Mutation} = require('../../resolvers/profile')
 const profileService = require('../../services/profile')
 const Util = require('../../util')
 
@@ -19,9 +19,9 @@ const testProfile = {
     creationDate: Util.getDateString('2022-09-14 11:23:34')
 };
 
-const testCoupons = [ { count: 0, Coupon: { id: 0, name: 'coupon 1', explanation: 'test coupon 1', price: 100 }},
-                    { count: 1, Coupon: { id: 1, name: 'coupon 2', explanation: 'test coupon 2', price: 200 }},
-                    { count: 2, Coupon: { id: 2, name: 'coupon 3', explanation: 'test coupon 3', price: 300 }}]
+const testCoupons = [{count: 0, Coupon: {id: 0, name: 'coupon 1', explanation: 'test coupon 1', price: 100}},
+    {count: 1, Coupon: {id: 1, name: 'coupon 2', explanation: 'test coupon 2', price: 200}},
+    {count: 2, Coupon: {id: 2, name: 'coupon 3', explanation: 'test coupon 3', price: 300}}]
 
 const testContext = {
     user: {
@@ -45,8 +45,8 @@ profileService.getUserProfile = jest.fn((targetId) => {
 
 profileService.getUserCategories = jest.fn((targetId) => {
     if (targetId === testProfile.ownerId)
-        return { Categories: testProfile.favorites }
-    
+        return {Categories: testProfile.favorites}
+
     return null
 })
 

@@ -18,44 +18,47 @@ const axios = require('axios');
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
-        const user = await User.findOne({
-            attributes: ['id', 'tier_id'],
-            where: {
-                id: user_id
+        sequelize.transaction(async (t) => {
+            const user = await User.findOne({
+                attributes: ['id', 'tier_id'],
+                where: {
+                    id: user_id
+                }
+            });
+            if (user.tier_id < 3) {
+                return false;
             }
+            await QuestionDifficulty.findOrCreate({
+                attributes: ['question_id'],
+                where: {
+                    question_id: question_id,
+                    creator_id: user_id,
+                },
+                defaults: {
+                    question_id: question_id,
+                    difficulty_id: difficulty_id,
+                    creator_id: user_id
+                }
+            });
+            const difficulty = await QuestionDifficulty.findOne({
+                attributes: [[sequelize.fn('round', sequelize.fn('avg', sequelize.col('difficulty_id')), 0), 'difficulty']],
+                where: {
+                    question_id: question_id
+                },
+                group: ['question_id'],
+            });
+            await Question.update({
+                difficulty_id: difficulty.dataValues.difficulty
+            }, {
+                where: {
+                    id: question_id
+                }
+            });
+            return true;
         });
-        if (user.tier_id < 3) {
-            return false;
-        }
-        await QuestionDifficulty.findOrCreate({
-            attributes: ['question_id'],
-            where: {
-                question_id: question_id,
-                creator_id: user_id,
-            },
-            defaults: {
-                question_id: question_id,
-                difficulty_id: difficulty_id,
-                creator_id: user_id
-            }
-        });
-        const difficulty = await QuestionDifficulty.findOne({
-            attributes: [[sequelize.fn('round', sequelize.fn('avg', sequelize.col('difficulty_id')), 0), 'difficulty']],
-            where: {
-                question_id: question_id
-            },
-            group: ['question_id'],
-        });
-        await Question.update({
-            difficulty_id: difficulty.dataValues.difficulty
-        }, {
-            where: {
-                id: question_id
-            }
-        });
-        return true;
     } catch (e) {
         console.error(e);
+        return false;
     }
 }
 
@@ -77,15 +80,17 @@ questionSolvingService.getTestLikesCount = async (test_id) => {
 
 questionSolvingService.likeTest = async (test_id, user_id) => {
     try {
-        const test = await Test.findOne({
-            attributes: ['id'],
-            where: {
-                id: test_id
-            }
-        });
+        sequelize.transaction(async (t) => {
+            const test = await Test.findOne({
+                attributes: ['id'],
+                where: {
+                    id: test_id
+                }
+            });
 
-        await test.addUser(user_id);
-        return 1;
+            await test.addUser(user_id);
+            return 1;
+        });
     } catch (e) {
         console.error(e);
         return null;
@@ -94,15 +99,16 @@ questionSolvingService.likeTest = async (test_id, user_id) => {
 
 questionSolvingService.unlikeTest = async (test_id, user_id) => {
     try {
-        const test = await Test.findOne({
-            attributes: ['id'],
-            where: {
-                id: test_id
-            }
+        sequelize.transaction(async (t) => {
+            const test = await Test.findOne({
+                attributes: ['id'],
+                where: {
+                    id: test_id
+                }
+            });
+            await test.removeUser(user_id);
+            return 1;
         });
-
-        await test.removeUser(user_id);
-        return 1;
     } catch (e) {
         console.error(e);
         return null;
@@ -119,14 +125,10 @@ questionSolvingService.isLiked = async (test_id, user_id) => {
         });
 
         if (test === null) return false;
-
         const liked_users = await test.getUsers();
-        
         if (liked_users === null) return false;
-
         for (const user of liked_users)
             if (user.id === user_id) return true;
-    
         return false;
     } catch (e) {
         console.error(e);
@@ -194,42 +196,44 @@ questionSolvingService.getAllTestQuestion = async (test_id) => {
 
 questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
-        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
-        if (answer_sheet == null) {
-            await AnswerSheet.create({
-                test_id: test_id,
-                creator_id: user_id
+        sequelize.transaction(async (t) => {
+            const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+            if (answer_sheet == null) {
+                await AnswerSheet.create({
+                    test_id: test_id,
+                    creator_id: user_id
+                });
+            } else {
+                await AnswerSheet.update({
+                    test_id: test_id,
+                    creator_id: user_id,
+                }, {
+                    where: {
+                        id: answer_sheet.id
+                    }
+                });
+            }
+
+            const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
+
+            await AnswerRecord.upsert({
+                answer: answers,
+                answer_sheet_id: answer_sheet.id,
+                test_question_id: test_question.id,
+                question_id: question_id
             });
-        } else {
-            await AnswerSheet.update({
-                test_id: test_id,
-                creator_id: user_id,
+
+            await Test.increment({
+                try_count: 1
             }, {
                 where: {
-                    id: answer_sheet.id
+                    id: test_id
                 }
             });
-        }
-
-        const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
-
-        await AnswerRecord.upsert({
-            answer: answers,
-            answer_sheet_id: answer_sheet.id,
-            test_question_id: test_question.id,
-            question_id: question_id
-        });
-
-        await Test.increment({
-            try_count: 1
-        }, {
-            where: {
-                id: test_id
-            }
-        })
 
         return true;
-    } catch (e) {
+    })
+        } catch (e) {
         console.error(e)
         return false;
     }
@@ -310,13 +314,15 @@ questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
 
 questionSolvingService.createAsking = async (question_id, title, content, creator_id) => {
     try {
-        await Asking.create({
-            title: title,
-            content: content,
-            question_id: question_id,
-            creator_id: creator_id
+        sequelize.transaction(async (t) => {
+            await Asking.create({
+                title: title,
+                content: content,
+                question_id: question_id,
+                creator_id: creator_id
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -325,12 +331,14 @@ questionSolvingService.createAsking = async (question_id, title, content, creato
 
 questionSolvingService.deleteAsking = async (asking_id) => {
     try {
-        await Asking.destroy({
-            where: {
-                id: asking_id
-            }
+        sequelize.transaction(async (t) => {
+            await Asking.destroy({
+                where: {
+                    id: asking_id
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -367,14 +375,16 @@ questionSolvingService.getAsking = async (asking_id) => {
 
 questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) => {
     try {
-        await AnswerRecord.update({
-            is_correct: is_correct
-        }, {
-            where: {
-                id: answer_record_id
-            }
+        sequelize.transaction(async (t) => {
+            await AnswerRecord.update({
+                is_correct: is_correct
+            }, {
+                where: {
+                    id: answer_record_id
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -437,12 +447,14 @@ questionSolvingService.getRepliesByAskingId = async (asking_id) => {
 
 questionSolvingService.createReply = async (asking_id, content, creator_id) => {
     try {
-        await Reply.create({
-            asking_id: asking_id,
-            content: content,
-            creator_id: creator_id
+        sequelize.transaction(async (t) => {
+            await Reply.create({
+                asking_id: asking_id,
+                content: content,
+                creator_id: creator_id
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -451,12 +463,14 @@ questionSolvingService.createReply = async (asking_id, content, creator_id) => {
 
 questionSolvingService.deleteReply = async (reply_id) => {
     try {
-        await Reply.destroy({
-            where: {
-                id: reply_id
-            }
+        sequelize.transaction(async (t) => {
+            await Reply.destroy({
+                where: {
+                    id: reply_id
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -471,33 +485,35 @@ questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, sou
     if (!isSupportedLanguage(language))
         return false;
     try {
-        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
-        if (answer_sheet == null) {
-            await AnswerSheet.create({
-                test_id: test_id,
-                creator_id: user_id
-            });
-        } else {
-            await AnswerSheet.update({
-                test_id: test_id,
-                creator_id: user_id,
-            }, {
-                where: {
-                    id: answer_sheet.id
-                }
-            });
-        }
+        sequelize.transaction(async (t) => {
+            const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+            if (answer_sheet == null) {
+                await AnswerSheet.create({
+                    test_id: test_id,
+                    creator_id: user_id
+                });
+            } else {
+                await AnswerSheet.update({
+                    test_id: test_id,
+                    creator_id: user_id,
+                }, {
+                    where: {
+                        id: answer_sheet.id
+                    }
+                });
+            }
 
-        const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
+            const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
 
-        await AnswerRecord.upsert({
-            answer: source_code,
-            answer_sheet_id: answer_sheet.id,
-            test_question_id: test_question.id,
-            question_id: question_id,
-            language: language
+            await AnswerRecord.upsert({
+                answer: source_code,
+                answer_sheet_id: answer_sheet.id,
+                test_question_id: test_question.id,
+                question_id: question_id,
+                language: language
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e)
         return false;
@@ -525,29 +541,79 @@ const languageToLanguageId = (language) => {
 
 questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_idx, user_id) => {
     try {
-        let is_correct = true;
-        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
-        const answer_record = await AnswerRecord.findOne({
-            attributes: ['id', 'answer', 'language'],
-            where: {
-                answer_sheet_id: answer_sheet.id,
-                question_id: question_id
-            }
-        });
-
-        //
-        const coding_question_status = await questionSolvingService.getCodingTestResult(test_id, question_id, test_case_idx, user_id);
-        if (coding_question_status === 'not submitted') {
-            await CodingQuestionStatus.create({
-                answer_record_id: answer_record.id,
-                test_case_idx: test_case_idx,
-                user_id: user_id,
-                is_process: true
+        sequelize.transaction(async (t) => {
+            let is_correct = true;
+            const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+            const answer_record = await AnswerRecord.findOne({
+                attributes: ['id', 'answer', 'language'],
+                where: {
+                    answer_sheet_id: answer_sheet.id,
+                    question_id: question_id
+                }
             });
-        } else {
+
+            const coding_question_status = await questionSolvingService.getCodingTestResult(test_id, question_id, test_case_idx, user_id);
+            if (coding_question_status === 'not submitted') {
+                await CodingQuestionStatus.create({
+                    answer_record_id: answer_record.id,
+                    test_case_idx: test_case_idx,
+                    user_id: user_id,
+                    is_process: true
+                });
+            } else {
+                await CodingQuestionStatus.update({
+                    is_process: true,
+                    is_correct: false
+                }, {
+                    where: {
+                        answer_record_id: answer_record.id,
+                        test_case_idx: test_case_idx,
+                        user_id: user_id
+                    }
+                });
+            }
+
+            const test_case = await questionService.getTestCase(test_case_idx, question_id);
+            let token;
+            await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
+                source_code: answer_record.answer,
+                language_id: languageToLanguageId(answer_record.language),
+                stdin: test_case.input
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(function (response) {
+                if (response.status === 201) {
+                    token = response.data.token;
+                }
+            }).catch(function (error) {
+                console.error(error);
+            });
+            let stdout
+            while (true) {
+                await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (response) {
+                    if (response.status === 200) {
+                        stdout = response.data.stdout;
+                    }
+                }).catch(function (error) {
+                    console.error(error);
+                });
+                if (stdout !== null) {
+                    if (stdout.endsWith('\n')) {
+                        stdout = stdout.substring(0, stdout.length - 1);
+                    }
+                    break;
+                }
+                await sleep(300);
+            }
+
             await CodingQuestionStatus.update({
-                is_process: true,
-                is_correct: false
+                is_process: false
             }, {
                 where: {
                     answer_record_id: answer_record.id,
@@ -555,71 +621,22 @@ questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_id
                     user_id: user_id
                 }
             });
-        }
 
-        const test_case = await questionService.getTestCase(test_case_idx, question_id);
-        let token;
-        await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
-            source_code: answer_record.answer,
-            language_id: languageToLanguageId(answer_record.language),
-            stdin: test_case.input
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
+            if (!test_case.output.includes(stdout)) {
+                is_correct = false;
             }
-        }).then(function (response) {
-            if (response.status === 201) {
-                token = response.data.token;
-            }
-        }).catch(function (error) {
-            console.error(error);
-        });
-        let stdout
-        while (true) {
-            await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
-                headers: {
-                    'Content-Type': 'application/json'
+
+            await CodingQuestionStatus.update({
+                is_correct: is_correct
+            }, {
+                where: {
+                    answer_record_id: answer_record.id,
+                    test_case_idx: test_case_idx,
+                    user_id: user_id
                 }
-            }).then(function (response) {
-                if (response.status === 200) {
-                    stdout = response.data.stdout;
-                }
-            }).catch(function (error) {
-                console.error(error);
             });
-            if (stdout !== null) {
-                if (stdout.endsWith('\n')) {
-                    stdout = stdout.substring(0, stdout.length - 1);
-                }
-                break;
-            }
-            await sleep(300);
-        }
-
-        await CodingQuestionStatus.update({
-            is_process: false
-        }, {
-            where: {
-                answer_record_id: answer_record.id,
-                test_case_idx: test_case_idx,
-                user_id: user_id
-            }
+            return true;
         });
-
-        if (!test_case.output.includes(stdout)) {
-            is_correct = false;
-        }
-
-        await CodingQuestionStatus.update({
-            is_correct: is_correct
-        }, {
-            where: {
-                answer_record_id: answer_record.id,
-                test_case_idx: test_case_idx,
-                user_id: user_id
-            }
-        });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -657,67 +674,72 @@ questionSolvingService.getCodingTestResult = async (test_id, question_id, test_c
 }
 
 questionSolvingService.judgeCodingTestQuestion = async (source_code, language, user_id, question_id) => {
-    let is_correct = true;
-    let token;
-    const language_id = languageToLanguageId(language);
-    const test_case_inputs = await CodingQuestionTestCases.findAll({
-        attributes: ['input'],
-        where: {
-            question_id: question_id
-        }
-    });
-    for (let i = 0; i < test_case_inputs.length; i++) {
-        const test_case_input = test_case_inputs[i];
-        const test_case_outputs = await CodingQuestionTestCases.findAll({
-            attributes: ['output'],
-            where: {
-                question_id: question_id,
-                input: test_case_input.input
-            }
-        });
-        await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
-            source_code: source_code,
-            language_id: language_id,
-            stdin: test_case_input.input
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(function (response) {
-            if (response.status === 201) {
-                token = response.data.token;
-            }
-        }).catch(function (error) {
-            console.error(error);
-        });
-        let stdout;
-        while (true) {
-            await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
-                headers: {
-                    'Content-Type': 'application/json'
+    try {
+        sequelize.transaction(async (t) => {
+            let is_correct = true;
+            let token;
+            const language_id = languageToLanguageId(language);
+            const test_case_inputs = await CodingQuestionTestCases.findAll({
+                attributes: ['input'],
+                where: {
+                    question_id: question_id
                 }
-            }).then(function (response) {
-                if (response.status === 200) {
-                    stdout = response.data.stdout;
-                }
-            }).catch(function (error) {
-                console.error(error);
             });
-            if (stdout !== null) {
-                if (stdout.endsWith('\n')) {
-                    stdout = stdout.substring(0, stdout.length - 1);
+            for (let i = 0; i < test_case_inputs.length; i++) {
+                const test_case_input = test_case_inputs[i];
+                const test_case_outputs = await CodingQuestionTestCases.findAll({
+                    attributes: ['output'],
+                    where: {
+                        question_id: question_id,
+                        input: test_case_input.input
+                    }
+                });
+                await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
+                    source_code: source_code,
+                    language_id: language_id,
+                    stdin: test_case_input.input
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(function (response) {
+                    if (response.status === 201) {
+                        token = response.data.token;
+                    }
+                }).catch(function (error) {
+                    console.error(error);
+                });
+                let stdout;
+                while (true) {
+                    await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(function (response) {
+                        if (response.status === 200) {
+                            stdout = response.data.stdout;
+                        }
+                    }).catch(function (error) {
+                        console.error(error);
+                    });
+                    if (stdout !== null) {
+                        if (stdout.endsWith('\n')) {
+                            stdout = stdout.substring(0, stdout.length - 1);
+                            break;
+                        }
+                    }
+                    await sleep(300);
+                }
+                if (!test_case_outputs.some(test_case_output => stdout.includes(test_case_output.output))) {
+                    is_correct = false;
                     break;
                 }
             }
-            await sleep(300);
-        }
-        if (!test_case_outputs.some(test_case_output => stdout.includes(test_case_output.output))) {
-            is_correct = false;
-            break;
-        }
+            return is_correct;
+        });
+    } catch (e) {
+        console.error(e);
     }
-    console.log(is_correct);
-    return is_correct;
 }
 
 questionSolvingService.getExperience = async (question_id) => {

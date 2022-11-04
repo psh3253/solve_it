@@ -30,7 +30,6 @@ authService.signup = async function signup(id, password, nickname) {
             nickname: nickname,
             tier_id: 1,
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;

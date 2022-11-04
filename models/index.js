@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const cls = require('cls-hooked');
 const AnswerRecord = require('./answer_record');
 const AnswerSheet = require('./answer_sheet');
 const Asking = require('./asking');
@@ -23,6 +24,9 @@ const User = require('./user');
 const env = process.env.NODE_ENV || 'development';
 const config = require('../config/config.json')[env];
 const db = {};
+
+const namespace = cls.createNamespace('my-very-own-namespace');
+Sequelize.useCLS(namespace);
 
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 

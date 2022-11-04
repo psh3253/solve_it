@@ -174,7 +174,7 @@ module.exports = gql`
         questionCategory: Category
         candidates: [Candidate!]!
     }
-    
+
     type CodingTest implements Question {
         id: ID!
         name: String!

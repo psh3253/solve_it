@@ -8,7 +8,7 @@ util.getDateString = function getDateString(datetime) {
     const hours = ('0' + today.getHours()).slice(-2);
     const minutes = ('0' + today.getMinutes()).slice(-2);
     const seconds = ('0' + today.getSeconds()).slice(-2);
-    return year + '-' + month  + '-' + day + ' ' + hours + ':' + minutes  + ':' + seconds;
+    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
 }
 
 util.normalResponse = (code, message, success) => {

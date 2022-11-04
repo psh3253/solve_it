@@ -1,8 +1,8 @@
-const { Query, Mutation } = require('../../resolvers/question_solving')
+const {Query, Mutation} = require('../../resolvers/question_solving')
 const questionSolvingService = require('../../services/question_solving')
 const questionService = require('../../services/question')
 
-const testContext = { user: { id: 'test@test.com', iat: 1663596166, exp: 1663668166 } }
+const testContext = {user: {id: 'test@test.com', iat: 1663596166, exp: 1663668166}}
 
 const testTestId = 0
 const testUserId = 'test@test.com'
@@ -14,24 +14,24 @@ const testAnswerSheet = {
     creator_id: testUserId
 }
 const testTestQuestion = [
-    { id: 0, number: 1, question_id: 0 },
-    { id: 0, number: 2, question_id: 1 },
-    { id: 0, number: 3, question_id: 3 }
+    {id: 0, number: 1, question_id: 0},
+    {id: 0, number: 2, question_id: 1},
+    {id: 0, number: 3, question_id: 3}
 ]
 const testAnswerRecord = [
-    { id: 0, answer: ['a1'], is_correct: true, question_id: 0 },
-    { id: 1, answer: ['a1'], is_correct: false, question_id: 1 },
-    { id: 2, answer: ['a1'], is_correct: false, question_id: 2 },
+    {id: 0, answer: ['a1'], is_correct: true, question_id: 0},
+    {id: 1, answer: ['a1'], is_correct: false, question_id: 1},
+    {id: 2, answer: ['a1'], is_correct: false, question_id: 2},
 ]
 
 const testAnswer = testAnswerRecord.map(x => x.answer)
 
 const testTestAnswers = []
 
-for (let i = 0; i< testAnswerRecord.length; ++i) {
+for (let i = 0; i < testAnswerRecord.length; ++i) {
     testTestAnswers.push({
         questionId: testAnswerRecord[i].question_id,
-        correctAnswer: ['a' + (i+1).toString()],
+        correctAnswer: ['a' + (i + 1).toString()],
         myAnswer: testAnswerRecord[i].answer,
         is_correct: testAnswerRecord[i].is_correct,
     })

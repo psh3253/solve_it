@@ -142,9 +142,9 @@ const QuestionSolvingResolver = {
             const result = await QuestionSolvingService.getCodingTestResult(testId, questionId, testCaseIdx, context.user.id);
             let message = 'complete';
             let success = false;
-            if(result === 'not complete' || result === 'complete')
+            if (result === 'not complete' || result === 'complete')
                 message = result;
-            if(result === 'not success' || result === 'success')
+            if (result === 'not success' || result === 'success')
                 success = result === 'success';
             return {
                 code: 200,
