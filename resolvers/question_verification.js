@@ -1,4 +1,5 @@
 const QuestionVerificationService = require('../services/question_verification');
+const ProfileService = require('../services/profile');
 const Util = require('../util');
 
 const QuestionVerificationResolver = {
@@ -47,12 +48,13 @@ const QuestionVerificationResolver = {
         },
 
         async deleteReport(parent, {id}, context, info) {
-            if (!await QuestionVerificationService.isReportCreator(id, context.user.id))
+            if (!await QuestionVerificationService.isReportCreator(id, context.user.id) && !await ProfileService.isAdmin(context.user.id)) {
                 return {
                     code: 200,
                     message: 'not creator',
                     success: false
                 }
+            }
             return {
                 code: 200,
                 message: 'complete',

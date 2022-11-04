@@ -71,15 +71,13 @@ profileService.getAllCategories = jest.fn(() => {
 })
 
 profileService.updateNickname = jest.fn((user_id, nickname) => {
-    if (user_id === testProfile.ownerId)
-        return true;
-    return false;
+    return user_id === testProfile.ownerId;
+
 })
 
 profileService.updateNickname = jest.fn((user_id, nickname) => {
-    if (user_id === testProfile.ownerId)
-        return true;
-    return false;
+    return user_id === testProfile.ownerId;
+
 })
 
 describe('get profile', () => {

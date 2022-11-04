@@ -303,12 +303,13 @@ const QuestionSolvingResolver = {
         },
 
         async deleteAsking(parent, {id}, context, info) {
-            if (!await QuestionSolvingService.isAskingCreator(id, context.user.id))
+            if (!await QuestionSolvingService.isAskingCreator(id, context.user.id) && !await ProfileService.isAdmin(context.user.id)) {
                 return {
                     code: 200,
                     message: 'not creator',
                     success: false
                 }
+            }
             return {
                 code: 200,
                 message: 'complete',
@@ -325,12 +326,13 @@ const QuestionSolvingResolver = {
         },
 
         async deleteReply(parent, {id}, context, info) {
-            if (!await QuestionSolvingService.isReplyCreator(id, context.user.id))
+            if (!await QuestionSolvingService.isReplyCreator(id, context.user.id) && !await ProfileService.isAdmin(context.user.id)) {
                 return {
                     code: 200,
                     message: 'not creator',
                     success: false
                 }
+            }
             return {
                 code: 200,
                 message: 'complete',
