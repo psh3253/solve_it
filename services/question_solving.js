@@ -220,11 +220,11 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
             question_id: question_id
         });
 
-        await Question.increment({
+        await Test.increment({
             try_count: 1
         }, {
             where: {
-                id: question_id
+                id: test_id
             }
         })
 
