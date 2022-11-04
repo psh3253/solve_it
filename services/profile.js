@@ -4,7 +4,22 @@ const User = require('../models/user');
 const Category = require('../models/category');
 const Tier = require('../models/tier');
 
-profileService.getUserProfile = async function getUserProfile(user_id) {
+profileService.isAdmin = async function (user_id) {
+    try {
+        const user = await User.findOne({
+            attributes: ['role'],
+            where: {
+                id: user_id
+            }
+        });
+        return user.role === 1;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+profileService.getUserProfile = async function (user_id) {
     try {
         return await User.findOne({
             attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id', 'role'],
@@ -17,7 +32,7 @@ profileService.getUserProfile = async function getUserProfile(user_id) {
     }
 }
 
-profileService.getUserCategories = async function getUserCategory(user_id) {
+profileService.getUserCategories = async function (user_id) {
     try {
         return await User.findOne({
             attributes: [],
@@ -34,7 +49,7 @@ profileService.getUserCategories = async function getUserCategory(user_id) {
     }
 }
 
-profileService.getAllCategories = async function getAllCategories() {
+profileService.getAllCategories = async function () {
     try {
         return await Category.findAll({
             attributes: ['id', 'name']
@@ -44,7 +59,7 @@ profileService.getAllCategories = async function getAllCategories() {
     }
 }
 
-profileService.getUserTier = async function getUserTier(user_id) {
+profileService.getUserTier = async function (user_id) {
     try {
         return await User.findOne({
             attributes: ['tier_id'],
@@ -57,7 +72,7 @@ profileService.getUserTier = async function getUserTier(user_id) {
     }
 }
 
-profileService.addUserExperience = async function addUserExperience(user_id, experience) {
+profileService.addUserExperience = async function (user_id, experience) {
     try {
         sequelize.transaction(async (t) => {
             await User.increment('experience', {
@@ -100,7 +115,7 @@ profileService.addUserExperience = async function addUserExperience(user_id, exp
     }
 }
 
-profileService.updateNickname = async function updateNickname(user_id, nickname) {
+profileService.updateNickname = async function (user_id, nickname) {
     try {
         sequelize.transaction(async (t) => {
             await User.update({
@@ -118,7 +133,7 @@ profileService.updateNickname = async function updateNickname(user_id, nickname)
     }
 }
 
-profileService.updateCategory = async function updateCategory(user_id, categories) {
+profileService.updateCategory = async function (user_id, categories) {
     try {
         sequelize.transaction(async (t) => {
             const user = await User.findOne({
@@ -147,7 +162,7 @@ profileService.updateCategory = async function updateCategory(user_id, categorie
     }
 }
 
-profileService.updateProfileImg = async function updateProfileImg(user_id, image_url) {
+profileService.updateProfileImg = async function (user_id, image_url) {
     try {
         sequelize.transaction(async (t) => {
             const user = await User.findOne({

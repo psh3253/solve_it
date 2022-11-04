@@ -1,4 +1,5 @@
 const QuestionService = require('../services/question');
+const ProfileService = require('../services/profile');
 const Util = require('../util');
 
 const QuestionResolver = {
@@ -185,7 +186,7 @@ const QuestionResolver = {
                     message: 'failed',
                     success: false
                 };
-            
+
             const decoded_file_name = decodeURIComponent(fileName);
 
             if (["png", "jpg", "jpeg"].includes(fileExtension)) {
@@ -197,9 +198,7 @@ const QuestionResolver = {
                     message: 'complete',
                     success: result
                 }
-            }
-
-            else if (["wav", "mp3"].includes(file_type)) {
+            } else if (["wav", "mp3"].includes(file_type)) {
                 const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_SOUND_DIRECTORY_PATH + "/" + decoded_file_name
                 const result = await QuestionService.uploadQuestionSoundFile(question_id, fileUrl);
                 return {
@@ -238,12 +237,13 @@ const QuestionResolver = {
         },
 
         async deleteQuestion(parent, {id}, context, info) {
-            if (!await QuestionService.isQuestionCreator(id, context.user.id))
+            if (!await QuestionService.isQuestionCreator(id, context.user.id) && !await ProfileService.isAdmin(context.user.id)) {
                 return {
                     code: 200,
                     message: 'not creator',
                     success: false
                 }
+            }
             return {
                 code: 200,
                 message: 'complete',
@@ -274,12 +274,13 @@ const QuestionResolver = {
         },
 
         async deleteTest(parent, {id}, context, info) {
-            if (!await QuestionService.isTestCreator(id, context.user.id))
+            if (!await QuestionService.isTestCreator(id, context.user.id) && !await ProfileService.isAdmin(context.user.id)) {
                 return {
                     code: 200,
                     message: 'not creator',
                     success: false
                 }
+            }
             return {
                 code: 200,
                 message: 'complete',
