@@ -185,7 +185,7 @@ const QuestionResolver = {
                     message: 'failed',
                     success: false
                 }
-            
+
             const decoded_file_name = decodeURIComponent(fileName);
             const file_type = decoded_file_name.split('.').slice(-1)[0];
             const question_id = decoded_file_name.split('.').slice(0, -1).join('.');
@@ -200,9 +200,7 @@ const QuestionResolver = {
                     message: 'complete',
                     success: result
                 }
-            }
-
-            else if (["wav", "mp3"].includes(file_type)) {
+            } else if (["wav", "mp3"].includes(file_type)) {
                 const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_SOUND_DIRECTORY_PATH + "/" + decoded_file_name
                 const result = await QuestionService.uploadQuestionSoundFile(question_id, fileUrl);
                 return {
@@ -217,7 +215,7 @@ const QuestionResolver = {
                 message: 'unsupported file extension',
                 success: false
             }
-            
+
         },
 
         async createCodingTestQuestion(parent, {input}, context, info) {

@@ -59,39 +59,41 @@ profileService.getUserTier = async function getUserTier(user_id) {
 
 profileService.addUserExperience = async function addUserExperience(user_id, experience) {
     try {
-        await User.increment('experience', {
-            by: experience,
-            where: {
-                id: user_id
-            }
-        });
-
-        const user = await User.findOne({
-            attributes: ['id', 'experience'],
-            where: {
-                id: user_id
-            }
-        });
-
-        const tier = await Tier.findOne({
-            attributes: ['id'],
-            where: {
-                required_experience: {
-                    [Op.lte]: user.experience
+        sequelize.transaction(async (t) => {
+            await User.increment('experience', {
+                by: experience,
+                where: {
+                    id: user_id
                 }
-            },
-            order: [
-                ['required_experience', 'DESC']
-            ]
+            });
+
+            const user = await User.findOne({
+                attributes: ['id', 'experience'],
+                where: {
+                    id: user_id
+                }
+            });
+
+            const tier = await Tier.findOne({
+                attributes: ['id'],
+                where: {
+                    required_experience: {
+                        [Op.lte]: user.experience
+                    }
+                },
+                order: [
+                    ['required_experience', 'DESC']
+                ]
+            });
+            await User.update({
+                tier_id: tier.id
+            }, {
+                where: {
+                    id: user_id
+                }
+            });
+            return true;
         });
-        await User.update({
-            tier_id: tier.id
-        }, {
-            where: {
-                id: user_id
-            }
-        });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -100,14 +102,16 @@ profileService.addUserExperience = async function addUserExperience(user_id, exp
 
 profileService.updateNickname = async function updateNickname(user_id, nickname) {
     try {
-        await User.update({
-            nickname: nickname
-        }, {
-            where: {
-                id: user_id
-            }
+        sequelize.transaction(async (t) => {
+            await User.update({
+                nickname: nickname
+            }, {
+                where: {
+                    id: user_id
+                }
+            });
+            return true;
         });
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -116,25 +120,27 @@ profileService.updateNickname = async function updateNickname(user_id, nickname)
 
 profileService.updateCategory = async function updateCategory(user_id, categories) {
     try {
-        const user = await User.findOne({
-            attributes: ['id'],
-            where: {
-                id: user_id
-            }
-        });
-        const allCategories = await Category.findAll({
-            attributes: ['id']
-        });
-        await user.removeCategories(allCategories); // ???
-        const user_categories_id = await Category.findAll({
-            where: {
-                name: {
-                    [Op.in]: categories
+        sequelize.transaction(async (t) => {
+            const user = await User.findOne({
+                attributes: ['id'],
+                where: {
+                    id: user_id
                 }
-            }
+            });
+            const allCategories = await Category.findAll({
+                attributes: ['id']
+            });
+            await user.removeCategories(allCategories); // ???
+            const user_categories_id = await Category.findAll({
+                where: {
+                    name: {
+                        [Op.in]: categories
+                    }
+                }
+            });
+            await user.addCategories(user_categories_id);
+            return true;
         });
-        await user.addCategories(user_categories_id);
-        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -143,25 +149,25 @@ profileService.updateCategory = async function updateCategory(user_id, categorie
 
 profileService.updateProfileImg = async function updateProfileImg(user_id, image_url) {
     try {
-        const user = await User.findOne({
-            attributes: ['id'],
-            where: {
-                id: user_id
-            }
-        })
+        sequelize.transaction(async (t) => {
+            const user = await User.findOne({
+                attributes: ['id'],
+                where: {
+                    id: user_id
+                }
+            })
+            if (user === null) return false;
 
-        if (user === null) return false;
-
-        await User.update({
-            image_url: image_url
-        },
-        {
-            where: {
-                id: user.id
-            }
-        })
-
-        return true;
+            await User.update({
+                    image_url: image_url
+                },
+                {
+                    where: {
+                        id: user.id
+                    }
+                })
+            return true;
+        });
     } catch (e) {
         console.error(e);
         return false;

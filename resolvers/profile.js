@@ -68,7 +68,7 @@ const profileResolver = {
             const decoded_file_name = decodeURIComponent(fileName);
             const file_type = decoded_file_name.split('.').slice(-1)[0];
             const user_id = decoded_file_name.split('.').slice(0, -1).join('.');
-            
+
             if (["png", "jpg", "jpeg"].includes(file_type)) {
                 const imageUrl = process.env.S3_BUCKET_URL + process.env.S3_IMAGE_DIRECTORY_PATH + "/" + decoded_file_name
                 const result = await ProfileService.updateProfileImg(user_id, imageUrl);
