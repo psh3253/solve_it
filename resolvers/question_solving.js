@@ -65,7 +65,7 @@ const QuestionSolvingResolver = {
             const user_id = userId === undefined ? context.user.id : userId;
             const like = await QuestionSolvingService.isLiked(testId, user_id);
             
-            return true;
+            return like;
         },
 
         async asking(parent, {askingId}, context, info) {
@@ -276,7 +276,7 @@ const QuestionSolvingResolver = {
 
         async likeTest(parent, {id}, context, info) {
             const test_id = await QuestionSolvingService.likeTest(id, context.user.id);
-
+            
             return {
                 code: 200,
                 message: 'complete',
@@ -286,6 +286,7 @@ const QuestionSolvingResolver = {
 
         async unlikeTest(parent, {id}, context, info) {
             const test_id = await QuestionSolvingService.unlikeTest(id, context.user.id);
+
             return {
                 code: 200,
                 message: 'complete',
