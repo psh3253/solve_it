@@ -7,7 +7,7 @@ const Tier = require('../models/tier');
 profileService.getUserProfile = async function getUserProfile(user_id) {
     try {
         return await User.findOne({
-            attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id'],
+            attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id', 'role'],
             where: {
                 id: user_id
             }

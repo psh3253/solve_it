@@ -9,7 +9,7 @@ module.exports = gql`
 
     type Mutation {
         updateProfile(name: String, favorite: [String!]!): NormalResponse
-        updateProfileImg(awsRegion: String!, eventTime: String!, fileName: String!, fileSize: Int!): NormalResponse
+        lambdaUploadProfileImg(awsRegion: String!, eventTime: String!, fileName: String!, fileExtension: String!, fileSize: Int!, userId: ID!): NormalResponse
     }
 
     type Profile {
@@ -19,6 +19,7 @@ module.exports = gql`
         point: Int!
         tier: Int
         favorites: [Category!]
+        role: Int
         creationDate: String!
     }
 

@@ -30,6 +30,12 @@ module.exports = class User extends Sequelize.Model {
                 allowNull: false,
                 defaultValue: 0,
             },
+            role: {
+                /** User: 0, Administrator: 1 */
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                defaultValue: 0,
+            },
             created_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
