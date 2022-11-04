@@ -28,7 +28,7 @@ authService.signup = async function signup(id, password, nickname) {
             id: id,
             password: password,
             nickname: nickname,
-            tier_id: 0,
+            tier_id: 1,
         });
         return true;
     } catch (e) {
