@@ -31,7 +31,7 @@ QuestionRecommendService.getMyTags = async (user_id) => {
 
 QuestionRecommendService.createTag = async (name, test_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await TestTag.create({
                 tag: name,
                 test_id: test_id,
@@ -47,7 +47,7 @@ QuestionRecommendService.createTag = async (name, test_id, user_id) => {
 
 QuestionRecommendService.updateTag = async (tag_id, name) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await TestTag.update({
                 tag: name
             }, {
@@ -65,7 +65,7 @@ QuestionRecommendService.updateTag = async (tag_id, name) => {
 
 QuestionRecommendService.deleteTag = async (name, test_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await TestTag.destroy({
                 where: {
                     tag: name,

@@ -18,7 +18,7 @@ const axios = require('axios');
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const user = await User.findOne({
                 attributes: ['id', 'tier_id'],
                 where: {
@@ -80,7 +80,7 @@ questionSolvingService.getTestLikesCount = async (test_id) => {
 
 questionSolvingService.likeTest = async (test_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const test = await Test.findOne({
                 attributes: ['id'],
                 where: {
@@ -99,7 +99,7 @@ questionSolvingService.likeTest = async (test_id, user_id) => {
 
 questionSolvingService.unlikeTest = async (test_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const test = await Test.findOne({
                 attributes: ['id'],
                 where: {
@@ -196,7 +196,7 @@ questionSolvingService.getAllTestQuestion = async (test_id) => {
 
 questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
             if (answer_sheet == null) {
                 await AnswerSheet.create({
@@ -314,7 +314,7 @@ questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
 
 questionSolvingService.createAsking = async (question_id, title, content, creator_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Asking.create({
                 title: title,
                 content: content,
@@ -331,7 +331,7 @@ questionSolvingService.createAsking = async (question_id, title, content, creato
 
 questionSolvingService.deleteAsking = async (asking_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Asking.destroy({
                 where: {
                     id: asking_id
@@ -375,7 +375,7 @@ questionSolvingService.getAsking = async (asking_id) => {
 
 questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await AnswerRecord.update({
                 is_correct: is_correct
             }, {
@@ -447,7 +447,7 @@ questionSolvingService.getRepliesByAskingId = async (asking_id) => {
 
 questionSolvingService.createReply = async (asking_id, content, creator_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Reply.create({
                 asking_id: asking_id,
                 content: content,
@@ -463,7 +463,7 @@ questionSolvingService.createReply = async (asking_id, content, creator_id) => {
 
 questionSolvingService.deleteReply = async (reply_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Reply.destroy({
                 where: {
                     id: reply_id
@@ -485,7 +485,7 @@ questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, sou
     if (!isSupportedLanguage(language))
         return false;
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
             if (answer_sheet == null) {
                 await AnswerSheet.create({
@@ -541,7 +541,7 @@ const languageToLanguageId = (language) => {
 
 questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_idx, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             let is_correct = true;
             const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
             const answer_record = await AnswerRecord.findOne({
@@ -675,7 +675,7 @@ questionSolvingService.getCodingTestResult = async (test_id, question_id, test_c
 
 questionSolvingService.judgeCodingTestQuestion = async (source_code, language, user_id, question_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             let is_correct = true;
             let token;
             const language_id = languageToLanguageId(language);

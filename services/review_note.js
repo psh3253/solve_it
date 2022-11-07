@@ -18,7 +18,7 @@ reviewNoteService.getReviewNote = async (question_id, user_id) => {
 
 reviewNoteService.createReviewNote = async (question_id, explanation, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await ReviewNote.upsert({
                 explanation: explanation,
                 creator_id: user_id,
@@ -34,7 +34,7 @@ reviewNoteService.createReviewNote = async (question_id, explanation, user_id) =
 
 reviewNoteService.deleteReviewNote = async (question_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await ReviewNote.destroy({
                 where: {
                     question_id: question_id,
