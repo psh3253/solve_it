@@ -38,7 +38,7 @@ const QuestionResolver = {
             for (let i of test_cases) {
                 test_case_list.push({
                     input: i.input,
-                    output: i.output
+                    outputs: i.outputs
                 })
             }
 

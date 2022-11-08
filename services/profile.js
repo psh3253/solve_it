@@ -1,4 +1,5 @@
 const profileService = {};
+const {sequelize} = require('../models');
 const {Op} = require("sequelize");
 const User = require('../models/user');
 const Category = require('../models/category');

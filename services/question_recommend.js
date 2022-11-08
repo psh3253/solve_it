@@ -1,5 +1,6 @@
 const TestTag = require("../models/test_tag");
 const QuestionRecommendService = {};
+const {sequelize} = require('../models');
 
 QuestionRecommendService.getTag = async (tag_id) => {
     try {
