@@ -1,6 +1,7 @@
 const IssuedCoupon = require("../models/issued_coupon");
 const Coupon = require("../models/coupon");
 const User = require("../models/user");
+const {sequelize} = require('../models');
 const couponService = {};
 
 couponService.getUserCoupons = async function getUserCoupons(user_id) {

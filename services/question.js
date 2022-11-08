@@ -265,7 +265,7 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
     }
 }
 
-questionService.createCodingTestQuestion = async (title, content, explanation, category_id, difficulty_id, test_cases, creator_id,) => {
+questionService.createCodingTestQuestion = async (title, content, explanation, category_id, difficulty_id, test_cases, creator_id) => {
     try {
         return await sequelize.transaction(async (t) => {
             const question = await Question.create({
@@ -279,7 +279,7 @@ questionService.createCodingTestQuestion = async (title, content, explanation, c
             });
 
             for (let i of test_cases) {
-                for (let j of i.output) {
+                for (let j of i.outputs) {
                     await CodingQuestionTestCase.create({
                         input: i.input,
                         output: j,
@@ -567,7 +567,7 @@ questionService.getTestCaseByQuestionId = async (question_id) => {
             });
             test_case_list.push({
                 input: test_case_inputs[i].input,
-                output: test_case_outputs.map((item) => item.output)
+                outputs: test_case_outputs.map((item) => item.output)
             });
         }
         return test_case_list;

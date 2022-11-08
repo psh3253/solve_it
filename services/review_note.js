@@ -1,5 +1,6 @@
 const reviewNoteService = {};
 const ReviewNote = require("../models/review_note");
+const {sequelize} = require('../models');
 
 reviewNoteService.getReviewNote = async (question_id, user_id) => {
     try {
