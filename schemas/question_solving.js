@@ -11,7 +11,7 @@ module.exports = gql`
         allAsking(page: Int!): [Asking]
         mySolvingTests: [TestHeader!]!
         like(testId: ID!, userId: ID): Boolean
-        getCodingTestResult(testId: ID!, questionId: ID!, testCaseIdx: Int!): NormalResponse
+        codingTestResult(testId: ID!, questionId: ID!, testCaseIdx: Int!): CodingTestResultResponse
     }
 
     type Mutation {

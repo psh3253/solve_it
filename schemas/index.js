@@ -23,6 +23,18 @@ const Query = gql`
         message: String!
         success: Boolean!
     }
+    type CodingTestResultResponse implements Response {
+        code: Int!
+        message: String!
+        success: Boolean!
+        result: CodingTestResult!
+    }
+    enum CodingTestResult {
+        SUCCESS
+        FAIL
+        PENDING
+        NOT_SUBMITTED
+    }
     type NormalResponse {
         code: Int!
         message: String!
