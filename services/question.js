@@ -529,6 +529,8 @@ questionService.getTestCase = async (test_case_idx, question_id) => {
                 question_id: question_id,
             },
             group: ['input'],
+            limit: 1,
+            offset: test_case_idx
         });
 
         const test_case_outputs = await CodingQuestionTestCase.findAll({
@@ -538,6 +540,7 @@ questionService.getTestCase = async (test_case_idx, question_id) => {
                 input: test_case_input.input
             }
         });
+
         return {
             input: test_case_input.input,
             output: test_case_outputs.map((i) => i.output)
