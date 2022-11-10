@@ -3,7 +3,7 @@ const {gql} = require('apollo-server');
 module.exports = gql`
     type Query {
         profile(ID: String): Profile
-        profilesByExp(page: Int!): [ProfileHeader]!
+        profilesByExp(page: Int!, includeAdmin: Boolean): [ProfileHeader]!
         statistics(ID: String): Statistics
         categories: [Category!]!
     }
@@ -29,6 +29,7 @@ module.exports = gql`
         nickname: String!
         experience: Int!
         tier: Int
+        role: Int!
     }
 
     type Statistics {

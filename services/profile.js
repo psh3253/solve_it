@@ -116,10 +116,22 @@ profileService.addUserExperience = async function (user_id, experience) {
     }
 }
 
-profileService.getUserProfilesByExp = async (page) => {
+profileService.getUserProfilesByExp = async (page, include_admin) => {
     try {
+        if (include_admin) {
+            return await User.findAll({
+                attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id', 'role'],
+                limit: 10,
+                offset: (page - 1) * 10,
+                order: [['experience', 'DESC']],
+            });
+        }
+
         return await User.findAll({
             attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id', 'role'],
+            where: {
+                role: 0
+            },
             limit: 10,
             offset: (page - 1) * 10,
             order: [['experience', 'DESC']],

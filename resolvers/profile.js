@@ -35,11 +35,14 @@ const profileResolver = {
             };
         },
 
-        async profilesByExp(parent, {page}, context, info) {
+        async profilesByExp(parent, {page, includeAdmin}, context, info) {
             if (page < 1)
                 return [];
             
-            const profiles = await ProfileService.getUserProfilesByExp(page);
+            if (includeAdmin === undefined)
+                includeAdmin = false
+                
+            const profiles = await ProfileService.getUserProfilesByExp(page, includeAdmin);
             const profile_list = [];
 
             for (let profile of profiles) {
@@ -48,6 +51,7 @@ const profileResolver = {
                     nickname: profile.nickname,
                     experience: profile.experience,
                     tier: profile.tier_id,
+                    role: profile.role
                 })
             }
 
