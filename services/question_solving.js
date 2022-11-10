@@ -198,6 +198,7 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
     try {
         return await sequelize.transaction(async (t) => {
             let answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+
             if (answer_sheet == null) {
                 answer_sheet = await AnswerSheet.create({
                     test_id: test_id,
