@@ -22,6 +22,7 @@ const QuestionResolver = {
             const candidates = await QuestionService.getCandidate(id);
             const wrong_count = question.try_count - question.correct_count
             const test_cases = await QuestionService.getTestCaseByQuestionId(id);
+            
             let answer_list = [];
             let candidate_list = [];
             let test_case_list = [];
@@ -38,7 +39,7 @@ const QuestionResolver = {
             for (let i of test_cases) {
                 test_case_list.push({
                     input: i.input,
-                    output: i.output
+                    outputs: i.outputs
                 })
             }
 
