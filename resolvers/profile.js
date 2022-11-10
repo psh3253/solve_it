@@ -35,6 +35,25 @@ const profileResolver = {
             };
         },
 
+        async profilesByExp(parent, {page}, context, info) {
+            if (page < 1)
+                return [];
+            
+            const profiles = await ProfileService.getUserProfilesByExp(page);
+            const profile_list = [];
+
+            for (let profile of profiles) {
+                profile_list.push({
+                    ownerId: profile.id,
+                    nickname: profile.nickname,
+                    experience: profile.experience,
+                    tier: profile.tier_id,
+                })
+            }
+
+            return profile_list;
+        },
+
         async categories(parent, args, context, info) {
             const allCategories = await ProfileService.getAllCategories();
             let categories = [];

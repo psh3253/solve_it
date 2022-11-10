@@ -1,4 +1,5 @@
 const profileService = {};
+const {sequelize} = require('../models');
 const {Op} = require("sequelize");
 const User = require('../models/user');
 const Category = require('../models/category');
@@ -74,7 +75,7 @@ profileService.getUserTier = async function (user_id) {
 
 profileService.addUserExperience = async function (user_id, experience) {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await User.increment('experience', {
                 by: experience,
                 where: {
@@ -115,9 +116,23 @@ profileService.addUserExperience = async function (user_id, experience) {
     }
 }
 
+profileService.getUserProfilesByExp = async (page) => {
+    try {
+        return await User.findAll({
+            attributes: ['id', 'nickname', 'image_url', 'experience', 'point', 'created_at', 'tier_id', 'role'],
+            limit: 10,
+            offset: (page - 1) * 10,
+            order: [['experience', 'DESC']],
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 profileService.updateNickname = async function (user_id, nickname) {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await User.update({
                 nickname: nickname
             }, {
@@ -135,7 +150,7 @@ profileService.updateNickname = async function (user_id, nickname) {
 
 profileService.updateCategory = async function (user_id, categories) {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const user = await User.findOne({
                 attributes: ['id'],
                 where: {
@@ -164,7 +179,7 @@ profileService.updateCategory = async function (user_id, categories) {
 
 profileService.updateProfileImg = async function (user_id, image_url) {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const user = await User.findOne({
                 attributes: ['id'],
                 where: {

@@ -3,6 +3,7 @@ const {gql} = require('apollo-server');
 module.exports = gql`
     type Query {
         profile(ID: String): Profile
+        profilesByExp(page: Int!): [ProfileHeader]!
         statistics(ID: String): Statistics
         categories: [Category!]!
     }
@@ -21,6 +22,13 @@ module.exports = gql`
         favorites: [Category!]
         role: Int
         creationDate: String!
+    }
+
+    type ProfileHeader {
+        ownerId: String!
+        nickname: String!
+        experience: Int!
+        tier: Int
     }
 
     type Statistics {
