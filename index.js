@@ -11,6 +11,7 @@ const server = new ApolloServer({
     schema: schema,
     csrfPrevention: true,
     allowBatchedHttpRequests: true,
+    introspection: true,
     context: async ({req}) => {
         try {
             const op = req.body.query.split('\n')[1].trim();
