@@ -230,7 +230,7 @@ questionService.getTestsByCreatorId = async (user_id) => {
 
 questionService.createQuestion = async (title, content, answers, explanation, type, category_id, creator_id, difficulty_id, candidates) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const question = await Question.create({
                 title: title,
                 content: content,
@@ -265,9 +265,9 @@ questionService.createQuestion = async (title, content, answers, explanation, ty
     }
 }
 
-questionService.createCodingTestQuestion = async (title, content, explanation, category_id, difficulty_id, test_cases, creator_id,) => {
+questionService.createCodingTestQuestion = async (title, content, explanation, category_id, difficulty_id, test_cases, creator_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const question = await Question.create({
                 title: title,
                 content: content,
@@ -279,7 +279,7 @@ questionService.createCodingTestQuestion = async (title, content, explanation, c
             });
 
             for (let i of test_cases) {
-                for (let j of i.output) {
+                for (let j of i.outputs) {
                     await CodingQuestionTestCase.create({
                         input: i.input,
                         output: j,
@@ -297,7 +297,7 @@ questionService.createCodingTestQuestion = async (title, content, explanation, c
 
 questionService.uploadQuestionImageFile = async (question_id, image_url) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const question = await Question.findOne({
                 attributes: ['id'],
                 where: {
@@ -323,7 +323,7 @@ questionService.uploadQuestionImageFile = async (question_id, image_url) => {
 
 questionService.uploadQuestionSoundFile = async (question_id, sound_url) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const question = await Question.findOne({
                 attributes: ['id'],
                 where: {
@@ -349,7 +349,7 @@ questionService.uploadQuestionSoundFile = async (question_id, sound_url) => {
 
 questionService.updateQuestion = async (question_id, title, content, answers, explanation, candidates) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Question.update({
                     title: title,
                     content: content,
@@ -412,7 +412,7 @@ questionService.isQuestionCreator = async (question_id, user_id) => {
 
 questionService.deleteQuestion = async (question_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Question.destroy({
                 where: {
                     id: question_id,
@@ -429,7 +429,7 @@ questionService.deleteQuestion = async (question_id) => {
 
 questionService.createTest = async (title, content, question_ids, category_id, is_private, creator_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const test = await Test.create({
                 title: title,
                 content: content,
@@ -471,7 +471,7 @@ questionService.isTestCreator = async (test_id, user_id) => {
 
 questionService.updateTest = async (test_id, title, content, question_ids, category_id, is_private) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Test.update({
                     title: title,
                     content: content,
@@ -507,7 +507,7 @@ questionService.updateTest = async (test_id, title, content, question_ids, categ
 
 questionService.deleteTest = async (test_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Test.destroy({
                 where: {
                     id: test_id,
@@ -529,6 +529,8 @@ questionService.getTestCase = async (test_case_idx, question_id) => {
                 question_id: question_id,
             },
             group: ['input'],
+            limit: 1,
+            offset: test_case_idx
         });
 
         const test_case_outputs = await CodingQuestionTestCase.findAll({
@@ -538,6 +540,7 @@ questionService.getTestCase = async (test_case_idx, question_id) => {
                 input: test_case_input.input
             }
         });
+
         return {
             input: test_case_input.input,
             output: test_case_outputs.map((i) => i.output)
@@ -567,7 +570,7 @@ questionService.getTestCaseByQuestionId = async (question_id) => {
             });
             test_case_list.push({
                 input: test_case_inputs[i].input,
-                output: test_case_outputs.map((item) => item.output)
+                outputs: test_case_outputs.map((item) => item.output)
             });
         }
         return test_case_list;

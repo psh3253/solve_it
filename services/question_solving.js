@@ -8,7 +8,7 @@ const QuestionDifficulty = require('../models/question_difficulty');
 const Asking = require('../models/asking');
 const Reply = require('../models/reply');
 const User = require('../models/user');
-const {sequelize} = require("../models/index");
+const {sequelize} = require('../models');
 const Category = require("../models/category");
 const Question = require("../models/question");
 const Difficulty = require("../models/difficulty");
@@ -18,7 +18,7 @@ const axios = require('axios');
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const user = await User.findOne({
                 attributes: ['id', 'tier_id'],
                 where: {
@@ -80,7 +80,7 @@ questionSolvingService.getTestLikesCount = async (test_id) => {
 
 questionSolvingService.likeTest = async (test_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const test = await Test.findOne({
                 attributes: ['id'],
                 where: {
@@ -99,7 +99,7 @@ questionSolvingService.likeTest = async (test_id, user_id) => {
 
 questionSolvingService.unlikeTest = async (test_id, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             const test = await Test.findOne({
                 attributes: ['id'],
                 where: {
@@ -196,10 +196,10 @@ questionSolvingService.getAllTestQuestion = async (test_id) => {
 
 questionSolvingService.submitAnswer = async (test_id, question_id, answers, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
-            const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        return await sequelize.transaction(async (t) => {
+            let answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
             if (answer_sheet == null) {
-                await AnswerSheet.create({
+                answer_sheet = await AnswerSheet.create({
                     test_id: test_id,
                     creator_id: user_id
                 });
@@ -215,7 +215,7 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
             }
 
             const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
-
+            
             await AnswerRecord.upsert({
                 answer: answers,
                 answer_sheet_id: answer_sheet.id,
@@ -231,9 +231,9 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
                 }
             });
 
-        return true;
-    })
-        } catch (e) {
+            return true;
+        })
+    } catch (e) {
         console.error(e)
         return false;
     }
@@ -314,7 +314,7 @@ questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
 
 questionSolvingService.createAsking = async (question_id, title, content, creator_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Asking.create({
                 title: title,
                 content: content,
@@ -331,7 +331,7 @@ questionSolvingService.createAsking = async (question_id, title, content, creato
 
 questionSolvingService.deleteAsking = async (asking_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Asking.destroy({
                 where: {
                     id: asking_id
@@ -375,7 +375,7 @@ questionSolvingService.getAsking = async (asking_id) => {
 
 questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await AnswerRecord.update({
                 is_correct: is_correct
             }, {
@@ -447,7 +447,7 @@ questionSolvingService.getRepliesByAskingId = async (asking_id) => {
 
 questionSolvingService.createReply = async (asking_id, content, creator_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Reply.create({
                 asking_id: asking_id,
                 content: content,
@@ -463,7 +463,7 @@ questionSolvingService.createReply = async (asking_id, content, creator_id) => {
 
 questionSolvingService.deleteReply = async (reply_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             await Reply.destroy({
                 where: {
                     id: reply_id
@@ -485,10 +485,10 @@ questionSolvingService.submitCodingTestAnswer = async (test_id, question_id, sou
     if (!isSupportedLanguage(language))
         return false;
     try {
-        sequelize.transaction(async (t) => {
-            const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        return await sequelize.transaction(async (t) => {
+            let answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
             if (answer_sheet == null) {
-                await AnswerSheet.create({
+                answer_sheet = await AnswerSheet.create({
                     test_id: test_id,
                     creator_id: user_id
                 });
@@ -541,102 +541,103 @@ const languageToLanguageId = (language) => {
 
 questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_idx, user_id) => {
     try {
-        sequelize.transaction(async (t) => {
-            let is_correct = true;
-            const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
-            const answer_record = await AnswerRecord.findOne({
-                attributes: ['id', 'answer', 'language'],
-                where: {
-                    answer_sheet_id: answer_sheet.id,
-                    question_id: question_id
-                }
-            });
+        let is_correct = true;
+        const answer_sheet = await questionSolvingService.getAnswerSheet(test_id, user_id);
+        const answer_record = await AnswerRecord.findOne({
+            attributes: ['id', 'answer', 'language'],
+            where: {
+                answer_sheet_id: answer_sheet.id,
+                question_id: question_id
+            }
+        });
 
-            const coding_question_status = await questionSolvingService.getCodingTestResult(test_id, question_id, test_case_idx, user_id);
-            if (coding_question_status === 'not submitted') {
-                await CodingQuestionStatus.create({
+        const coding_question_status = await questionSolvingService.getCodingTestResult(test_id, question_id, test_case_idx, user_id);
+        if (coding_question_status === 'not submitted') {
+            await CodingQuestionStatus.create({
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx,
+                user_id: user_id,
+                is_process: true
+            });
+        } else {
+            await CodingQuestionStatus.update({
+                is_process: true,
+                is_correct: false
+            }, {
+                where: {
                     answer_record_id: answer_record.id,
                     test_case_idx: test_case_idx,
-                    user_id: user_id,
-                    is_process: true
-                });
-            } else {
-                await CodingQuestionStatus.update({
-                    is_process: true,
-                    is_correct: false
-                }, {
-                    where: {
-                        answer_record_id: answer_record.id,
-                        test_case_idx: test_case_idx,
-                        user_id: user_id
-                    }
-                });
-            }
+                    user_id: user_id
+                }
+            });
+        }
 
-            const test_case = await questionService.getTestCase(test_case_idx, question_id);
-            let token;
-            await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
-                source_code: answer_record.answer,
-                language_id: languageToLanguageId(answer_record.language),
-                stdin: test_case.input
-            }, {
+        const test_case = await questionService.getTestCase(test_case_idx, question_id);
+        let token;
+        let k = await axios.post(process.env.JUDGE_SERVER_URL + '/submissions', {
+            source_code: answer_record.answer,
+            language_id: languageToLanguageId(answer_record.language),
+            stdin: test_case.input
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(function (response) {
+            if (response.status === 201) {
+                token = response.data.token;
+                console.log(token);
+            }
+        }).catch(function (error) {
+            console.error(error);
+        });
+        let stdout
+        while (true) {
+            await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             }).then(function (response) {
-                if (response.status === 201) {
-                    token = response.data.token;
+                if (response.status === 200) {
+                    stdout = response.data.stdout;
                 }
             }).catch(function (error) {
                 console.error(error);
             });
-            let stdout
-            while (true) {
-                await axios.get(process.env.JUDGE_SERVER_URL + '/submissions/' + token, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }).then(function (response) {
-                    if (response.status === 200) {
-                        stdout = response.data.stdout;
-                    }
-                }).catch(function (error) {
-                    console.error(error);
-                });
-                if (stdout !== null) {
-                    if (stdout.endsWith('\n')) {
-                        stdout = stdout.substring(0, stdout.length - 1);
-                    }
-                    break;
+            if (stdout !== null) {
+                if (stdout.endsWith('\n')) {
+                    stdout = stdout.substring(0, stdout.length - 1);
                 }
-                await sleep(300);
+                break;
             }
+            await sleep(300);
+        }
 
-            await CodingQuestionStatus.update({
-                is_process: false
-            }, {
-                where: {
-                    answer_record_id: answer_record.id,
-                    test_case_idx: test_case_idx,
-                    user_id: user_id
-                }
-            });
-
-            if (!test_case.output.includes(stdout)) {
-                is_correct = false;
+        await CodingQuestionStatus.update({
+            is_process: false
+        }, {
+            where: {
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx,
+                user_id: user_id
             }
-
-            await CodingQuestionStatus.update({
-                is_correct: is_correct
-            }, {
-                where: {
-                    answer_record_id: answer_record.id,
-                    test_case_idx: test_case_idx,
-                    user_id: user_id
-                }
-            });
-            return true;
         });
+
+        console.log(test_case.output)
+        console.log(stdout);
+        if (!test_case.output.includes(stdout)) {
+            is_correct = false;
+        }
+
+        await CodingQuestionStatus.update({
+            is_correct: is_correct
+        }, {
+            where: {
+                answer_record_id: answer_record.id,
+                test_case_idx: test_case_idx,
+                user_id: user_id
+            }
+        });
+        return true;
     } catch (e) {
         console.error(e);
         return false;
@@ -661,13 +662,13 @@ questionSolvingService.getCodingTestResult = async (test_id, question_id, test_c
             }
         });
         if (coding_question_status == null)
-            return 'not submitted';
+            return 'NOT_SUBMITTED';
         else if (coding_question_status.is_process)
-            return 'not complete';
+            return 'PENDING';
         else if (coding_question_status.is_correct)
-            return 'success';
+            return 'SUCCESS';
         else
-            return 'not success';
+            return 'FAIL';
     } catch (e) {
         console.error(e);
     }
@@ -675,7 +676,7 @@ questionSolvingService.getCodingTestResult = async (test_id, question_id, test_c
 
 questionSolvingService.judgeCodingTestQuestion = async (source_code, language, user_id, question_id) => {
     try {
-        sequelize.transaction(async (t) => {
+        return await sequelize.transaction(async (t) => {
             let is_correct = true;
             let token;
             const language_id = languageToLanguageId(language);
