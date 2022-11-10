@@ -137,19 +137,13 @@ const QuestionSolvingResolver = {
             }
             return asking_list;
         },
-        async getCodingTestResult(parent, {testId, questionId, testCaseIdx}, context, info) {
-            console.log(context.user)
+        async codingTestResult(parent, {testId, questionId, testCaseIdx}, context, info) {
             const result = await QuestionSolvingService.getCodingTestResult(testId, questionId, testCaseIdx, context.user.id);
-            let message = 'complete';
-            let success = false;
-            if (result === 'not complete' || result === 'complete')
-                message = result;
-            if (result === 'not success' || result === 'success')
-                success = result === 'success';
             return {
                 code: 200,
-                message: message,
-                success: success
+                message: 'complete',
+                success: result != null,
+                result: result
             }
         }
     },
