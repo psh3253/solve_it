@@ -404,7 +404,7 @@ questionSolvingService.getSolvingTests = async (user_id) => {
                     creator_id: user_id
                 },
                 order: [
-                    ['updated_at', 'DESC']
+                    ['updated_at', 'ASC']
                 ]
             }, {
                 model: Category,
