@@ -395,21 +395,21 @@ questionSolvingService.updateJudgeResult = async (answer_record_id, is_correct) 
 questionSolvingService.getSolvingTests = async (user_id) => {
     try {
         return await Test.findAll({
-            attributes: ['id', 'title', 'try_count', 'is_private', 'created_at', 'creator_id', [
+            attributes: ['id', 'title', 'content', 'try_count', 'is_private', 'created_at', 'creator_id', [
                 sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
             ]],
             include: [{
                 model: AnswerSheet,
                 where: {
                     creator_id: user_id
-                },
-                order: [
-                    ['updated_at', 'ASC']
-                ]
+                }
             }, {
                 model: Category,
                 attributes: ['id', 'name']
-            }]
+            }],
+            order: [
+                [AnswerSheet, 'updated_at', 'DESC']
+            ]
         });
     } catch (e) {
         console.error(e);

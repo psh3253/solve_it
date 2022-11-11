@@ -43,10 +43,12 @@ const QuestionSolvingResolver = {
             if (tests === null) return [];
 
             let test_list = [];
+
             for (let i of tests) {
                 test_list.push({
                     id: i.id,
                     name: i.title,
+                    content: i.content,
                     ownerId: i.creator_id,
                     creationDate: Util.getDateString(i.created_at),
                     is_private: i.is_private,
