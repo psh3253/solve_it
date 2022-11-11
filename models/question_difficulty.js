@@ -21,11 +21,7 @@ module.exports = class QuestionDifficulty extends Sequelize.Model {
 
     static associate(db) {
         db.QuestionDifficulty.belongsTo(db.Question, {foreignKey: 'question_id', targetKey: 'id', onDelete: 'cascade'});
-        db.QuestionDifficulty.belongsTo(db.Difficulty, {
-            foreignKey: 'difficulty_id',
-            targetKey: 'id',
-            onDelete: 'cascade'
-        });
+        db.QuestionDifficulty.belongsTo(db.Difficulty, {foreignKey: 'difficulty_id', targetKey: 'id', onDelete: 'cascade'});
         db.QuestionDifficulty.belongsTo(db.User, {foreignKey: 'creator_id', targetKey: 'id'});
     }
 };

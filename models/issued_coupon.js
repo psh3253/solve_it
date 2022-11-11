@@ -35,7 +35,7 @@ module.exports = class IssuedCoupon extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.IssuedCoupon.belongsTo(db.User, {foreignKey: 'user_id', targetKey: 'id'})
-        db.IssuedCoupon.belongsTo(db.Coupon, {foreignKey: 'coupon_id', targetKey: 'id'})
+        db.IssuedCoupon.belongsTo(db.User, {foreignKey: 'user_id', targetKey: 'id'});
+        db.IssuedCoupon.belongsTo(db.Coupon, {foreignKey: 'coupon_id', targetKey: 'id'});
     }
 };

@@ -30,10 +30,6 @@ module.exports = class Difficulty extends Sequelize.Model {
 
     static associate(db) {
         db.Difficulty.hasMany(db.Question, {foreignKey: 'difficulty_id', sourceKey: 'id'});
-        db.Difficulty.hasMany(db.QuestionDifficulty, {
-            foreignKey: 'difficulty_id',
-            sourceKey: 'id',
-            onDelete: 'cascade'
-        });
+        db.Difficulty.hasMany(db.QuestionDifficulty, {foreignKey: 'difficulty_id', sourceKey: 'id', onDelete: 'cascade'});
     }
 };

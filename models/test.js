@@ -50,6 +50,6 @@ module.exports = class Test extends Sequelize.Model {
         db.Test.hasMany(db.TestQuestion, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
         db.Test.belongsTo(db.Category, {foreignKey: 'category_id', targetKey: 'id'});
         db.Test.hasMany(db.TestTag, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'cascade'});
-        db.Test.hasMany(db.AnswerSheet, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'null'})
+        db.Test.hasMany(db.AnswerSheet, {foreignKey: 'test_id', sourceKey: 'id', onDelete: 'null'});
     }
 };

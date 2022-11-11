@@ -23,10 +23,6 @@ module.exports = class CodingQuestionTestCase extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.CodingQuestionTestCase.belongsTo(db.Question, {
-            foreignKey: 'question_id',
-            targetKey: 'id',
-            onDelete: 'cascade'
-        });
+        db.CodingQuestionTestCase.belongsTo(db.Question, {foreignKey: 'question_id', targetKey: 'id', onDelete: 'cascade'});
     }
 };

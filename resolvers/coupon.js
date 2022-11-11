@@ -3,9 +3,10 @@ const CouponService = require('../services/coupon');
 const couponResolver = {
     Query: {
         async coupons(parent, args, context, info) {
-            const allCoupons = await CouponService.getAllCoupons();
+            const all_coupons_list = await CouponService.getAllCoupons();
             let coupons = [];
-            for (let i of allCoupons) {
+
+            for (let i of all_coupons_list) {
                 coupons.push({
                     id: i.id,
                     name: i.name,
@@ -13,17 +14,18 @@ const couponResolver = {
                     price: i.price
                 })
             }
+
             return coupons;
         },
 
         async myCoupons(parent, args, context, info) {
-            const userCoupons = await CouponService.getUserCoupons(context.user.id);
+            const coupons_list = await CouponService.getUserCoupons(context.user.id);
 
-            if (userCoupons === null)
+            if (coupons_list === null)
                 return [];
 
             let coupons = [];
-            for (let i of userCoupons) {
+            for (let i of coupons_list) {
                 coupons.push({
                     count: i.count,
                     coupon: {

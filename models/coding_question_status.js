@@ -29,14 +29,7 @@ module.exports = class CodingQuestionStatus extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.CodingQuestionStatus.belongsTo(db.AnswerRecord, {
-            foreignKey: 'answer_record_id',
-            targetKey: 'id',
-            onDelete: 'cascade'
-        });
-        db.CodingQuestionStatus.belongsTo(db.User, {
-            foreignKey: 'user_id',
-            targetKey: 'id',
-        });
+        db.CodingQuestionStatus.belongsTo(db.AnswerRecord, {foreignKey: 'answer_record_id', targetKey: 'id', onDelete: 'cascade'});
+        db.CodingQuestionStatus.belongsTo(db.User, {foreignKey: 'user_id', targetKey: 'id'});
     }
 };
