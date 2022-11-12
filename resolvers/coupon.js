@@ -5,7 +5,6 @@ const couponResolver = {
         async coupons(parent, args, context, info) {
             const all_coupons_list = await CouponService.getAllCoupons();
             let coupons = [];
-
             for (let i of all_coupons_list) {
                 coupons.push({
                     id: i.id,
