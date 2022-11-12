@@ -1,4 +1,5 @@
 const AuthService = require('../services/auth');
+const {normalResponse} = require('../util');
 
 const authResolver = {
     Query: {
@@ -8,11 +9,7 @@ const authResolver = {
     },
     Mutation: {
         signup(parent, {ID, hashedPW, name}, context, info) {
-            return {
-                code: 200,
-                message: 'hello',
-                success: AuthService.signup(ID, hashedPW, name)
-            };
+            return normalResponse(200, 'hello', AuthService.signup(ID, hashedPW, name));
         }
     }
 };
