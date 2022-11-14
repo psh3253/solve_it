@@ -9,6 +9,7 @@ const TestQuestion = require('../models/test_question');
 const TestTag = require('../models/test_tag');
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category');
+const AnswerRecord = require("../models/answer_record");
 
 questionService.getQuestion = async (question_id) => {
     try {
@@ -28,6 +29,26 @@ questionService.getQuestion = async (question_id) => {
                     attribute: ['name', 'experience']
                 }]
         });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+questionService.getSolveAndCorrectCount = async (question_id) =>{
+    try {
+        const solve_count = await AnswerRecord.count({
+            where: {
+                question_id: question_id
+            }
+        });
+
+        const correct_count = await AnswerRecord.count({
+            where: {
+                question_id: question_id,
+                is_correct: 1
+            }
+        });
+        return [solve_count, correct_count];
     } catch (e) {
         console.error(e);
     }

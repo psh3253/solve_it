@@ -133,6 +133,8 @@ module.exports = gql`
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
+        solveCount: Int!
+        correctCount: Int!
         fileUrls: String
     }
 
@@ -160,6 +162,8 @@ module.exports = gql`
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category!
+        solveCount: Int!
+        correctCount: Int!
         fileUrls: String
     }
 
@@ -175,6 +179,8 @@ module.exports = gql`
         wrongCnt: Int
         questionCategory: Category
         candidates: [Candidate!]!
+        solveCount: Int!
+        correctCount: Int!
         fileUrls: String
     }
 
@@ -189,6 +195,8 @@ module.exports = gql`
         wrongCnt: Int
         questionCategory: Category
         testCases: [TestCase!]
+        solveCount: Int!
+        correctCount: Int!
         fileUrls: String
     }
 

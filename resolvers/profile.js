@@ -22,6 +22,8 @@ const profileResolver = {
                     name: i.name
                 });
             }
+
+            const count = await ProfileService.getUserSolveAndCorrectCount(targetID);
             return {
                 ownerId: userProfile.id,
                 nickname: userProfile.nickname,
@@ -31,7 +33,9 @@ const profileResolver = {
                 tier: userProfile.tier_id,
                 favorites: categories,
                 role: userProfile.role,
-                creationDate: Util.getDateString(userProfile.created_at)
+                creationDate: Util.getDateString(userProfile.created_at),
+                solveCount: count[0],
+                correctCount: count[1]
             };
         },
 

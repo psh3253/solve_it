@@ -4,6 +4,8 @@ const {Op} = require("sequelize");
 const User = require('../models/user');
 const Category = require('../models/category');
 const Tier = require('../models/tier');
+const AnswerSheet = require("../models/answer_sheet");
+const AnswerRecord = require("../models/answer_record");
 
 profileService.isAdmin = async function (user_id) {
     try {
@@ -28,6 +30,30 @@ profileService.getUserProfile = async function (user_id) {
                 id: user_id
             }
         });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+profileService.getUserSolveAndCorrectCount = async function (user_id) {
+    try {
+        const answer_sheets = await AnswerSheet.findAll({
+            attributes: ['id'],
+            where: {
+                creator_id: user_id
+            }
+        });
+        const answer_records = await AnswerRecord.findAll({
+            attributes: ['id', 'is_correct'],
+            where: {
+                answer_sheet_id: {
+                    [Op.in]: answer_sheets.map(answer_sheet => answer_sheet.id)
+                }
+            }
+        });
+        const solve_count = answer_records.length;
+        const correct_count = answer_records.filter(answer_record => answer_record.is_correct).length;
+        return [solve_count, correct_count];
     } catch (e) {
         console.error(e);
     }
@@ -84,14 +110,15 @@ profileService.addUserExperience = async function (user_id, experience) {
             });
 
             const user = await User.findOne({
-                attributes: ['id', 'experience'],
+                attributes: ['id', 'experience', 'tier_id'],
                 where: {
                     id: user_id
                 }
             });
+            const prev_tier_id = user.tier_id;
 
             const tier = await Tier.findOne({
-                attributes: ['id'],
+                attributes: ['id', 'accumulate_point'],
                 where: {
                     required_experience: {
                         [Op.lte]: user.experience
@@ -108,6 +135,15 @@ profileService.addUserExperience = async function (user_id, experience) {
                     id: user_id
                 }
             });
+
+            if (tier.id > prev_tier_id) {
+                await User.increment('point', {
+                    by: tier.accumulate_point,
+                    where: {
+                        id: user_id
+                    }
+                });
+            }
             return true;
         });
     } catch (e) {
