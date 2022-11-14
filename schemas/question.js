@@ -132,7 +132,9 @@ module.exports = gql`
         difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: Category
+        questionCategory: Category,
+        solveCount: Int!,
+        correctCount: Int!
     }
 
     type TestCase {
@@ -158,7 +160,9 @@ module.exports = gql`
         difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: Category!
+        questionCategory: Category!,
+        solveCount: Int!,
+        correctCount: Int!
     }
 
     type MultipleChoice implements Question {
@@ -172,7 +176,9 @@ module.exports = gql`
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
-        candidates: [Candidate!]!
+        candidates: [Candidate!]!,
+        solveCount: Int!,
+        correctCount: Int!
     }
 
     type CodingTest implements Question {
@@ -185,7 +191,9 @@ module.exports = gql`
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
-        testCases: [TestCase!]
+        testCases: [TestCase!],
+        solveCount: Int!,
+        correctCount: Int!
     }
 
     type Candidate {

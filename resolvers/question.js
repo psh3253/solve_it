@@ -43,6 +43,8 @@ const QuestionResolver = {
                 })
             }
 
+            const count = await QuestionService.getSolveAndCorrectCount(id);
+
             return {
                 id: question.id,
                 name: question.title,
@@ -55,7 +57,9 @@ const QuestionResolver = {
                 wrongCnt: wrong_count,
                 questionCategory: question.Category,
                 candidates: candidate_list,
-                testCases: test_case_list
+                testCases: test_case_list,
+                solveCount: count[0],
+                correctCount: count[1]
             };
         },
 

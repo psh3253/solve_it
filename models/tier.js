@@ -16,6 +16,10 @@ module.exports = class Tier extends Sequelize.Model {
             required_experience: {
                 type: Sequelize.INTEGER,
                 allowNull: false
+            },
+            accumulate_point: {
+                type: Sequelize.INTEGER,
+                allowNull: false
             }
         }, {
             sequelize,

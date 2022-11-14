@@ -21,7 +21,9 @@ module.exports = gql`
         tier: Int
         favorites: [Category!]
         role: Int
-        creationDate: String!
+        creationDate: String!,
+        solveCount: Int!
+        correctCount: Int!
     }
 
     type ProfileHeader {
