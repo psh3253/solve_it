@@ -23,32 +23,39 @@ const Query = gql`
         message: String!
         success: Boolean!
     }
+
+    type NormalResponse implements Response {
+        code: Int!
+        message: String!
+        success: Boolean!
+    }
+
+    type CreationQuestionResponse implements Response {
+        code: Int!
+        message: String!
+        success: Boolean!
+        questionId: Int!
+    }
+
+    type UploadResponse implements Response {
+        code: Int!
+        message: String!
+        success: Boolean!
+        fileUrl: String
+    }
+
     type CodingTestResultResponse implements Response {
         code: Int!
         message: String!
         success: Boolean!
         result: CodingTestResult!
     }
+    
     enum CodingTestResult {
         SUCCESS
         FAIL
         PENDING
         NOT_SUBMITTED
-    }
-    type NormalResponse {
-        code: Int!
-        message: String!
-        success: Boolean!
-    }
-    type CreationQuestionResponse {
-        code: Int!
-        message: String!
-        success: Boolean!
-        questionId: Int!
-    }
-    scalar Upload
-    type File {
-        url: String!
     }
 `;
 

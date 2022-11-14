@@ -12,7 +12,7 @@ module.exports = gql`
 
     type Mutation {
         createQuestion(input: CreateQuestionInput): CreationQuestionResponse
-        lambdaUploadQuestionMediaFile(awsRegion: String!, eventTime: String!, fileName: String!, fileExtension: String!, fileSize: Int!): NormalResponse
+        lambdaUploadQuestionMediaFile(awsRegion: String!, eventTime: String!, fileName: String!, fileExtension: String!): UploadResponse
         updateQuestion(input: UpdateQuestionInput): CreationQuestionResponse
         deleteQuestion(id: ID!): NormalResponse
         createCodingTestQuestion(input: CreateCodingTestQuestionInput): CreationQuestionResponse
@@ -132,9 +132,10 @@ module.exports = gql`
         difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: Category,
-        solveCount: Int!,
+        questionCategory: Category
+        solveCount: Int!
         correctCount: Int!
+        fileUrls: String
     }
 
     type TestCase {
@@ -160,9 +161,10 @@ module.exports = gql`
         difficulty: Difficulty!
         answerCnt: Int!
         wrongCnt: Int
-        questionCategory: Category!,
-        solveCount: Int!,
+        questionCategory: Category!
+        solveCount: Int!
         correctCount: Int!
+        fileUrls: String
     }
 
     type MultipleChoice implements Question {
@@ -176,9 +178,10 @@ module.exports = gql`
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
-        candidates: [Candidate!]!,
-        solveCount: Int!,
+        candidates: [Candidate!]!
+        solveCount: Int!
         correctCount: Int!
+        fileUrls: String
     }
 
     type CodingTest implements Question {
@@ -191,9 +194,10 @@ module.exports = gql`
         answerCnt: Int!
         wrongCnt: Int
         questionCategory: Category
-        testCases: [TestCase!],
-        solveCount: Int!,
+        testCases: [TestCase!]
+        solveCount: Int!
         correctCount: Int!
+        fileUrls: String
     }
 
     type Candidate {

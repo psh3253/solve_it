@@ -42,9 +42,7 @@ const QuestionResolver = {
                     outputs: i.outputs
                 })
             }
-
             const count = await QuestionService.getSolveAndCorrectCount(id);
-
             return {
                 id: question.id,
                 name: question.title,
@@ -185,40 +183,24 @@ const QuestionResolver = {
         },
 
         async lambdaUploadQuestionMediaFile(parent, {awsRegion, fileName, fileExtension}, context, info) {
+            console.log(awsRegion, fileName, fileExtension)
             if (awsRegion !== process.env.AWS_REGION)
                 return {
                     code: 200,
-                    message: 'failed',
+                    message: 'Wrong AWS region',
                     success: false
                 };
 
             const decoded_file_name = decodeURIComponent(fileName);
 
-            if (["png", "jpg", "jpeg"].includes(fileExtension)) {
-                const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_IMAGE_DIRECTORY_PATH + "/" + decoded_file_name + '.' + fileExtension;
-                const result = await QuestionService.uploadQuestionImageFile(fileName, fileUrl);
-
-                return {
-                    code: 200,
-                    message: 'complete',
-                    success: result
-                }
-            } else if (["wav", "mp3"].includes(file_type)) {
-                const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_SOUND_DIRECTORY_PATH + "/" + decoded_file_name
-                const result = await QuestionService.uploadQuestionSoundFile(question_id, fileUrl);
-                return {
-                    code: 200,
-                    message: 'complete',
-                    success: result
-                }
-            }
+            const fileUrl = process.env.S3_BUCKET_URL + process.env.S3_QUESTION_FILE_DIRECTORY_PATH + "/" + decoded_file_name + '.' + fileExtension;
+            const result = await QuestionService.createQuestionFile(null, fileUrl);
 
             return {
                 code: 200,
-                message: 'unsupported file extension',
-                success: false
+                message: 'Question File Upload complete',
+                success: result,
             }
-
         },
 
         async createCodingTestQuestion(parent, {input}, context, info) {
