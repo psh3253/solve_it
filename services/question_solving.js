@@ -15,6 +15,7 @@ const Difficulty = require("../models/difficulty");
 const CodingQuestionTestCases = require('../models/coding_question_test_case');
 const CodingQuestionStatus = require('../models/coding_question_status');
 const axios = require('axios');
+const Tier = require("../models/tier");
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
@@ -216,7 +217,7 @@ questionSolvingService.submitAnswer = async (test_id, question_id, answers, user
             }
 
             const test_question = await questionSolvingService.getTestQuestion(test_id, question_id);
-            
+
             await AnswerRecord.upsert({
                 answer: answers,
                 answer_sheet_id: answer_sheet.id,
@@ -623,8 +624,6 @@ questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_id
             }
         });
 
-        console.log(test_case.output)
-        console.log(stdout);
         if (!test_case.output.includes(stdout)) {
             is_correct = false;
         }
@@ -761,6 +760,42 @@ questionSolvingService.getExperience = async (question_id) => {
         return difficulty.experience;
     } catch (e) {
         console.error(e);
+    }
+}
+
+questionSolvingService.setTierPoint = async (tier_id, point) => {
+    try {
+        return await sequelize.transaction(async (t) => {
+            await Tier.update({
+                accumulate_point: point
+            }, {
+                where: {
+                    id: tier_id
+                }
+            });
+            return true;
+        });
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+questionSolvingService.setTierRequiredExperience = async (tier_id, required_experience) => {
+    try {
+        return await sequelize.transaction(async (t) => {
+            await Tier.update({
+                required_experience: required_experience
+            }, {
+                where: {
+                    id: tier_id
+                }
+            });
+            return true;
+        });
+    } catch (e) {
+        console.error(e);
+        return false;
     }
 }
 

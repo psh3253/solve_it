@@ -26,7 +26,19 @@ module.exports = gql`
         createReply(input: CreateReplyInput!): NormalResponse
         deleteReply(id: ID!): NormalResponse
         submitCodingTestAnswer(input: CodingTestAnswerInput!): NormalResponse
-        gradeTestCase(testId: ID!, questionId: ID!, testCaseIdx: Int!): NormalResponse
+        gradeTestCase(testId: ID!, questionId: ID!, testCaseIdx: Int!): NormalResponse,
+        setTierPoint(input: [TierPoint!]!): NormalResponse,
+        setTierExperience(input: [TierExperience!]!): NormalResponse,
+    }
+    
+    input TierPoint {
+        tierId: ID!,
+        point: Int!
+    }
+    
+    input TierExperience {
+        tierId: ID!,
+        experience: Int!
     }
 
     input CodingTestAnswerInput {
