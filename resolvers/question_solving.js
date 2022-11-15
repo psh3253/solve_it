@@ -66,7 +66,7 @@ const QuestionSolvingResolver = {
         async like(parent, {testId, userId}, context, info) {
             const user_id = userId === undefined ? context.user.id : userId;
             const like = await QuestionSolvingService.isLiked(testId, user_id);
-            
+
             return like;
         },
 
@@ -272,7 +272,7 @@ const QuestionSolvingResolver = {
 
         async likeTest(parent, {id}, context, info) {
             const test_id = await QuestionSolvingService.likeTest(id, context.user.id);
-            
+
             return {
                 code: 200,
                 message: 'complete',
@@ -333,6 +333,50 @@ const QuestionSolvingResolver = {
                 code: 200,
                 message: 'complete',
                 success: await QuestionSolvingService.deleteReply(id)
+            }
+        },
+
+        async setTierPoint(parent, {input}, context, info) {
+            if (!await ProfileService.isAdmin(context.user.id)) {
+                return {
+                    code: 200,
+                    message: 'not admin',
+                    success: false
+                }
+            }
+            let success = true;
+            for(let i = 0; i < input.length; i++) {
+                const result = await QuestionSolvingService.setTierPoint(input[i].tierId, input[i].point);
+                if(!result) {
+                    success = false;
+                }
+            }
+            return {
+                code: 200,
+                message: 'complete',
+                success: success
+            }
+        },
+
+        async setTierExperience(parent, {input}, context, info) {
+            if (!await ProfileService.isAdmin(context.user.id)) {
+                return {
+                    code: 200,
+                    message: 'not admin',
+                    success: false
+                }
+            }
+            let success = true;
+            for(let i = 0; i < input.length; i++) {
+                const result = await QuestionSolvingService.setTierRequiredExperience(input[i].tierId, input[i].experience);
+                if(!result) {
+                    success = false;
+                }
+            }
+            return {
+                code: 200,
+                message: 'complete',
+                success: success
             }
         }
     }
