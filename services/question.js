@@ -207,7 +207,7 @@ questionService.getLikeTests = async (user_id) => {
             },
             where: {
                 id: {
-                    [Op.in]: sequelize.literal(`(SELECT test_id FROM \`like\` WHERE creator_id = ${user_id})`)
+                    [Op.in]: sequelize.literal('(SELECT test_id FROM `like` WHERE creator_id = ' + user_id + ')')
                 }
             }
         });

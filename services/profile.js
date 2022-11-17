@@ -178,6 +178,22 @@ profileService.getUserProfilesByExp = async (page, include_admin) => {
     }
 }
 
+profileService.getUserProfilesCount = async (include_admin) => {
+    try {
+        if (include_admin) {
+            return await User.count();
+        }
+        return await User.count({
+            where: {
+                role: 0
+            }
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
 profileService.updateNickname = async function (user_id, nickname) {
     try {
         return await sequelize.transaction(async (t) => {

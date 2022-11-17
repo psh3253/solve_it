@@ -300,6 +300,15 @@ questionSolvingService.getAllAsking = async (page) => {
     }
 }
 
+questionSolvingService.getAllAskingCount = async () => {
+    try {
+        return await Asking.count();
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
 questionSolvingService.isAskingCreator = async (asking_id, user_id) => {
     try {
         const asking = await Asking.findOne({

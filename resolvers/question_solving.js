@@ -139,6 +139,11 @@ const QuestionSolvingResolver = {
             }
             return asking_list;
         },
+
+        async allAskingCount(parent, args, context, info) {
+            return await QuestionSolvingService.getAllAskingCount();
+        },
+
         async codingTestResult(parent, {testId, questionId, testCaseIdx}, context, info) {
             const result = await QuestionSolvingService.getCodingTestResult(testId, questionId, testCaseIdx, context.user.id);
             return {

@@ -62,6 +62,12 @@ const profileResolver = {
             return profile_list;
         },
 
+        async profileCount(parent, {includeAdmin}, context, info) {
+            if (includeAdmin === undefined)
+                includeAdmin = false
+            return await ProfileService.getUserProfilesCount(includeAdmin);
+        },
+
         async categories(parent, args, context, info) {
             const allCategories = await ProfileService.getAllCategories();
             let categories = [];
