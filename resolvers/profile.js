@@ -62,7 +62,7 @@ const profileResolver = {
             return profile_list;
         },
 
-        async profileCount(parent, {includeAdmin}, context, info) {
+        async profilesCount(parent, {includeAdmin}, context, info) {
             if (includeAdmin === undefined)
                 includeAdmin = false
             return await ProfileService.getUserProfilesCount(includeAdmin);
