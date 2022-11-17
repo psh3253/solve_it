@@ -16,6 +16,7 @@ const CodingQuestionTestCases = require('../models/coding_question_test_case');
 const CodingQuestionStatus = require('../models/coding_question_status');
 const axios = require('axios');
 const Tier = require("../models/tier");
+const {Op} = require("sequelize");
 
 questionSolvingService.contributeDifficulty = async (question_id, difficulty_id, user_id) => {
     try {
@@ -552,9 +553,8 @@ questionSolvingService.gradeTestCase = async (question_id, test_id, test_case_id
                 question_id: question_id
             }
         });
-
         const coding_question_status = await questionSolvingService.getCodingTestResult(test_id, question_id, test_case_idx, user_id);
-        if (coding_question_status === 'not submitted') {
+        if (coding_question_status === 'NOT_SUBMITTED') {
             await CodingQuestionStatus.create({
                 answer_record_id: answer_record.id,
                 test_case_idx: test_case_idx,
@@ -654,6 +654,7 @@ questionSolvingService.getCodingTestResult = async (test_id, question_id, test_c
                 question_id: question_id
             }
         });
+        console.log("result : " + answer_record.id);
         const coding_question_status = await CodingQuestionStatus.findOne({
             attributes: ['is_process', 'is_correct'],
             where: {
@@ -798,6 +799,7 @@ questionSolvingService.setTierRequiredExperience = async (tier_id, required_expe
         return false;
     }
 }
+
 
 const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
 

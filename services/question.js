@@ -10,6 +10,7 @@ const TestTag = require('../models/test_tag');
 const Difficulty = require('../models/difficulty');
 const Category = require('../models/category');
 const AnswerRecord = require("../models/answer_record");
+const {Op} = require("sequelize");
 
 questionService.getQuestion = async (question_id) => {
     try {
@@ -187,6 +188,28 @@ questionService.getAllTests = async (page, order) => {
             limit: 10,
             offset: (page - 1) * 10,
             order: [order_way]
+        });
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+questionService.getLikeTests = async (user_id) => {
+    try {
+        return await Test.findAll({
+            attributes: ['id', 'title', 'try_count', 'content', 'is_private', 'created_at', 'creator_id', [
+                sequelize.literal('(SELECT count(*) FROM `like` WHERE `test_id` = `Test`.`id`)'), 'like'
+            ]],
+            include: {
+                model: Category,
+                attributes: ['id', 'name'],
+            },
+            where: {
+                id: {
+                    [Op.in]: sequelize.literal(`(SELECT test_id FROM \`like\` WHERE creator_id = ${user_id})`)
+                }
+            }
         });
     } catch (e) {
         console.error(e);

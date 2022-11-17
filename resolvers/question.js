@@ -126,6 +126,27 @@ const QuestionResolver = {
             }
             return test_list;
         },
+        async myLikeTests(parent, args, context, info) {
+            const tests = await QuestionService.getLikeTests(context.user.id);
+            let test_list = [];
+            for (let i of tests) {
+                test_list.push({
+                    id: i.id,
+                    name: i.title,
+                    content: i.content,
+                    ownerId: i.creator_id,
+                    creationDate: Util.getDateString(i.created_at),
+                    isPrivate: i.is_private,
+                    tryCnt: i.try_count,
+                    like: i.dataValues.like,
+                    testCategory: {
+                        id: i.Category.id,
+                        name: i.Category.name
+                    }
+                });
+            }
+            return test_list;
+        },
         async allTestsCount(parent, args, context, info) {
             return await QuestionService.getAllTestsCount();
         },

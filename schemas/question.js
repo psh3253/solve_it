@@ -5,6 +5,7 @@ module.exports = gql`
         question(id: ID!): Question
         test(id: ID!): Test
         allTests(page: Int!, order: OrderBy): [TestHeader!]!
+        myLikeTests: [TestHeader!]!
         allTestsCount: Int!
         testsByCategory(id: ID!): [TestHeader!]!
         testsByCreator(id: ID!): [TestHeader!]!
