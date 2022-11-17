@@ -41,19 +41,38 @@ const couponResolver = {
 
     Mutation: {
         async addCoupon(parent, args, context, info) {
-            return CouponService.addCoupon(args.name, args.explanation, args.price);
+            console.log(args);
+            return {
+                code: 200,
+                message: 'complete',
+                success: await CouponService.addCoupon(args.name, args.explanation, args.price)
+            };
         },
 
         async deleteCoupon(parent, args, context, info) {
-            return CouponService.deleteCoupon(args.couponID);
+            return {
+                code: 200,
+                message: 'complete',
+                success: await CouponService.deleteCoupon(args.couponID)
+            }
         },
 
         async issueCoupon(parent, args, context, info) {
-            return CouponService.issueCoupon(context.user.id, args.couponID, args.count);
+            return {
+                code: 200,
+                message: 'complete',
+                success: await CouponService.issueCoupon(context.user.id, args.couponID, args.count)
+            }
         },
 
         async useCoupon(parent, args, context, info) {
-            return CouponService.useCoupon(context.user.id, args.couponID);
+            return {
+                code: 200,
+                message: 'complete',
+                success: await CouponService.useCoupon(context.user.id, args.couponID)
+            }
         }
     }
 };
+
+module.exports = couponResolver;
