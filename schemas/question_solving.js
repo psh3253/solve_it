@@ -9,6 +9,7 @@ module.exports = gql`
         askingByQuestion(id: ID!): [Asking!]!
         repliesByAsking(id: ID!): [Reply!]!
         allAsking(page: Int!): [Asking]
+        allAskingCount: Int!
         mySolvingTests: [TestHeader!]!
         like(testId: ID!, userId: ID): Boolean
         codingTestResult(testId: ID!, questionId: ID!, testCaseIdx: Int!): CodingTestResultResponse

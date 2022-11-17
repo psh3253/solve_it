@@ -4,6 +4,7 @@ module.exports = gql`
     type Query {
         profile(ID: String): Profile
         profilesByExp(page: Int!, includeAdmin: Boolean): [ProfileHeader]!
+        profilesCount(includeAdmin: Boolean): Int!
         statistics(ID: String): Statistics
         categories: [Category!]!
     }
