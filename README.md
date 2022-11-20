@@ -14,6 +14,7 @@ Apollo Server와 GraphQL로 제작한 문제 공유 플랫폼 서버 입니다.
 ```
 docker build -t solveit:1.0 . 
 docker run -it -d --name solveit -p 4000:4000 solveit:1.0
+nodemon start
 ```
 
 ### Prerequisites / 선행 조건
